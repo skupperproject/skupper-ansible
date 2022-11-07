@@ -3,4 +3,3 @@
   user: root
   roles:
     - skupper-cli-install
-  vars:

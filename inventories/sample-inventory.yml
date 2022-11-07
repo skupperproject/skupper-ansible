@@ -1,0 +1,22 @@
+all:
+  children:
+    kubernetes:
+      hosts:
+        public1:
+          ansible_host: localhost
+          ansible_user: fgiorget
+          namespace: "public1"
+        private1:
+          ansible_host: localhost
+          ansible_user: fgiorget
+          namespace: "private1"
+    podman:
+      hosts:
+        rhel9:
+          ansible_host: localhost
+          ansible_user: fgiorget
+          platform: "podman"
+          init:
+            ingressHosts:
+              - 192.168.122.1
+              - 192.168.15.10

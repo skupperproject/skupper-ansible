@@ -6,12 +6,16 @@ all:
           ansible_host: localhost
           ansible_user: fgiorget
           namespace: "public1"
+          token:
+            type: cert
         private1:
           ansible_host: localhost
           ansible_user: fgiorget
           namespace: "private1"
           token:
             uses: 5
+          links:
+            - host: public1
     podman:
       hosts:
         rhel9:
@@ -24,3 +28,8 @@ all:
               - 192.168.15.10
           token:
             ingressHost: 192.168.122.1
+          links:
+            - host: private1
+            - host: public1
+              cost: 2
+              name: link-to-public1

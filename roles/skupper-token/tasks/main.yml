@@ -28,8 +28,4 @@
 # saving generated token into tokens dictionary
 - name: Saving token into tokens dictionary
   set_fact:
-    tokens: "{{ tokens | combine({inventory_hostname: lookup('file', tokentemp.path)}) }}"
-
-- name: Debugging generated token
-  debug:
-    msg: "tokens[{{inventory_hostname}}] = {{ tokens[inventory_hostname] }}"
+    generatedToken: "{{ lookup('file', tokentemp.path) }}"

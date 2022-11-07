@@ -1,0 +1,7 @@
+---
+# tasks file for skupper-link
+
+# execute the link create for each link defined in the links list
+- name: Executing link creation tasks for each entry
+  ansible.builtin.include_tasks: execute.yml
+  with_items: "{{ links }}"

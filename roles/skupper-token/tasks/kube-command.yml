@@ -39,8 +39,8 @@
 
 - name: Adding --token-type
   set_fact:
-    skupper_token_command: "{{ skupper_token_command + ['--token-type', token.tokenType] }}"
-  when: token['tokenType'] is defined
+    skupper_token_command: "{{ skupper_token_command + ['--token-type', token.type] }}"
+  when: token['type'] is defined
 
 - name: Adding --uses
   set_fact:

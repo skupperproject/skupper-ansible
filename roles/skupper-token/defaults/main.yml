@@ -18,5 +18,5 @@ token:
   # podman specific flags
   #
   # ingress-host: ""
-# return variable that holds a dictionary indexed by inventory hostnames
-tokens:
+# return variable that holds the generated token content for the given host
+# generatedToken:

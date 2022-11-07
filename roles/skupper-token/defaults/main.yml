@@ -1,0 +1,22 @@
+---
+# defaults file for skupper-token
+token:
+  #
+  # common flags
+  #
+  # name: ""
+
+  #
+  # kube specific flags
+  #
+  # expiry: "15m0s"
+  # password: ""
+  # type: "claim"
+  # uses: 1
+
+  #
+  # podman specific flags
+  #
+  # ingress-host: ""
+# return variable that holds a dictionary indexed by inventory hostnames
+tokens:

@@ -1,0 +1,8 @@
+---
+- hosts: all
+  roles:
+    - skupper-token
+  tasks:
+    - name: Displaying generated tokens
+      debug:
+        msg: "Generated tokens -> {{ tokens.keys() }}"

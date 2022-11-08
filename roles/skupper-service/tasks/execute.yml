@@ -1,0 +1,13 @@
+# validating
+- name: Validate service common
+  ansible.builtin.include_tasks: common-validate.yml
+
+# execute commands for kubernetes platform
+- name: Kubernetes tasks
+  ansible.builtin.include_tasks: kube-commands.yml
+  when: platform == 'kubernetes'
+
+# execute commands for podman platform
+- name: Podman tasks
+  ansible.builtin.include_tasks: podman-commands.yml
+  when: platform == 'podman'

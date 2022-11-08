@@ -8,6 +8,13 @@ all:
           namespace: "public1"
           token:
             type: cert
+          services:
+            nginx:
+              ports:
+                - 8080
+              labels:
+                - label1=value1
+                - label2=value2
         private1:
           ansible_host: localhost
           ansible_user: fgiorget
@@ -16,6 +23,13 @@ all:
             uses: 5
           links:
             - host: public1
+          services:
+            nginx:
+              ports:
+                - 8080
+              targets:
+                - type: deployment
+                  name: nginx
     podman:
       hosts:
         rhel9:
@@ -33,3 +47,12 @@ all:
             - host: public1
               cost: 2
               name: link-to-public1
+          services:
+            nginx:
+              ports: [8080]
+              targets:
+                - type: "host"
+                  name: "192.168.122.1"
+              hostIp: "192.168.122.1"
+              hostPorts:
+                - 8080:8888

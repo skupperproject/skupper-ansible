@@ -1,0 +1,14 @@
+---
+- name: Prepare skupper service create command
+  ansible.builtin.include_tasks: kube-command-create.yml
+
+- name: Prepare skupper service bind command
+  ansible.builtin.include_tasks: kube-command-bind.yml
+  when: hasTargets
+  with_items: "{{ item.value.targets }}"
+  loop_control:
+    loop_var: target
+
+- name: Add service labels
+  ansible.builtin.include_tasks: kube-command-label.yml
+  when: hasLabels

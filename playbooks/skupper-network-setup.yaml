@@ -1,0 +1,7 @@
+---
+- hosts: all
+  roles:
+    - skupper-init
+    - skupper-token
+    - skupper-link
+    - skupper-service

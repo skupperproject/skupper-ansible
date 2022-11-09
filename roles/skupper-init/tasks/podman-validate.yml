@@ -1,0 +1,5 @@
+---
+- name: "Validating ingress host"
+  fail:
+    msg: "Ingress host is required"
+  when: init['ingressHosts'] is not defined or (init['ingressHosts'] | length < 1)

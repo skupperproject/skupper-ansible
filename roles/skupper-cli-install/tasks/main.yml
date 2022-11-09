@@ -1,0 +1,59 @@
+---
+# tasks file for skupper-cli-install
+- name: Retrieving skupper releases
+  uri:
+    url: "{{ latest_release_url }}"
+    method: GET
+    status_code: 200
+    body_format: json
+  register: latest_release
+  delay: 30
+  when: "version == ''"
+
+- name: Determining system_facts
+  set_fact:
+    dest_location: "{{ location if location != '' else default_location }}"
+    os: "{{ os if os != '' else 'linux' if ansible_system == 'Linux' else 'win' if ansible_os_family == 'Windows' else 'mac' if ansible_os_family == 'Darwin' else default_os }}"
+    arch: "{{ arch if arch != '' else arch_values[ansible_architecture] | default(default_arch) }}"
+    version: "{{ version if version != '' else latest_release.json.name if latest_release else default_version }}"
+
+- name: Determining skupper binary location
+  set_fact:
+    dest_file: "{{ dest_location }}/skupper"
+
+- name: Verifying if skupper binary already exists
+  ansible.builtin.stat:
+    path: "{{ dest_file }}"
+  register: skupper_bin
+
+- name: Exit if skupper binary exists or force is set to false
+  meta: end_play
+  when: skupper_bin.stat.exists and not force
+
+- name: Determining tarball
+  set_fact:
+    tarball: "skupper-cli-{{ version if version != '' else default_version }}-{{os}}-{{arch}}.tgz"
+
+- name: Determining download info
+  set_fact:
+    download_url: "{{ download_url_base }}/{{ version }}/{{ tarball }}"
+
+- name: Download info
+  debug:
+    msg: "Downloading {{ download_url_base }}/{{ version }}/{{ tarball }} into {{ location if location != '' else default_location }}"
+
+- name: Downloading tar ball
+  ansible.builtin.unarchive:
+    src: "{{ download_url }}"
+    dest: "{{ dest_location }}"
+    remote_src: yes
+
+- name: Verifying installation
+  ansible.builtin.stat:
+    path: "{{ dest_file }}"
+  register: skupper_bin
+
+- name: Skupper binary installed
+  fail: 
+    msg: "Installation failed - {{ dest_file }} not found"
+  when: not skupper_bin.stat.exists

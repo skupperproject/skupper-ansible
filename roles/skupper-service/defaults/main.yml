@@ -1,0 +1,29 @@
+---
+# defaults file for skupper-service
+services:
+  # Sample service definition (indexed by name)
+  name:
+    ports: []           # int array
+    protocol: ""        # choice tcp, http, http2
+    labels: []          # label and value separated by equal sign
+    aggregate: ""       # choice: json, multiplart
+    enableTls: False    # boolean
+    eventChannel: False # boolean
+    targets: []         # array of type and name
+      type: ""          # type of target to bind (values vary based on selected platform)
+      name: ""          # value that represents the selected target type
+      ports: []         # array mapping service ports to target ports
+
+    #
+    # kubernetes flags
+    #
+    # valid targetType values: "deployment", "statefulset", "pods", "service"
+    #
+
+    #
+    # podman flags
+    #
+    # valid targetType values: "host"
+    containerName: ""   # optinal alternative name for service container
+    hostIp: ""          # optional host ip address used to bind to the service ports
+    hostPorts: []       # array mapping service ports to a host port

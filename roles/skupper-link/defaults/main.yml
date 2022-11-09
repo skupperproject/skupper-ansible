@@ -1,0 +1,13 @@
+---
+# defaults file for skupper-link
+#
+# it expects that the target host has a generatedToken variable populated by skupper-token role
+#
+
+#
+# list of links to be created
+# each item in the list holds a dictionary that contains:
+# host, name and cost
+# it expects that the target 'host' has an ansible variable named generatedToken
+# 
+links: []

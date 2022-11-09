@@ -1,0 +1,9 @@
+---
+- name: Validate target type
+  debug:
+    msg: "Invalid target type: {{ target.type }} - valid target types are {{ validTargetTypesKube }}"
+  when: hasTargets
+  failed_when: target.type not in validTargetTypesKube
+  with_items: "{{ item.value.targets }}"
+  loop_control:
+    loop_var: target

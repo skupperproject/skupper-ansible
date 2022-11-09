@@ -1,0 +1,26 @@
+- name: Preparing service bind command
+  set_fact:
+    skupper_bind_command:
+      - skupper
+      - service
+      - bind
+      - --platform
+      - "{{ platform }}"
+
+- name: Adding --kubeconfig
+  set_fact:
+    skupper_bind_command: "{{ skupper_bind_command + ['--kubeconfig', kubeconfig] }}"
+  when: kubeconfig is defined and kubeconfig | length() > 0
+
+- name: Adding --context
+  set_fact:
+    skupper_bind_command: "{{ skupper_bind_command + ['--context', context] }}"
+  when: context is defined and context | length() > 0
+
+- name: Adding --namespace
+  set_fact:
+    skupper_bind_command: "{{ skupper_bind_command + ['--namespace', namespace] }}"
+  when: namespace is defined and namespace | length() > 0
+
+- name: Execute skupper service bind command
+  ansible.builtin.include_tasks: service-bind.yml

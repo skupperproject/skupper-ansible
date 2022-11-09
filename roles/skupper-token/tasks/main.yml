@@ -29,3 +29,9 @@
 - name: Saving token into tokens dictionary
   set_fact:
     generatedToken: "{{ lookup('file', tokentemp.path) }}"
+
+# remove the generated token file
+- name: Remove generated token file
+  ansible.builtin.file:
+    path: "{{ tokentemp.path }}"
+    state: absent

@@ -1,38 +1,82 @@
-Role Name
-=========
+skupper-token
+=============
 
-A brief description of the role goes here.
+Generates a skupper token, saving the resulting token as a runtime
+host variable named `generatedToken`.
+
+The `skupper-link` role expects that the target hosts defined as part
+of the `links` object have a `generatedToken` variable defined.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+* Skupper CLI
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+All flags in the token element are optinal.
+
+```yaml
+token:
+  #
+  # common flags
+  #
+  name: ""
+
+  #
+  # kube specific flags
+  #
+  expiry: "15m0s"
+  password: ""
+  type: "claim"
+  uses: 1
+
+  #
+  # podman specific flags
+  #
+  ingress-host: ""
+```
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+**Role**
+
+* skupper-common
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+---
+- hosts: all
+  roles:
+    - skupper-token
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+Example Inventory
+-----------------
+
+The following inventory example, demonstrates how an ansible host
+can be specified. Note that it has the platform variable as well 
+as the `token` field.
+
+```yaml
+  site-a:
+    token:
+      type: cert
+  site-b:
+    token:
+      uses: 5
+  rhel9:
+```
 
 License
 -------
 
-BSD
+Apache 2.0
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Skupper team
+https://skupper.io

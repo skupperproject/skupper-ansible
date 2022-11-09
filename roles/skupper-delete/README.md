@@ -6,7 +6,7 @@ Deletes a skupper site.
 Requirements
 ------------
 
-None.
+Skupper CLI must be installed.
 
 Role Variables
 --------------

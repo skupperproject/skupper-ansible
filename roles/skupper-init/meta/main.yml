@@ -1,5 +1,5 @@
 galaxy_info:
-  author: Fernando Giorgetti
+  author: Skupper team
   company: Red Hat
   description: Initializes a Skupper site
   issue_tracker_url: http://github.com/skupper/skupper
@@ -12,5 +12,5 @@ galaxy_info:
 dependencies:
   - role: skupper-common
 
-collections:
-  - kubernetes.core
+# collections:
+#   - kubernetes.core

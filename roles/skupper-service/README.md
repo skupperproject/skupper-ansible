@@ -1,38 +1,111 @@
-Role Name
-=========
+skupper-service
+===============
 
-A brief description of the role goes here.
+Creates all services defined through the `services` variable for the
+related ansible host.
+
+It creates the service, binding it to all (optional) targets.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+* Skupper CLI
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+A `services` array element must be defined at the host, so that the role
+can iterate through each service, creating and binding it to the defined
+target.
+
+```yaml
+services:
+  # Sample service definition (indexed by name)
+  name:
+    ports: []           # int array
+    protocol: ""        # choice tcp, http, http2
+    labels: []          # label and value separated by equal sign
+    aggregate: ""       # choice: json, multiplart
+    enableTls: False    # boolean
+    eventChannel: False # boolean
+    targets: []         # array of type and name
+      type: ""          # type of target to bind (values vary based on selected platform)
+      name: ""          # value that represents the selected target type
+      ports: []         # array mapping service ports to target ports
+
+    #
+    # kubernetes flags
+    #
+    # valid targetType values: "deployment", "statefulset", "pods", "service"
+    #
+
+    #
+    # podman flags
+    #
+    # valid targetType values: "host"
+    containerName: ""   # optinal alternative name for service container
+    hostIp: ""          # optional host ip address used to bind to the service ports
+    hostPorts: []       # array mapping service ports to a host port
+
+```
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+**Role**
+
+* skupper-common
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+---
+- hosts: all
+  roles:
+    - skupper-service
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+Example Inventory
+-----------------
+
+The following inventory example, demonstrates how an ansible host
+can be specified. Note that it has the `services` field.
+
+```yaml
+  site-a:
+    services:
+      nginx:
+        ports:
+          - 8080
+        labels:
+          - label1=value1
+          - label2=value2
+  site-b:
+    services:
+      nginx:
+        ports:
+          - 8080
+        targets:
+          - type: deployment
+            name: nginx
+  rhel9:
+    services:
+      nginx:
+        ports: [8080]
+        targets:
+          - type: "host"
+            name: "192.168.122.1"
+        hostIp: "192.168.122.1"
+        hostPorts:
+          - 8080:8888
+```
 
 License
 -------
 
-BSD
+Apache 2.0
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Skupper team
+https://skupper.io

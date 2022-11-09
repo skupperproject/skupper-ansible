@@ -1,9 +1,11 @@
 ---
 # defaults file for skupper-init
 init:
-  #
-  # common flags
-  #
+  
+  # #
+  # # common flags
+  # #
+
   # siteName: ""
   # ingress: ""
   # routerMode: ""
@@ -11,10 +13,11 @@ init:
   # routerLogging: ""
   # routerDebugMode: ""
   # timeout: 0
+ 
+  # #
+  # # kube specific flags
+  # #
 
-  #
-  # kube specific flags
-  #
   # ingressHost: ""
   # createNetworkPolicy: False
   # enableServiceSync: False
@@ -51,9 +54,10 @@ init:
   # configSyncCpuLimit: ""
   # configSyncMemoryLimit: ""
 
-  #
-  # podman specific flags
-  #
+  # #
+  # # podman specific flags
+  # #
+
   # ingressHosts: []
   # ingressBindIps: []
   # bindPort: 55671

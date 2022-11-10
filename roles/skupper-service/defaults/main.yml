@@ -1,6 +1,6 @@
 ---
 # defaults file for skupper-service
-services:
+services: {}
   # # Sample service definition (indexed by name)
   # name:
   #   ports: []           # int array

@@ -1,5 +1,1 @@
 ---
-- name: Validate ingressHost provided
-  fail:
-    msg: 'ingressHost is required to generate a podman token'
-  when: token['ingressHost'] is not defined or token['ingressHost'] == ""

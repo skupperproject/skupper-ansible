@@ -25,10 +25,15 @@
     argv: "{{ skupper_token_command }}"
   register: tokenStatus
 
+# reading generated token
+- name: Reading token
+  command: "cat {{ tokentemp.path }}"
+  register: tokenContent
+
 # saving generated token into tokens dictionary
 - name: Saving token into tokens dictionary
   set_fact:
-    generatedToken: "{{ lookup('file', tokentemp.path) }}"
+    generatedToken: "{{ tokenContent.stdout }}"
 
 # remove the generated token file
 - name: Remove generated token file

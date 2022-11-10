@@ -1,5 +1,9 @@
 # skupper-ansible
-Ansible playbooks and roles for skupper
+Ansible collection and roles for skupper
+
+## Collection name
+
+skupper.core
 
 ## Roles
 
@@ -7,6 +11,6 @@ Ansible playbooks and roles for skupper
 * skupper-common (internal)
 * skupper-init
 * skupper-delete
-* skupper-service
 * skupper-token
 * skupper-link
+* skupper-service

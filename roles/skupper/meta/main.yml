@@ -1,0 +1,23 @@
+galaxy_info:
+  author: Skupper team
+  company: Red Hat
+  description: Deploys your whole Skupper network
+  issue_tracker_url: https://github.com/skupper/skupper-ansible/issues
+  license: Apache-2.0
+  min_ansible_version: "2.1"
+
+  galaxy_tags:
+    - skupper
+    - init
+    - token
+    - link
+    - service
+    - bind
+    - expose
+
+dependencies:
+  - role: skupper-common
+  - role: skupper-init
+  - role: skupper-token
+  - role: skupper-link
+  - role: skupper-service

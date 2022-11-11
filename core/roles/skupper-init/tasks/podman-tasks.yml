@@ -1,5 +1,0 @@
-- name: Validate podman flags
-  ansible.builtin.include_tasks: podman-validate.yml
-
-- name: Prepare init command
-  ansible.builtin.include_tasks: podman-command.yml

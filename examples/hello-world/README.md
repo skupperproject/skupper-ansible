@@ -8,6 +8,8 @@ We use Ansible to deploy the workloads and setup the Skupper network.
 # Pre-requisites
 
 * Ansible >= 2.9.0
+* Skupper (binary)
+* KUBECONFIG set to a cluster with appropriate permissions to create and remove namespaces
 
 # Running the demo
 

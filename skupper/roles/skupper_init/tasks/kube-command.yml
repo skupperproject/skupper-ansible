@@ -69,7 +69,7 @@
 
 - name: Adding --enable-service-sync
   set_fact:
-    skupper_init_command: "{{ skupper_init_command + ['--enable-service-sync', init.enableServiceSync] }}"
+    skupper_init_command: "{{ skupper_init_command + ['--enable-service-sync=' + init.enableServiceSync] }}"
   when: init['enableServiceSync'] is defined
 
 - name: Adding --enable-console

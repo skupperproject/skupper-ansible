@@ -1,0 +1,50 @@
+---
+- name: Creating the namespaces
+  kubernetes.core.k8s:
+    name: "{{ namespace }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+- name: Deploying the frontend service
+  kubernetes.core.k8s:
+    name: "frontend"
+    namespace: "{{ namespace }}"
+    api_version: apps/v1
+    kind: Deployment
+    state: present
+    definition:
+      spec:
+        selector:
+          matchLabels:
+            app: frontend
+        template:
+          metadata:
+            labels:
+              app: frontend
+          spec:
+            containers:
+            - name: frontend
+              image: quay.io/skupper/hello-world-frontend
+  when: inventory_hostname == 'west'
+- name: Deploying the backend service
+  kubernetes.core.k8s:
+    name: "backend"
+    namespace: "{{ namespace }}"
+    api_version: apps/v1
+    kind: Deployment
+    state: present
+    definition:
+      spec:
+        replicas: 3
+        selector:
+          matchLabels:
+            app: backend
+        template:
+          metadata:
+            labels:
+              app: backend
+          spec:
+            containers:
+            - name: backend
+              image: quay.io/skupper/hello-world-backend
+  when: inventory_hostname == 'east'

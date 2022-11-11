@@ -1,0 +1,8 @@
+---
+- hosts: all
+  collections:
+    - kubernetes.core
+    - fgiorgetti.skupper
+  tasks:
+  - ansible.builtin.include_tasks: setup-k8s.yml
+  - ansible.builtin.include_tasks: setup-skupper.yml

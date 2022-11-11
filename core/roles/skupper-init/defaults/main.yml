@@ -1,0 +1,66 @@
+---
+# defaults file for skupper-init
+init:
+  
+  # #
+  # # common flags
+  # #
+
+  # siteName: ""
+  # ingress: ""
+  # routerMode: ""
+  # labels: []
+  # routerLogging: ""
+  # routerDebugMode: ""
+  # timeout: 0
+ 
+  # #
+  # # kube specific flags
+  # #
+
+  # ingressHost: ""
+  # createNetworkPolicy: False
+  # enableServiceSync: False
+  # enableConsole: False
+  # consoleAuth: ""
+  # consoleUser: ""
+  # consolePassword: ""
+  # consoleIngress: ""
+  # annotations: []
+  # ingressAnnotations: []
+  # routerServiceAnnotations: []
+  # controllerServiceAnnotations: []
+  # routers: 1
+  # routerCpu: ""
+  # routerMemory: ""
+  # routerCpuLimit: ""
+  # routerMemoryLimit: ""
+  # routerNodeSelector: ""
+  # routerPodAffinity: ""
+  # routerPodAntiaffinity: ""
+  # routerIngressHost: ""
+  # routerLoadBalancerIp: ""
+  # controllerCpu: ""
+  # controllerMemory: ""
+  # controllerCpuLimit: ""
+  # controllerMemoryLimit: ""
+  # controllerNodeSelector: ""
+  # controllerPodAffinity: ""
+  # controllerPodAntiaffinity: ""
+  # controllerIngressHost: ""
+  # controllerLoadBalancerIp: ""
+  # configSyncCpu: ""
+  # configSyncMemory: ""
+  # configSyncCpuLimit: ""
+  # configSyncMemoryLimit: ""
+
+  # #
+  # # podman specific flags
+  # #
+
+  # ingressHosts: []
+  # ingressBindIps: []
+  # bindPort: 55671
+  # bindPortEdge: 45671
+  # containerNetwork: "skupper"
+  # podmanEndpoint: ""

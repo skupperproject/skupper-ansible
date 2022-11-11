@@ -1,0 +1,10 @@
+---
+- name: Set default type if none specified
+  set_fact:
+    token: "{{ token | combine({ 'type': defaultTypeKube}) }}"
+  when: token['type'] is not defined or token['type'] == ""
+
+- name: Validate token type
+  fail:
+    msg: "Invalid token type {{ token.type }} - valid types are {{ validTokenTypes }}"
+  when: token.type not in validTokenTypes

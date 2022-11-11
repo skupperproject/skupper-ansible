@@ -1,0 +1,6 @@
+---
+# defaults file for skupper-common
+platform: ""
+kubeconfig: ""
+context: ""
+namespace: ""

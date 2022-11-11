@@ -1,0 +1,15 @@
+galaxy_info:
+  author: Skupper team
+  company: Red Hat
+  description: Creates links to other Skupper sites
+  issue_tracker_url: https://github.com/skupper/skupper-ansible/issues
+  license: Apache-2.0
+  min_ansible_version: "2.1"
+
+  galaxy_tags:
+    - skupper
+    - link
+    - skupper link create
+
+dependencies: 
+  - role: skupper-common

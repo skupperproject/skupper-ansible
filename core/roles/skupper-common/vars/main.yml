@@ -1,0 +1,6 @@
+---
+# vars file for skupper-common
+default_platform: kubernetes
+valid_platforms:
+  - kubernetes
+  - podman

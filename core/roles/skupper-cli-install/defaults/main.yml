@@ -1,0 +1,8 @@
+---
+# defaults file for skupper-cli-install
+skupper_cli:
+  # version: ""
+  # os: ""
+  # arch: ""
+  # location: ""
+  # force: False

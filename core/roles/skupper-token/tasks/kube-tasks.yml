@@ -1,0 +1,5 @@
+- name: Validate kubernetes flags
+  ansible.builtin.include_tasks: kube-validate.yml
+
+- name: Prepare init command
+  ansible.builtin.include_tasks: kube-command.yml

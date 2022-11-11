@@ -1,4 +1,0 @@
----
-# vars file for skupper-service
-validTargetTypesKube: ["deployment", "statefulset", "pods", "service"]
-validTargetTypesPodman: ["host"]

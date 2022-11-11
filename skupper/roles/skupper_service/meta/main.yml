@@ -1,0 +1,19 @@
+galaxy_info:
+  author: Skupper team
+  company: Red Hat
+  description: Creates services with their optional targets
+  issue_tracker_url: https://github.com/skupper/skupper-ansible/issues
+  license: Apache-2.0
+  min_ansible_version: "2.1"
+
+  galaxy_tags:
+    - skupper
+    - service
+    - bind
+    - expose
+    - skupper service create
+    - skupper service bind
+    - skupper expose
+
+dependencies:
+  - role: skupper_common

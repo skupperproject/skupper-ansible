@@ -1,0 +1,13 @@
+---
+# constants file for skupper_cli_install
+default_version: 1.1.1
+default_os: linux
+default_arch: amd64
+arch_values:
+  x86_64: "amd64"
+  arm64: "arm64"
+  arm32: "arm32"
+  i386: "i386"
+latest_release_url: "https://api.github.com/repos/skupperproject/skupper/releases/latest"
+download_url_base: "https://github.com/skupperproject/skupper/releases/download"
+default_location: /usr/local/bin

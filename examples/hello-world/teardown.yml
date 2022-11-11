@@ -1,11 +1,7 @@
 ---
 - hosts: all
-  collections:
-    - kubernetes.core
   tasks:
     - name: Removing namespaces
-      kubernetes.core.k8s:
-        name: "{{ namespace }}"
-        api_version: v1
-        kind: Namespace
-        state: absent
+      command: "kubectl delete namespace {{ namespace }}"
+      register: out
+      failed_when: out.failed and 'not found' not in out.stderr_lines[0]

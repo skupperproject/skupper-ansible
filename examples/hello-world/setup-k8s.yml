@@ -1,50 +1,15 @@
 ---
 - name: Creating the namespaces
-  kubernetes.core.k8s:
-    name: "{{ namespace }}"
-    api_version: v1
-    kind: Namespace
-    state: present
+  command: "kubectl create namespace {{ namespace }}"
+  register: out
+  failed_when: out.failed and 'already exists' not in out.stderr_lines[0]
 - name: Deploying the frontend service
-  kubernetes.core.k8s:
-    name: "frontend"
-    namespace: "{{ namespace }}"
-    api_version: apps/v1
-    kind: Deployment
-    state: present
-    definition:
-      spec:
-        selector:
-          matchLabels:
-            app: frontend
-        template:
-          metadata:
-            labels:
-              app: frontend
-          spec:
-            containers:
-            - name: frontend
-              image: quay.io/skupper/hello-world-frontend
+  command: "kubectl -n {{ namespace }} create deployment frontend --image quay.io/skupper/hello-world-frontend"
+  register: out
+  failed_when: out.failed and 'already exists' not in out.stderr_lines[0]
   when: inventory_hostname == 'west'
 - name: Deploying the backend service
-  kubernetes.core.k8s:
-    name: "backend"
-    namespace: "{{ namespace }}"
-    api_version: apps/v1
-    kind: Deployment
-    state: present
-    definition:
-      spec:
-        replicas: 3
-        selector:
-          matchLabels:
-            app: backend
-        template:
-          metadata:
-            labels:
-              app: backend
-          spec:
-            containers:
-            - name: backend
-              image: quay.io/skupper/hello-world-backend
+  command: "kubectl -n {{ namespace }} create deployment backend --image quay.io/skupper/hello-world-backend --replicas=3"
   when: inventory_hostname == 'east'
+  register: out
+  failed_when: out.failed and 'already exists' not in out.stderr_lines[0]

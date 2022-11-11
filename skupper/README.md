@@ -1,3 +1,8 @@
-# Ansible Collection - skupper.core
+# Ansible Collection - skupperproject.skupper
 
-Documentation for the collection.
+Helps you setting up your [Skupper](https://skupper.io) network based on the nodes (or Skupper sites)
+defined in your inventory file.
+
+If you want to deploy your entire network, linking sites and defining the services at their respective
+location, all you need is to call role: `skupper`.
+

@@ -3,7 +3,7 @@ Ansible collection and roles for skupper
 
 ## Collection name
 
-skupper.core
+skupperproject.skupper
 
 ## Roles
 

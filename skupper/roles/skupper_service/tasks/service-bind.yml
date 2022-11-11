@@ -1,0 +1,21 @@
+# command flags and execution of skupper service bind
+- name: Adding --target-port
+  set_fact:
+    skupper_bind_command: "{{ skupper_bind_command + ['--target-port', targetPort] }}"
+  with_items: "{{ target.ports }}"
+  when: target['ports'] is defined and target.ports | length() > 0
+  loop_control:
+    loop_var: targetPort
+
+- name: Adding service name, target type and target name
+  set_fact:
+    skupper_bind_command: "{{ skupper_bind_command + [item.key, target.type, target.name] }}"
+
+# executing and validating result
+- name: Executing skupper service bind
+  ansible.builtin.command:
+    argv: "{{ skupper_bind_command }}"
+  register: bindStatus
+  failed_when: >
+    bindStatus.failed and
+    ' already defined' not in bindStatus.stderr_lines[0]

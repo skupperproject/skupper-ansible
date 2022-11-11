@@ -1,0 +1,11 @@
+- name: Preparing service bind command
+  set_fact:
+    skupper_bind_command:
+      - skupper
+      - service
+      - bind
+      - --platform
+      - "{{ platform }}"
+
+- name: Execute skupper service bind command
+  ansible.builtin.include_tasks: service-bind.yml

@@ -1,7 +1,8 @@
 ---
 - hosts: all
   collections:
-    - fgiorgetti.skupper
+    - skupper.network
   tasks:
   - ansible.builtin.include_tasks: setup-k8s.yml
-  - ansible.builtin.include_tasks: setup-skupper.yml
+  - import_role:
+      name: skupper

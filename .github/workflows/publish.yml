@@ -2,10 +2,8 @@ name:
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -13,3 +11,8 @@ jobs:
         uses: ansible-community/ansible-lint-action@main
         with:
           path: skupper/network
+      - name: Ansible Publish
+        uses: ansible/ansible-publish-action@v1.0.0
+        with:
+          api_key: ${{ secrets.ANSIBLE_API_KEY }}
+          src_path: skupper/network

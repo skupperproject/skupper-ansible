@@ -1,5 +1,9 @@
 ---
 - hosts: all
-  roles:
-    - skupper-token
-    - skupper-link
+  collections:
+    - skupper.network
+  tasks:
+    - import_role:
+        name: skupper-token
+    - import_role:
+        name: skupper-link

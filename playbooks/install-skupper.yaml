@@ -1,5 +1,7 @@
 ---
 - hosts: all
-  user: root
-  roles:
-    - skupper-cli-install
+  collections:
+    - skupper.network
+  tasks:
+    - import_role:
+        name: skupper_cli_install

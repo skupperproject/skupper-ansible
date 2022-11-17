@@ -1,7 +1,7 @@
 # skupper-ansible
 Ansible collection and roles for skupper
 
-[![.github/workflows/main.yml](https://github.com/skupperproject/skupper-ansible/actions/workflows/main.yml/badge.svg)](https://github.com/skupperproject/skupper-ansible/actions/workflows/main.yml)
+[![.github/workflows/publish.yml](https://github.com/skupperproject/skupper-ansible/actions/workflows/publish.yml/badge.svg)](https://github.com/skupperproject/skupper-ansible/actions/workflows/publish.yml)
 
 ## Collection name
 

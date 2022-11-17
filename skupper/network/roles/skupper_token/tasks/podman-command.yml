@@ -1,0 +1,18 @@
+- name: Preparing token create command
+  ansible.builtin.set_fact:
+    skupper_token_command:
+      - skupper
+      - token
+      - create
+      - --platform
+      - "{{ platform }}"
+
+- name: Adding --name
+  ansible.builtin.set_fact:
+    skupper_token_command: "{{ skupper_token_command + ['--name', token.name] }}"
+  when: token['name'] is defined
+
+- name: Adding --ingress-host
+  ansible.builtin.set_fact:
+    skupper_token_command: "{{ skupper_token_command + ['--ingress-host', token.ingressHost] }}"
+  when: token['ingressHost'] is defined

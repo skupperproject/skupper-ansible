@@ -1,0 +1,65 @@
+- name: Preparing init command
+  ansible.builtin.set_fact:
+    skupper_init_command:
+      - skupper
+      - init
+      - --platform
+      - "{{ platform }}"
+
+- name: Adding --site-name
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--site-name', init.siteName] }}"
+  when: init['siteName'] is defined
+
+- name: Adding --ingress
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--ingress', init.ingress] }}"
+  when: init['ingress'] is defined
+
+- name: Adding --ingress-host
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--ingress-host', item] }}"
+  with_items: "{{ init['ingressHosts'] }}"
+  when: init['ingressHosts'] is defined and init['ingressHosts'] | length() > 0
+
+- name: Adding --ingress-bind-ip
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--ingress-bind-ip', item] }}"
+  with_items: "{{ init['ingressBindIps'] }}"
+  when: init['ingressBindIps'] is defined and init['ingressBindIps'] | length() > 0
+
+- name: Adding --bind-port
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--bind-port', init.bindPort] }}"
+  when: init['bindPort'] is defined
+
+- name: Adding --bind-port-edge
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--bind-port-edge', init.bindPortEdge] }}"
+  when: init['bindPortEdge'] is defined
+
+- name: Adding --labels
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--labels', item] }}"
+  with_items: "{{ init['labels'] }}"
+  when: init['labels'] is defined and init['labels'] | length() > 0
+
+- name: Adding --router-logging
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--router-logging', init.routerLogging] }}"
+  when: init['routerLogging'] is defined
+
+- name: Adding --router-debug-mode
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--router-debug-mode', init.routerDebugMode] }}"
+  when: init['routerDebugMode'] is defined
+
+- name: Adding --container-network
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--container-network', init.containerNetwork] }}"
+  when: init['containerNetwork'] is defined
+
+- name: Adding --podman-endpoint
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--podman-endpoint', init.podmanEndpoint] }}"
+  when: init['podmanEndpoint'] is defined

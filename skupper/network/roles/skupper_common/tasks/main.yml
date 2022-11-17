@@ -1,0 +1,10 @@
+---
+# tasks file for skupper_common
+- name: Defining default facts
+  ansible.builtin.set_fact:
+    platform: "{{ platform if platform != '' else default_platform }}"
+
+- name: Validating skupper platform
+  ansible.builtin.fail:
+    msg: "Invalid platform - valid platforms: {{ valid_platforms }}"
+  when: platform not in valid_platforms

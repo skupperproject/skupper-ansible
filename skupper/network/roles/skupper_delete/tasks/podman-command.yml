@@ -1,0 +1,7 @@
+- name: Preparing delete command
+  ansible.builtin.set_fact:
+    skupper_delete_command:
+      - skupper
+      - delete
+      - --platform
+      - "{{ platform }}"

@@ -1,6 +1,0 @@
----
-# vars file for skupper_token
-defaultTypeKube: claim
-validTokenTypes:
-  - claim
-  - cert

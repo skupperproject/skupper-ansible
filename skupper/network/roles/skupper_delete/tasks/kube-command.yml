@@ -1,0 +1,22 @@
+- name: Preparing delete command
+  ansible.builtin.set_fact:
+    skupper_delete_command:
+      - skupper
+      - delete
+      - --platform
+      - "{{ platform }}"
+
+- name: Adding --kubeconfig
+  ansible.builtin.set_fact:
+    skupper_delete_command: "{{ skupper_delete_command + ['--kubeconfig', kubeconfig] }}"
+  when: kubeconfig is defined and kubeconfig | length() > 0
+
+- name: Adding --context
+  ansible.builtin.set_fact:
+    skupper_delete_command: "{{ skupper_delete_command + ['--context', context] }}"
+  when: context is defined and context | length() > 0
+
+- name: Adding --namespace
+  ansible.builtin.set_fact:
+    skupper_delete_command: "{{ skupper_delete_command + ['--namespace', namespace] }}"
+  when: namespace is defined and namespace | length() > 0

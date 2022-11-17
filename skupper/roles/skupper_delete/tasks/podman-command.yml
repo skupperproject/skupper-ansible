@@ -1,7 +1,0 @@
-- name: Preparing delete command
-  set_fact:
-    skupper_delete_command:
-      - skupper
-      - delete
-      - --platform
-      - "{{ platform }}"

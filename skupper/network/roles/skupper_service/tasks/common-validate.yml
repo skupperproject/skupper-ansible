@@ -1,0 +1,42 @@
+---
+- name: Validate name defined
+  ansible.builtin.ansible.builtin.debug:
+    msg: "Service name is not defined"
+  when: item.key is not defined
+
+- name: Validate ports defined
+  ansible.builtin.ansible.builtin.debug:
+    msg: "No ports defined for {{ item.key }}"
+  when: item.value is not defined or item.value.ports is not defined
+
+- name: Validate provided ports
+  ansible.builtin.ansible.builtin.debug:
+    msg: "Invalid port: {{ port }}"
+  when: not (port | int) or port <= 0 or port > 65535
+  with_items: "{{ item.value.ports }}"
+  loop_control:
+    loop_var: port
+
+- name: Defining has_targets variable
+  ansible.builtin.set_fact:
+    has_targets: "{{ item.value['targets'] is defined and item.value.targets | length() > 0 }}"
+
+- name: Defining has_labels variable
+  ansible.builtin.set_fact:
+    has_labels: "{{ item.value['labels'] is defined and item.value.labels | length() > 0 }}"
+
+- name: Validate targets
+  ansible.builtin.debug:
+    msg: "Invalid target: {{ target }} - targets must have a type and name"
+  when: has_targets
+  failed_when: target['type'] is not defined or target['name'] is not defined
+  with_items: "{{ item.value.targets }}"
+  loop_control:
+    loop_var: target
+
+- name: Validate service for kubernetes
+  ansible.builtin.include_tasks: kube-validate.yml
+  when: platform == 'kubernetes'
+- name: Validate service for podman
+  ansible.builtin.include_tasks: podman-validate.yml
+  when: platform == 'podman'

@@ -1,0 +1,37 @@
+- name: Preparing service create command
+  ansible.builtin.set_fact:
+    skupper_create_command:
+      - skupper
+      - service
+      - create
+      - --platform
+      - "{{ platform }}"
+
+- name: Adding --labels
+  ansible.builtin.set_fact:
+    skupper_create_command: "{{ skupper_create_command + ['--label', label] }}"
+  when: has_labels
+  with_items: "{{ item.value.labels }}"
+  loop_control:
+    loop_var: label
+
+- name: Adding --container-name
+  ansible.builtin.set_fact:
+    skupper_create_command: "{{ skupper_create_command + ['--container-name', item.value.containerName] }}"
+  when: item.value['containerName'] is defined
+
+- name: Adding --host-ip
+  ansible.builtin.set_fact:
+    skupper_create_command: "{{ skupper_create_command + ['--host-ip', item.value.hostIp] }}"
+  when: item.value['hostIp'] is defined
+
+- name: Adding --host-port
+  ansible.builtin.set_fact:
+    skupper_create_command: "{{ skupper_create_command + ['--host-port', hostPort] }}"
+  when: item.value['hostPorts'] is defined and item.value.hostPorts | length() > 0
+  with_items: "{{ item.value.hostPorts }}"
+  loop_control:
+    loop_var: hostPort
+
+- name: Execute skupper service create command
+  ansible.builtin.include_tasks: service-create.yml

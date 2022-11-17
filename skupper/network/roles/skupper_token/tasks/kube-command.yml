@@ -1,0 +1,48 @@
+- name: Preparing token create command
+  ansible.builtin.set_fact:
+    skupper_token_command:
+      - skupper
+      - token
+      - create
+      - --platform
+      - "{{ platform }}"
+
+- name: Adding --kubeconfig
+  ansible.builtin.set_fact:
+    skupper_token_command: "{{ skupper_token_command + ['--kubeconfig', kubeconfig] }}"
+  when: kubeconfig is defined and kubeconfig | length() > 0
+
+- name: Adding --context
+  ansible.builtin.set_fact:
+    skupper_token_command: "{{ skupper_token_command + ['--context', context] }}"
+  when: context is defined and context | length() > 0
+
+- name: Adding --namespace
+  ansible.builtin.set_fact:
+    skupper_token_command: "{{ skupper_token_command + ['--namespace', namespace] }}"
+  when: namespace is defined and namespace | length() > 0
+
+- name: Adding --name
+  ansible.builtin.set_fact:
+    skupper_token_command: "{{ skupper_token_command + ['--name', token.name] }}"
+  when: token['name'] is defined
+
+- name: Adding --expiry
+  ansible.builtin.set_fact:
+    skupper_token_command: "{{ skupper_token_command + ['--expiry', token.expiry] }}"
+  when: token['expiry'] is defined
+
+- name: Adding --password
+  ansible.builtin.set_fact:
+    skupper_token_command: "{{ skupper_token_command + ['--password', token.password] }}"
+  when: token['password'] is defined
+
+- name: Adding --token-type
+  ansible.builtin.set_fact:
+    skupper_token_command: "{{ skupper_token_command + ['--token-type', token.type] }}"
+  when: token['type'] is defined
+
+- name: Adding --uses
+  ansible.builtin.set_fact:
+    skupper_token_command: "{{ skupper_token_command + ['--uses', token.uses] }}"
+  when: token['uses'] is defined

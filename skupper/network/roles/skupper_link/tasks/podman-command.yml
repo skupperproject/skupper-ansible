@@ -1,0 +1,8 @@
+- name: Preparing link create command
+  ansible.builtin.set_fact:
+    skupper_link_command:
+      - skupper
+      - link
+      - create
+      - --platform
+      - "{{ platform }}"

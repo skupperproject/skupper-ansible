@@ -1,16 +1,16 @@
 ---
 - name: Validate name defined
-  ansible.builtin.ansible.builtin.debug:
+  ansible.builtin.debug:
     msg: "Service name is not defined"
   when: item.key is not defined
 
 - name: Validate ports defined
-  ansible.builtin.ansible.builtin.debug:
+  ansible.builtin.debug:
     msg: "No ports defined for {{ item.key }}"
   when: item.value is not defined or item.value.ports is not defined
 
 - name: Validate provided ports
-  ansible.builtin.ansible.builtin.debug:
+  ansible.builtin.debug:
     msg: "Invalid port: {{ port }}"
   when: not (port | int) or port <= 0 or port > 65535
   with_items: "{{ item.value.ports }}"

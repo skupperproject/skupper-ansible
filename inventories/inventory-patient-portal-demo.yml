@@ -4,8 +4,8 @@ all:
       hosts:
         ibmcloud:
           ansible_connection: local
-          kubeconfig: /home/fgiorget/kube_ibmcloud_skupper-4
-          namespace: patient-portal
+          init:
+            siteName: public-ibmcloud
           token:
             uses: 2
           services:
@@ -18,6 +18,7 @@ all:
           ansible_host: 10.0.135.219
           platform: podman
           init:
+            siteName: dmz-rhel9
             ingressHosts:
               - 10.0.135.219
           links:
@@ -26,6 +27,7 @@ all:
           ansible_host: 10.0.133.181
           platform: podman
           init:
+            siteName: dmz-rhel8
             ingressHosts:
               - 10.0.133.181
           links:
@@ -36,6 +38,7 @@ all:
           ansible_connection: local
           platform: podman
           init:
+            siteName: internal-fedora36
             ingressHosts:
               - 192.168.122.1
           links:

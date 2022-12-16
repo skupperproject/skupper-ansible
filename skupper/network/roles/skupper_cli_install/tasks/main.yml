@@ -37,7 +37,13 @@
 
 - name: Exit if skupper binary exists or force is set to false
   ansible.builtin.meta: end_host
-  when: skupper_bin.stat.exists and ( skupper_cli['force'] is not defined or skupper_cli.force | not bool() )
+  when: skupper_bin.stat.exists and ( skupper_cli['force'] is not defined or not (skupper_cli.force | bool) )
+
+- name: Remove skupper binary if exists and force is set to true
+  ansible.builtin.file:
+    path: "{{ cli_dest_file }}"
+    state: absent
+  when: skupper_bin.stat.exists and ( skupper_cli['force'] is defined and (skupper_cli.force | bool) )
 
 - name: Determining tarball
   ansible.builtin.set_fact:

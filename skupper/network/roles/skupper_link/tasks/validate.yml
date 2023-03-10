@@ -7,4 +7,4 @@
 - name: Validating token exists for host
   ansible.builtin.fail:
     msg: "{{ item.host }} does not provide a generatedToken variable"
-  when: hostvars[item['host']]['generatedToken'] is not defined
+  when: hostvars[item['host']]['generatedToken'] is not defined and tokens[item['host']]['generatedToken'] is not defined

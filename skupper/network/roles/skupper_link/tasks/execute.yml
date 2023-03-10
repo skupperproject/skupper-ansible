@@ -29,12 +29,22 @@
   register: tokentemp
 
 # Saving secret content into the temporary
-- name: Saving token file
+- name: Saving token file from hostvar
   ansible.builtin.copy:
     content: "{{ hostvars[item.host]['generatedToken'] }}"
     dest: "{{ tokentemp.path }}"
     mode: '0644'
     remote_src: true
+  when: hostvars[item.host]['generatedToken'] is defined
+
+# Saving secret content into the temporary
+- name: Saving token file from var
+  ansible.builtin.copy:
+    content: "{{ tokens[item['host']]['generatedToken'] }}"
+    dest: "{{ tokentemp.path }}"
+    mode: '0644'
+    remote_src: true
+  when: tokens[item['host']]['generatedToken'] is defined
 
 # Add the temp file name to the link create command
 - name: Adding temporary file name to link create command

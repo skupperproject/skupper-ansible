@@ -74,7 +74,7 @@
 
 - name: Adding --enable-console
   ansible.builtin.set_fact:
-    skupper_init_command: "{{ skupper_init_command + ['--enable-console', init.enableConsole] }}"
+    skupper_init_command: "{{ skupper_init_command + ['--enable-console=', init.enableConsole] }}"
   when: init['enableConsole'] is defined
 
 - name: Adding --console-auth

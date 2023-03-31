@@ -77,6 +77,11 @@
     skupper_init_command: "{{ skupper_init_command + ['--enable-console=' + init.enableConsole] }}"
   when: init['enableConsole'] is defined
 
+- name: Adding --enable-flow-collector
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-flow-collector=' + init.enableFlowCollector] }}"
+  when: init['enableFlowCollector'] is defined
+
 - name: Adding --console-auth
   ansible.builtin.set_fact:
     skupper_init_command: "{{ skupper_init_command + ['--console-auth', init.consoleAuth] }}"

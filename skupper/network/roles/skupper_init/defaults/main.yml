@@ -20,6 +20,7 @@ init:
   # ingressHost: ""
   # createNetworkPolicy: False
   # enableServiceSync: False
+  # enableFlowCollector: False
   # enableConsole: False
   # consoleAuth: ""
   # consoleUser: ""

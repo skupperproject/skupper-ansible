@@ -12,6 +12,12 @@ init:
   # routerLogging: ""
   # routerDebugMode: ""
   # timeout: 0
+  # enableFlowCollector: False
+  # enableConsole: False
+  # consoleAuth: ""
+  # consoleUser: ""
+  # consolePassword: ""
+  # flowCollectorRecordTtl: ""
 
   # #
   # # kube specific flags
@@ -20,11 +26,9 @@ init:
   # ingressHost: ""
   # createNetworkPolicy: False
   # enableServiceSync: False
-  # enableFlowCollector: False
-  # enableConsole: False
-  # consoleAuth: ""
-  # consoleUser: ""
-  # consolePassword: ""
+  # enableRestApi: False
+  # enableClusterPermissions: False
+  # enableSkupperEvents: True
   # consoleIngress: ""
   # annotations: []
   # ingressAnnotations: []
@@ -53,6 +57,19 @@ init:
   # configSyncMemory: ""
   # configSyncCpuLimit: ""
   # configSyncMemoryLimit: ""
+  # flowCollectorCpu: ""
+  # flowCollectorMemory: ""
+  # flowCollectorCpuLimit: ""
+  # flowCollectorMemoryLimit: ""
+  # externalPrometheusServer: ""
+  # prometheusAuth: ""
+  # prometheusUser: ""
+  # prometheusPassword: ""
+  # prometheusCpu: ""
+  # prometheusCpuLimit: ""
+  # prometheusMemory: ""
+  # prometheusMemoryLimit: ""
+  # serviceSyncSiteTtl: ""
 
   # #
   # # podman specific flags
@@ -64,3 +81,4 @@ init:
   # bindPortEdge: 45671
   # containerNetwork: "skupper"
   # podmanEndpoint: ""
+  # bindPortFlowCollector: 8010

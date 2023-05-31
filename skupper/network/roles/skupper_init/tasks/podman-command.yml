@@ -63,3 +63,38 @@
   ansible.builtin.set_fact:
     skupper_init_command: "{{ skupper_init_command + ['--podman-endpoint', init.podmanEndpoint] }}"
   when: init['podmanEndpoint'] is defined
+
+- name: Adding --enable-console
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-console=' + init.enableConsole] }}"
+  when: init['enableConsole'] is defined
+
+- name: Adding --console-auth
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--console-auth', init.consoleAuth] }}"
+  when: init['consoleAuth'] is defined
+
+- name: Adding --console-user
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--console-user', init.consoleUser] }}"
+  when: init['consoleUser'] is defined
+
+- name: Adding --console-password
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--console-password', init.consolePassword] }}"
+  when: init['consolePassword'] is defined
+
+- name: Adding --enable-flow-collector
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-flow-collector=' + init.enableFlowCollector] }}"
+  when: init['enableFlowCollector'] is defined
+
+- name: Adding --flow-collector-record-ttl
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--flow-collector-record-ttl', init.flowCollectorRecordTtl] }}"
+  when: init['flowCollectorRecordTtl'] is defined
+
+- name: Adding --bind-port-flow-collector
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--bind-port-flow-collector', init.bindPortFlowCollector] }}"
+  when: init['bindPortFlowCollector'] is defined

@@ -3,15 +3,3 @@
 
 - name: Prepare init command
   ansible.builtin.include_tasks: kube-command.yml
-
-- name: Log init command
-  ansible.builtin.debug:
-    msg: running {{ skupper_init_command }}  
-
-# - name: Ensure provided namespace exist
-#   kubernetes.core.k8s:
-#     name: "{{ namespace }}"
-#     api_version: v1
-#     kind: Namespace
-#     state: present
-#   when: namespace is defined and namespace | length() > 0

@@ -1,0 +1,12 @@
+ancestor: null
+releases:
+  1.0.0:
+    changes:
+      bugfixes:
+        - https://github.com/skupperproject/skupper-ansible/issues/11
+        - https://github.com/skupperproject/skupper-ansible/issues/12
+        - https://github.com/skupperproject/skupper-ansible/issues/9
+      major_changes:
+        - https://github.com/skupperproject/skupper-ansible/issues/13
+      release_summary: Initial release supporting CLI flags for Skupper v1.4.0
+    release_date: '2023-05-31'

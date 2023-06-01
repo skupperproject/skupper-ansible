@@ -1,1 +1,3 @@
 *.tar.gz
+skupper/network/docs/build
+skupper/network/docs/temp-rst

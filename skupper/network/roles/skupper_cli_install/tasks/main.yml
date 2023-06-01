@@ -45,6 +45,11 @@
     state: absent
   when: skupper_bin.stat.exists and ( skupper_cli['force'] is defined and (skupper_cli.force | bool) )
 
+- name: Ensure destination directory exists
+  ansible.builtin.file:
+    path: "{{ cli_dest_location }}"
+    state: directory
+
 - name: Determining tarball
   ansible.builtin.set_fact:
     tarball: "skupper-cli-{{ cli_version if cli_version != '' else default_version }}-{{ cli_os }}-{{ cli_arch }}.tgz"

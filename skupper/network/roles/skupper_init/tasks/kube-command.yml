@@ -64,7 +64,7 @@
 
 - name: Adding --create-network-policy
   ansible.builtin.set_fact:
-    skupper_init_command: "{{ skupper_init_command + ['--create-network-policy', init.createNetworkPolicy] }}"
+    skupper_init_command: "{{ skupper_init_command + ['--create-network-policy=' + init.createNetworkPolicy] }}"
   when: init['createNetworkPolicy'] is defined
 
 - name: Adding --enable-service-sync
@@ -72,10 +72,35 @@
     skupper_init_command: "{{ skupper_init_command + ['--enable-service-sync=' + init.enableServiceSync] }}"
   when: init['enableServiceSync'] is defined
 
+- name: Adding --service-sync-site-ttl
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--service-sync-site-ttl', init.serviceSyncSiteTtl] }}"
+  when: init['serviceSyncSiteTtl'] is defined
+
 - name: Adding --enable-console
   ansible.builtin.set_fact:
-    skupper_init_command: "{{ skupper_init_command + ['--enable-console', init.enableConsole] }}"
+    skupper_init_command: "{{ skupper_init_command + ['--enable-console=' + init.enableConsole] }}"
   when: init['enableConsole'] is defined
+
+- name: Adding --enable-flow-collector
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-flow-collector=' + init.enableFlowCollector] }}"
+  when: init['enableFlowCollector'] is defined
+
+- name: Adding --enable-rest-api
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-rest-api=' + init.enableRestApi] }}"
+  when: init['enableRestApi'] is defined
+
+- name: Adding --enable-cluster-permissions
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-cluster-permissions=' + init.enableClusterPermissions] }}"
+  when: init['enableClusterPermissions'] is defined
+
+- name: Adding --enable-skupper-events
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-skupper-events=' + init.enableSkupperEvents] }}"
+  when: init['enableSkupperEvents'] is defined
 
 - name: Adding --console-auth
   ansible.builtin.set_fact:
@@ -235,3 +260,68 @@
   ansible.builtin.set_fact:
     skupper_init_command: "{{ skupper_init_command + ['--config-sync-memory-limit', init.configSyncMemoryLimit] }}"
   when: init['configSyncMemoryLimit'] is defined
+
+- name: Adding --flow-collector-record-ttl
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--flow-collector-record-ttl', init.flowCollectorRecordTtl] }}"
+  when: init['flowCollectorRecordTtl'] is defined
+
+- name: Adding --flow-collector-cpu
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--flow-collector-cpu', init.flowCollectorCpu] }}"
+  when: init['flowCollectorCpu'] is defined
+
+- name: Adding --flow-collector-memory
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--flow-collector-memory', init.flowCollectorMemory] }}"
+  when: init['flowCollectorMemory'] is defined
+
+- name: Adding --flow-collector-cpu-limit
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--flow-collector-cpu-limit', init.flowCollectorCpuLimit] }}"
+  when: init['flowCollectorCpuLimit'] is defined
+
+- name: Adding --flow-collector-memory-limit
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--flow-collector-memory-limit', init.flowCollectorMemoryLimit] }}"
+  when: init['flowCollectorMemoryLimit'] is defined
+
+- name: Adding --external-prometheus-server
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--external-prometheus-server', init.externalPrometheusServer] }}"
+  when: init['externalPrometheusServer'] is defined
+
+- name: Adding --prometheus-cpu
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--prometheus-cpu', init.prometheusCpu] }}"
+  when: init['prometheusCpu'] is defined
+
+- name: Adding --prometheus-memory
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--prometheus-memory', init.prometheusMemory] }}"
+  when: init['prometheusMemory'] is defined
+
+- name: Adding --prometheus-cpu-limit
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--prometheus-cpu-limit', init.prometheusCpuLimit] }}"
+  when: init['prometheusCpuLimit'] is defined
+
+- name: Adding --prometheus-memory-limit
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--prometheus-memory-limit', init.prometheusMemoryLimit] }}"
+  when: init['prometheusMemoryLimit'] is defined
+
+- name: Adding --prometheus-auth
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--prometheus-auth', init.prometheusAuth] }}"
+  when: init['prometheusAuth'] is defined
+
+- name: Adding --prometheus-user
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--prometheus-user', init.prometheusUser] }}"
+  when: init['prometheusUser'] is defined
+
+- name: Adding --prometheus-password
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--prometheus-password', init.prometheusPassword] }}"
+  when: init['prometheusPassword'] is defined

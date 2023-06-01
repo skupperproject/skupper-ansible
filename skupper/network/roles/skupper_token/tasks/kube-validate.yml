@@ -8,3 +8,8 @@
   ansible.builtin.fail:
     msg: "Invalid token type {{ token.type }} - valid types are {{ valid_token_types }}"
   when: token.type not in valid_token_types
+
+- name: Validating if a token can be created
+  ansible.builtin.set_fact:
+    skupper_token_allowed: true
+  when: init is not defined or init['routerMode'] is not defined or init['routerMode'] != 'edge'

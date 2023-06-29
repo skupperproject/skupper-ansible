@@ -8,6 +8,7 @@ release-changelog:
 	cd skupper/network && antsibull-changelog release
 
 build-docs:
+	rm -rf skupper/network/docs/build skupper/network/docs/temp-rst
 	cd skupper/network/docs && pip install --user -U -r requirements.txt && ./build.sh && \
 		rm -rf html && cp -r build/html/ ./
 

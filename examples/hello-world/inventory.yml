@@ -8,6 +8,9 @@ all:
           init:
             siteName: west
             enableServiceSync: 'false'
+            enableFlowCollector: 'true'
+            enableConsole: 'true'
+            consolePassword: 'admin'
           services:
             frontend:
               ports:

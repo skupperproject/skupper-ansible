@@ -16,3 +16,7 @@
   failed_when: >
     initStatus.failed and
     "Skupper has already been initialized" not in initStatus.stderr_lines[0]
+
+# load site info after initialization
+- name: Loading site id
+  skupper.network.site_load:

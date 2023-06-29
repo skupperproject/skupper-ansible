@@ -2,6 +2,10 @@
 - name: Validate links to be created
   ansible.builtin.include_tasks: validate.yml
 
+# loading existing links
+- name: Loading existing links
+  skupper.network.links_load:
+
 # prepare command
 - name: Kubernetes tasks
   ansible.builtin.include_tasks: kube-command.yml

@@ -13,4 +13,5 @@ build-docs:
 		rm -rf html && cp -r build/html/ ./
 
 build: build-docs
+	rm -f skupper/network/*.tar.gz
 	cd skupper/network && ansible-galaxy collection build

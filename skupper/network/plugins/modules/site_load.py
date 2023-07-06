@@ -1,6 +1,5 @@
 #!/usr/bin/python
 import json
-import subprocess
 import traceback
 
 from ansible.module_utils.basic import AnsibleModule
@@ -55,6 +54,7 @@ class SiteLoader:
         self.namespace = module.params['namespace']
         self.hostname = module.params['hostname']
         self.podman_endpoint = module.params['podman_endpoint']
+        self._module = module
 
     def load(self) -> Site:
         return self.load_podman() if self.platform == "podman" else self.load_kube()
@@ -65,14 +65,10 @@ class SiteLoader:
             base_cmd.append("--url=%s" % self.podman_endpoint)
         vol_info = base_cmd + ['volume', 'inspect', 'skupper-internal']
         # executing podman cli
-        exec_res = subprocess.run(
-            vol_info,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        if exec_res.returncode != 0:
-            raise RuntimeError("error inspecting volume: skupper-internal: %s" % exec_res.stderr.decode())
-        vol_json = json.loads(exec_res.stdout.decode())
+        rc, stdout, stderr = self._module.run_command(vol_info)
+        if rc != 0:
+            raise RuntimeError("error inspecting volume: skupper-internal: %s" % stderr)
+        vol_json = json.loads(stdout)
         path = vol_json[0]['Mountpoint']
         file = open("%s/%s" % (path, "skrouterd.json"))
         data = file.read()
@@ -98,16 +94,16 @@ class SiteLoader:
         kubectl_wait = kubectl + [
             "wait", "--for=condition=ready", "pod", "--selector=skupper.io/component=service-controller",
             "--timeout=120s"]
-        res = subprocess.run(kubectl_wait, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if res.returncode != 0:
-            raise RuntimeError("timed out waiting on service-controller to be ready - %s" % res.stderr.decode())
+        rc, stdout, stderr = self._module.run_command(kubectl_wait)
+        if rc != 0:
+            raise RuntimeError("timed out waiting on service-controller to be ready - %s" % stderr)
 
         # retrieving skupper-site configmap
         kubectl_get_cm = kubectl + ["get", "configmap", "skupper-site", "--output=json"]
-        res = subprocess.run(kubectl_get_cm, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if res.returncode != 0:
-            raise RuntimeError("error retrieving skupper-site configmap - %s" % res.stderr.decode())
-        cm_json = json.loads(res.stdout.decode())
+        rc, stdout, stderr = self._module.run_command(kubectl_get_cm)
+        if rc != 0:
+            raise RuntimeError("error retrieving skupper-site configmap - %s" % stderr)
+        cm_json = json.loads(stdout)
         site = Site()
         site.host = self.hostname
         site.name = cm_json['data']['name']

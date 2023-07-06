@@ -68,7 +68,10 @@ Synopsis
 
 .. Description
 
-- Updates the links defined by the respective site, based on the links list defined through the host variables. Existing links that cannot be mapped to an inventory host will be deleted. Links with a corresponding token (provided by skupper\_token role) or manually through the token property will be created. If a corresponding token cannot be found for a requested link, it will fail.
+- Updates the links defined by the respective site, based on the links list defined through the host variables.
+- Existing links that cannot be mapped to an inventory host will be deleted.
+- Links with a corresponding token (provided by skupper\_token role) or manually through the token property will be created.
+- If a corresponding token cannot be found for a requested link, it will fail.
 
 .. note::
     This module has a corresponding :ref:`action plugin <action_plugins>`.

@@ -1,3 +1,5 @@
+TARBALL := $(shell echo "skupper/network/skupper-network-`grep -E '^version:' skupper/network/galaxy.yml | awk '{print $$NF}'`.tar.gz")
+
 all: ansible-lint build
 
 ansible-lint:
@@ -8,8 +10,16 @@ release-changelog:
 	cd skupper/network && antsibull-changelog release
 
 build-docs:
+	rm -rf skupper/network/docs/build skupper/network/docs/temp-rst
 	cd skupper/network/docs && pip install --user -U -r requirements.txt && ./build.sh && \
 		rm -rf html && cp -r build/html/ ./
 
-build: build-docs
+build: clean build-docs
 	cd skupper/network && ansible-galaxy collection build
+
+clean:
+	@[[ -f "$(TARBALL)" ]] && rm $(TARBALL) || true
+
+install:
+	@[[ -f "$(TARBALL)" ]] && true || (echo "Collection has not been built" && false)
+	@ansible-galaxy collection install -f "$(TARBALL)"

@@ -6,7 +6,7 @@
 Skupper.Network
 ===============
 
-Collection version 1.0.0
+Collection version 1.1.0
 
 .. contents::
    :local:
@@ -42,7 +42,23 @@ Provides roles to help managing Skupper sites
 Plugin Index
 ------------
 
-There are no plugins in the skupper.network collection with automatically generated documentation.
+These are the plugins in the skupper.network collection:
+
+
+Modules
+~~~~~~~
+
+* :ref:`links module <ansible_collections.skupper.network.links_module>` -- Update links based on provided links list
+* :ref:`links_load module <ansible_collections.skupper.network.links_load_module>` -- Loads existing links to other sites
+* :ref:`site_load module <ansible_collections.skupper.network.site_load_module>` -- Loads site information as ansible facts into the respective host
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+
+    links_module
+    links_load_module
+    site_load_module
 
 
 

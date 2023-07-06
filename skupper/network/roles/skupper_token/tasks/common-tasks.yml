@@ -17,6 +17,9 @@
     argv: "{{ skupper_token_command }}"
   register: tokenStatus
   changed_when: not tokenStatus.failed
+  failed_when: >
+    tokenStatus.failed and
+    "tokens cannot be generated for sites initialized with ingress type none" not in tokenStatus.stderr_lines[0]
 
 # reading generated token
 - name: Reading token

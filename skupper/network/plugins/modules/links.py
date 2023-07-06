@@ -8,7 +8,7 @@ from ansible.module_utils.common.text.converters import to_native
 
 from ..module_utils.args import *
 from ..module_utils.skupper_cli import prepare_command
-from ..module_utils.types import Link, Result
+from ..module_utils.types import Result
 
 __metaclass__ = type
 
@@ -17,16 +17,10 @@ DOCUMENTATION = r'''
 module: links
 short_description: Update links based on provided links list 
 description:
-    Updates the links defined by the respective site, based on the links list defined
-    through the host variables. Existing links that cannot be mapped to an inventory host
-    will be deleted. Links with a corresponding token (provided by skupper_token role) or
-    manually through the token property will be created. If a corresponding token cannot be
-    found for a requested link, it will fail.
-    The links list can be defined as:
-    - links:
-        - host: hostname_from_inventory # required
-          name: link_name # optional (str)
-          cost: 1 # optional (int)
+    - Updates the links defined by the respective site, based on the links list defined through the host variables.
+    - Existing links that cannot be mapped to an inventory host will be deleted.
+    - Links with a corresponding token (provided by skupper_token role) or manually through the token property will be created.
+    - If a corresponding token cannot be found for a requested link, it will fail.
 requirements:
     - kubectl if using kubernetes platform
     - podman v4+ if using podman as the site platform 

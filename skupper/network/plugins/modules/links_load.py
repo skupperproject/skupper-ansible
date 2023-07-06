@@ -1,6 +1,5 @@
 #!/usr/bin/python
 import json
-import subprocess
 import traceback
 
 from ansible.module_utils.basic import AnsibleModule
@@ -51,6 +50,7 @@ existing_links:
 
 class LinksLoader:
     def __init__(self, module: AnsibleModule):
+        self._module = module
         self.platform = module.params['platform']
         self.kubeconfig = module.params['kubeconfig']
         self.context = module.params['context']
@@ -70,14 +70,10 @@ class LinksLoader:
             base_cmd.append("--url=%s" % self.podman_endpoint)
         vol_info = base_cmd + ['volume', 'inspect', '--all']
         # executing podman cli
-        exec_res = subprocess.run(
-            vol_info,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        if exec_res.returncode != 0:
-            raise RuntimeError("error inspecting volumes: %s" % exec_res.stderr.decode())
-        vol_json = json.loads(exec_res.stdout.decode())
+        rc, stdout, stderr = self._module.run_command(vol_info)
+        if rc != 0:
+            raise RuntimeError("error inspecting volumes: %s" % stderr)
+        vol_json = json.loads(stdout)
 
         links = list[dict]()
         for volume in vol_json:
@@ -111,10 +107,10 @@ class LinksLoader:
         kubectl_get_secret = kubectl + ["get", "secret",
                                         "--selector", "skupper.io/type in (token-claim, connection-token)",
                                         "--output", "json"]
-        res = subprocess.run(kubectl_get_secret, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if res.returncode != 0:
-            raise RuntimeError("error retrieving secrets - %s" % res.stderr.decode())
-        secret_list_json = json.loads(res.stdout.decode())
+        rc, stdout, stderr = self._module.run_command(kubectl_get_secret)
+        if rc != 0:
+            raise RuntimeError("error retrieving secrets - %s" % stderr)
+        secret_list_json = json.loads(stdout)
         links = list[dict]()
         for item in secret_list_json['items']:
             site_id = item['metadata']['annotations']['skupper.io/generated-by']

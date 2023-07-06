@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import subprocess
 import tempfile
 import traceback
 
@@ -38,6 +37,7 @@ RETURN = r''' # '''
 
 class Links:
     def __init__(self, module: AnsibleModule):
+        self._module = module
         self.platform = module.params['platform']
         self.kubeconfig = module.params['kubeconfig']
         self.context = module.params['context']
@@ -54,13 +54,9 @@ class Links:
         command.append("link")
         command.append("delete")
         for link in self.delete:
-            exec_res = subprocess.run(
-                command + [link['name']],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
-            if exec_res.returncode != 0:
-                res.msgs.append("error deleting link %s - %s" % (link['name'], exec_res.stderr.decode()))
+            rc, stdout, stderr = self._module.run_command(command + [link['name']])
+            if rc != 0:
+                res.msgs.append("error deleting link %s - %s" % (link['name'], stderr))
                 res.failed = True
             else:
                 res.msgs.append("link has been deleted: %s" % link['name'])
@@ -94,16 +90,12 @@ class Links:
 
             # running
             create_command.append(tf.name)
-            exec_res = subprocess.run(
-                create_command,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
+            rc, stdout, stderr = self._module.run_command(create_command)
             tf.close()
 
             # validating results
-            if exec_res.returncode != 0:
-                res.msgs.append("error creating link to %s - %s" % (link['host'], exec_res.stderr.decode()))
+            if rc != 0:
+                res.msgs.append("error creating link to %s - %s" % (link['host'], stderr))
                 res.failed = True
             else:
                 res.msgs.append("link created - host: %s" % link['host'])

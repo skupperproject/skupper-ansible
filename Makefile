@@ -12,7 +12,7 @@ release-changelog:
 build-docs:
 	rm -rf skupper/network/docs/build skupper/network/docs/temp-rst
 	(cd skupper/network/docs && pip install --user -U -r requirements.txt && ./build.sh) && \
-	rm -rf ./docs && mv skupper/network/docs/build/html/ ./docs
+	rm -rf ./docs && mv skupper/network/docs/build/html/ ./docs && touch ./docs/.nojekyll
 
 build: clean build-docs
 	cd skupper/network && ansible-galaxy collection build

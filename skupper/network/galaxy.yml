@@ -50,7 +50,7 @@ dependencies:
 repository: http://github.com/skupperproject/skupper-ansible
 
 # The URL to any online docs
-documentation: https://github.com/skupperproject/skupper-ansible/tree/main
+documentation: https://skupperproject.github.io/skupper-ansible
 
 # The URL to the homepage of the collection/project
 homepage: http://skupper.io

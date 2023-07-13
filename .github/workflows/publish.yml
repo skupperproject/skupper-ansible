@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # needed for progressive mode to work
       - name: Run ansible-lint
         uses: ansible-community/ansible-lint-action@main
         with:

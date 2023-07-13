@@ -1,6 +1,6 @@
 from ansible.utils.vars import merge_hash
-from ..module_utils.base_action import *
-from ..module_utils.sites import *
+from . import BaseActionModule
+from ..module_utils.sites import get_sites
 
 
 class ActionModule(BaseActionModule):

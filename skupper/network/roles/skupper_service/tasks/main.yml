@@ -1,7 +1,8 @@
 ---
 # tasks file for skupper_service
 
-# execute the service create command
-- name: Executing service creation tasks for each entry
-  ansible.builtin.include_tasks: execute.yml
-  with_items: "{{ services | dict2items }}"
+- name: Loading existing services
+  skupper.network.services_load:
+
+- name: Updating service definitions
+  skupper.network.services:

@@ -22,16 +22,16 @@ target.
 services:
   # Sample service definition (indexed by name)
   name:
-    ports: []           # int array
-    protocol: ""        # choice tcp, http, http2
-    labels: []          # label and value separated by equal sign
-    aggregate: ""       # choice: json, multiplart
-    enableTls: False    # boolean
-    eventChannel: False # boolean
-    targets: []         # array of type and name
-      type: ""          # type of target to bind (values vary based on selected platform)
-      name: ""          # value that represents the selected target type
-      ports: []         # array mapping service ports to target ports
+    ports: []                    # int array
+    protocol: ""                 # choice tcp, http, http2
+    labels: []                   # label and value separated by equal sign
+    aggregate: ""                # choice: json, multiplart
+    generateTlsSecrets: False    # boolean
+    eventChannel: False          # boolean
+    targets: []                  # array of type and name
+      type: ""                   # type of target to bind (values vary based on selected platform)
+      name: ""                   # value that represents the selected target type
+      ports: []                  # array mapping service ports to target ports
 
     #
     # kubernetes flags

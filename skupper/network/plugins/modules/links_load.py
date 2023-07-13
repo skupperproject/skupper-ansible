@@ -1,13 +1,11 @@
 #!/usr/bin/python
-import json
-import traceback
+# -*- coding: utf-8 -*-
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.common.text.converters import to_native
-from ..module_utils.args import *
-from ..module_utils.types import Link
+# Copyright Skupper Project
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
 
-__metaclass__ = type
+from __future__ import (absolute_import, division, print_function)
 
 DOCUMENTATION = r'''
 ---
@@ -15,16 +13,42 @@ module: links_load
 short_description: Loads existing links to other sites
 description:
     Loads existing Skupper links to other sites, using the same format expected for links,
-    referring other ansible hosts. The mapping of existing links to ansible hosts defined 
+    referring other ansible hosts. The mapping of existing links to ansible hosts defined
     in the inventory file, depends on previous execution of site_load module, which loads
     site ids for each site defined in the inventory. Without it, links will be considered
-    as unmapped and might be removed if links module is invoked.  
+    as unmapped and might be removed if links module is invoked.
 
 requirements:
     - kubectl if using kubernetes platform
-    - podman v4+ if using podman as the site platform 
+    - podman v4+ if using podman as the site platform
+author: "Fernando Giorgetti (@fgiorgetti)"
+extends_documentation_fragment:
+    - skupper.network.common
 version_added: "1.1.0"
-options: {}
+options:
+    sites:
+        description:
+            - List of sites used to correlate existing links to Ansible's inventory_hostname entries
+            - This module expects that site_load module has been invoked previously
+        type: list
+        required: false
+        elements: dict
+        suboptions:
+            host:
+                description:
+                    - The Ansible's inventory_hostname value that represent a given site entry (provided by site_load module)
+                required: true
+                type: str
+            id:
+                description:
+                    - The Skupper site id (provided by site_load module)
+                required: true
+                type: str
+            name:
+                description:
+                    - The Skupper site name (provided by site_load module)
+                required: true
+                type: str
 '''
 
 EXAMPLES = r'''
@@ -46,6 +70,16 @@ existing_links:
         name: site-b
         cost: 1
 '''
+
+import json
+import traceback
+
+from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.text.converters import to_native
+from ..module_utils.args import add_fact, common_args
+from ..module_utils.types import Link
+
+__metaclass__ = type
 
 
 class LinksLoader:
@@ -125,19 +159,26 @@ class LinksLoader:
         return links
 
 
-def run_module():
-    module_args = dict(
-        common_args(),
-        sites=dict(type='list', required=False, elements='dict', options=dict(
-            host=dict(type='str', required=True),
-            name=dict(type='str', required=True),
-            id=dict(type='str', required=True)
-        ))
-    )
+argument_spec = dict(
+    common_args(),
+    sites=dict(type='list', required=False, elements='dict', options=dict(
+        host=dict(type='str', required=True),
+        name=dict(type='str', required=True),
+        id=dict(type='str', required=True)
+    ))
+)
+
+
+def setup_module_object():
     module = AnsibleModule(
-        argument_spec=module_args,
+        argument_spec=argument_spec,
         supports_check_mode=True
     )
+    return module
+
+
+def main():
+    module = setup_module_object()
     result = dict(changed=False)
     # loading params
     loader = LinksLoader(module)
@@ -151,4 +192,4 @@ def run_module():
 
 
 if __name__ == '__main__':
-    run_module()
+    main()

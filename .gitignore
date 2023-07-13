@@ -1,3 +1,5 @@
 *.tar.gz
 skupper/network/docs/build
 skupper/network/docs/temp-rst
+skupper/network/tests/output
+__pycache__/

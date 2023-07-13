@@ -1,20 +1,16 @@
 #!/usr/bin/python
-import tempfile
-import traceback
+# -*- coding: utf-8 -*-
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.common.text.converters import to_native
+# Copyright Skupper Project
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
 
-from ..module_utils.args import *
-from ..module_utils.skupper_cli import prepare_command
-from ..module_utils.types import Result
-
-__metaclass__ = type
+from __future__ import (absolute_import, division, print_function)
 
 DOCUMENTATION = r'''
 ---
 module: links
-short_description: Update links based on provided links list 
+short_description: Update links based on provided links list
 description:
     - Updates the links defined by the respective site, based on the links list defined through the host variables.
     - Existing links that cannot be mapped to an inventory host will be deleted.
@@ -22,9 +18,55 @@ description:
     - If a corresponding token cannot be found for a requested link, it will fail.
 requirements:
     - kubectl if using kubernetes platform
-    - podman v4+ if using podman as the site platform 
+    - podman v4+ if using podman as the site platform
 version_added: "1.1.0"
-options: {}
+author: "Fernando Giorgetti (@fgiorgetti)"
+extends_documentation_fragment:
+    - skupper.network.common
+options:
+    create:
+        description:
+            - List of links to create for a given site
+            - This list is automatically provided by the links plugin based on host variable named I(links)
+            - More information on how to define a link can be found at the I(skupper_link) role documentation
+            - For links to be created the I(skupper_token) role must have been invoked for the target host
+        required: false
+        type: list
+        elements: dict
+        suboptions:
+            host:
+                description:
+                    - The ansible_inventory hostname that the respective link is intending to use as a target
+                type: str
+                required: true
+            name:
+                description:
+                    - Name of the link to be created
+                type: str
+                required: false
+            cost:
+                description:
+                    - Cost of the link
+                type: int
+                required: false
+            token:
+                description:
+                    - Token to use in case I(skupper_token) role hasn't been called (generated token is not available)
+                type: str
+                required: false
+    delete:
+        description:
+            - List of link names to be deleted
+            - Existing links must have been loaded earlier by calling M(skupper.network.links_load) module
+        required: false
+        type: list
+        elements: dict
+        suboptions:
+            name:
+                description:
+                    - Name of the link to be deleted
+                type: str
+                required: true
 '''
 
 EXAMPLES = r'''
@@ -33,6 +75,18 @@ EXAMPLES = r'''
 '''
 
 RETURN = r''' # '''
+
+import tempfile
+import traceback
+
+from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.text.converters import to_native
+
+from ..module_utils.args import common_args
+from ..module_utils.skupper_cli import prepare_command
+from ..module_utils.types import Result
+
+__metaclass__ = type
 
 
 class Links:
@@ -103,26 +157,30 @@ class Links:
         return res
 
 
-def run_module():
-    module_args = dict(
-        common_args(),
-        create=dict(type='list', required=False, elements='dict', options=dict(
-            host=dict(type='str', required=True),
-            name=dict(type='str', required=False),
-            cost=dict(type='int', required=False),
-            token=dict(type='str', required=False),
-        )),
-        delete=dict(type='list', required=False, elements='dict', options=dict(
-            host=dict(type='str', required=False),
-            name=dict(type='str', required=True),
-            cost=dict(type='int', required=False),
-            token=dict(type='str', required=False),
-        )),
-    )
+argument_spec = dict(
+    common_args(),
+    create=dict(type='list', required=False, elements='dict', options=dict(
+        host=dict(type='str', required=True),
+        name=dict(type='str', required=False),
+        cost=dict(type='int', required=False),
+        token=dict(type='str', required=False, no_log=True),
+    )),
+    delete=dict(type='list', required=False, elements='dict', options=dict(
+        name=dict(type='str', required=True),
+    )),
+)
+
+
+def setup_module_object():
     module = AnsibleModule(
-        argument_spec=module_args,
+        argument_spec=argument_spec,
         supports_check_mode=True
     )
+    return module
+
+
+def main():
+    module = setup_module_object()
     result = dict(changed=False)
     # loading params
     links = Links(module)
@@ -137,4 +195,4 @@ def run_module():
 
 
 if __name__ == '__main__':
-    run_module()
+    main()

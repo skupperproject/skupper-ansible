@@ -1,13 +1,11 @@
 #!/usr/bin/python
-import json
-import traceback
+# -*- coding: utf-8 -*-
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.common.text.converters import to_native
-from ..module_utils.args import *
-from ..module_utils.types import Site
+# Copyright Skupper Project
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
 
-__metaclass__ = type
+from __future__ import (absolute_import, division, print_function)
 
 DOCUMENTATION = r'''
 ---
@@ -20,11 +18,14 @@ description:
     the inventory file.
 
     Kubernetes options can be set through host variables (kubeconfig, context, namespace).
-    Podman endpoint can be customized through init.podmanEndpoint host variable.  
+    Podman endpoint can be customized through init.podmanEndpoint host variable.
 requirements:
     - kubectl if using kubernetes platform
-    - podman v4+ if using podman as the site platform 
+    - podman v4+ if using podman as the site platform
 version_added: "1.1.0"
+author: "Fernando Giorgetti (@fgiorgetti)"
+extends_documentation_fragment:
+    - skupper.network.common
 options: {}
 '''
 
@@ -44,6 +45,16 @@ site:
       name: site-a
       id: 53899d80-1ae6-11ee-be28-1e9341abe0db
 '''
+
+import json
+import traceback
+
+from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.text.converters import to_native
+from ..module_utils.args import add_fact, common_args
+from ..module_utils.types import Site
+
+__metaclass__ = type
 
 
 class SiteLoader:
@@ -111,14 +122,21 @@ class SiteLoader:
         return site
 
 
-def run_module():
-    module_args = dict(
-        common_args(),
-    )
+argument_spec = dict(
+    common_args(),
+)
+
+
+def setup_module_object():
     module = AnsibleModule(
-        argument_spec=module_args,
+        argument_spec=argument_spec,
         supports_check_mode=True
     )
+    return module
+
+
+def main():
+    module = setup_module_object()
     result = dict(changed=False)
 
     # loading params
@@ -135,4 +153,4 @@ def run_module():
 
 
 if __name__ == '__main__':
-    run_module()
+    main()

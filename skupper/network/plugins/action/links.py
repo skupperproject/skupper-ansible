@@ -1,5 +1,5 @@
 from ansible.utils.vars import merge_hash
-from ..module_utils.base_action import *
+from . import BaseActionModule
 
 
 class ActionModule(BaseActionModule):

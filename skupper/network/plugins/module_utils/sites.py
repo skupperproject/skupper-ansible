@@ -1,3 +1,9 @@
+from __future__ import (absolute_import, division, print_function)
+
+
+__metaclass__ = type
+
+
 def get_sites(hostvars) -> list[dict]:
     # map site entry by site id
     sites = list[dict]()

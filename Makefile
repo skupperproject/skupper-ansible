@@ -23,3 +23,9 @@ clean:
 install:
 	@[[ -f "$(TARBALL)" ]] && true || (echo "Collection has not been built" && false)
 	@ansible-galaxy collection install -f "$(TARBALL)"
+
+sanity-tests:
+	cd skupper/network && ansible-test sanity -v --color
+
+unit-tests:
+	cd skupper/network && ansible-test units -vvv --color

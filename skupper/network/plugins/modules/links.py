@@ -130,7 +130,7 @@ def run_module():
     try:
         res = links.delete_links()
         res.merge(links.create_links())
-        result |= res.result()
+        result.update(res.result())
     except Exception as ex:
         module.fail_json(msg=to_native(ex), exception=traceback.format_exc())
     module.exit_json(**result)

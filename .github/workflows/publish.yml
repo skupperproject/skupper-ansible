@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0 # needed for progressive mode to work
+      - name: Set up Python
+        uses: actions/setup-python@v2
+      - name: Install ansible, ansible-lint, yamllint
+        run: pip3 install yamllint ansible ansible-lint
       - name: Run ansible-lint
-        uses: ansible-community/ansible-lint-action@v6.16.0
-        with:
-          path: skupper/network --skip-list 'var-naming[pattern],var-naming[no-role-prefix]'
+        run: make ansible-lint
       - name: Ansible Publish
         uses: ansible/ansible-publish-action@v1.0.0
         with:

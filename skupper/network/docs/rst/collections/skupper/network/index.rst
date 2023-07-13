@@ -48,9 +48,9 @@ These are the plugins in the skupper.network collection:
 Modules
 ~~~~~~~
 
-* :ref:`links module <ansible_collections.skupper.network.links_module>` -- Update links based on provided links list
-* :ref:`links_load module <ansible_collections.skupper.network.links_load_module>` -- Loads existing links to other sites
-* :ref:`site_load module <ansible_collections.skupper.network.site_load_module>` -- Loads site information as ansible facts into the respective host
+* :ansplugin:`links module <skupper.network.links#module>` -- Update links based on provided links list
+* :ansplugin:`links_load module <skupper.network.links_load#module>` -- Loads existing links to other sites
+* :ansplugin:`site_load module <skupper.network.site_load#module>` -- Loads site information as ansible facts into the respective host
 
 .. toctree::
     :maxdepth: 1

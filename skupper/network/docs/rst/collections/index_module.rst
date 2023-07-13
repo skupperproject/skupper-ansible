@@ -9,7 +9,7 @@ Index of all Modules
 skupper.network
 ---------------
 
-* :ref:`skupper.network.links <ansible_collections.skupper.network.links_module>` -- Update links based on provided links list
-* :ref:`skupper.network.links_load <ansible_collections.skupper.network.links_load_module>` -- Loads existing links to other sites
-* :ref:`skupper.network.site_load <ansible_collections.skupper.network.site_load_module>` -- Loads site information as ansible facts into the respective host
+* :ansplugin:`skupper.network.links#module` -- Update links based on provided links list
+* :ansplugin:`skupper.network.links_load#module` -- Loads existing links to other sites
+* :ansplugin:`skupper.network.site_load#module` -- Loads site information as ansible facts into the respective host
 

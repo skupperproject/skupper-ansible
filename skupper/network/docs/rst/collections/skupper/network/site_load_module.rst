@@ -30,10 +30,6 @@
 
 .. Anchors: short name for ansible.builtin
 
-.. Anchors: aliases
-
-
-
 .. Title
 
 skupper.network.site_load module -- Loads site information as ansible facts into the respective host

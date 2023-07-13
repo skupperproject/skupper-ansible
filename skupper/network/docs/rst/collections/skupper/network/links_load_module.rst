@@ -30,10 +30,6 @@
 
 .. Anchors: short name for ansible.builtin
 
-.. Anchors: aliases
-
-
-
 .. Title
 
 skupper.network.links_load module -- Loads existing links to other sites

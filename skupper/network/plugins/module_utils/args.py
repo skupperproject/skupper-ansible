@@ -11,6 +11,6 @@ def common_args() -> dict:
 
 def add_fact(result, d):
     facts = result['ansible_facts'] if 'ansible_facts' in result else dict()
-    facts |= d
+    facts.update(d)
     result['changed'] = True
     result['ansible_facts'] = facts

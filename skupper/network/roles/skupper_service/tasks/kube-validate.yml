@@ -1,9 +1,0 @@
----
-- name: Validate target type
-  ansible.builtin.debug:
-    msg: "Invalid target type: {{ target.type }} - valid target types are {{ valid_target_types_kube }}"
-  when: has_targets
-  failed_when: target.type not in valid_target_types_kube
-  with_items: "{{ item.value.targets }}"
-  loop_control:
-    loop_var: target

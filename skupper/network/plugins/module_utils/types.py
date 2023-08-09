@@ -1,3 +1,9 @@
+from __future__ import (absolute_import, division, print_function)
+import typing
+
+__metaclass__ = type
+
+
 class Result:
     def __init__(self):
         self.msgs: list = list()
@@ -40,3 +46,52 @@ class Link:
 
     def unmapped(self) -> bool:
         return self.host == ""
+
+
+class ServiceTarget:
+    def __init__(self, **kwargs):
+        self.type: str = ""
+        self.name: str = ""
+        self.ports: typing.Optional[list[str]] = None
+        self.__dict__.update(kwargs)
+
+    def vars(self) -> dict:
+        return {k: v for k, v in vars(self).items() if v}
+
+
+class Service:
+    def __init__(self, **kwargs):
+        self.ports: list[int] = []
+        self.protocol: str = ""
+        self.targets: typing.Optional[list[dict]] = None
+        self.labels: typing.Optional[list] = None
+        self.aggregate: typing.Optional[str] = None
+        self.generateTlsSecrets: typing.Optional[bool] = None
+        self.eventChannel: typing.Optional[bool] = None
+        # podman only
+        self.containerName: typing.Optional[str] = None
+        self.hostIp: typing.Optional[str] = None
+        self.hostPorts: typing.Optional[list[str]] = None
+        self.__dict__.update(kwargs)
+        if self.protocol == "":
+            self.protocol = "tcp"
+
+    def vars(self) -> dict:
+        return {k: v for k, v in vars(self).items() if v}
+
+
+class ServiceParam:
+    def __init__(self, **kwargs):
+        self.name: str = ""
+        # spec can be omitted if intention is just to manipulate targets or labels
+        self.spec: typing.Optional[dict] = None
+        self.targets: typing.Optional[list[ServiceTarget]] = None
+        self.labels: typing.Optional[list[str]] = None
+        self.__dict__.update(**kwargs)
+        if self.spec and 'targets' in self.spec:
+            del (self.spec['targets'])
+        if self.spec and 'labels' in self.spec:
+            del (self.spec['labels'])
+
+    def vars(self) -> dict:
+        return {k: v for k, v in vars(self).items() if v}

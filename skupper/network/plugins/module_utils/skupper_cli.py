@@ -1,3 +1,9 @@
+from __future__ import (absolute_import, division, print_function)
+
+
+__metaclass__ = type
+
+
 def prepare_command(params: dict) -> list[str]:
     command = list[str]()
     platform = params['platform'] if 'platform' in params else 'kubernetes'

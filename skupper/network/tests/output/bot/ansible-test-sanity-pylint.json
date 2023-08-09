@@ -1,0 +1,15 @@
+{
+    "docs": "https://docs.ansible.com/ansible-core/2.15/dev_guide/testing/sanity/pylint.html", 
+    "results": [
+        {
+<<<<<<< HEAD
+            "message": "The test `ansible-test sanity --test pylint` [[explain](https://docs.ansible.com/ansible-core/2.15/dev_guide/testing/sanity/pylint.html)] failed with 1 error:", 
+            "output": "tests/unit/plugins/modules/test_services_load.py:34:0: implicit-str-concat: Implicit string concatenation found in list"
+=======
+            "message": "The test `ansible-test sanity --test pylint` [[explain](https://docs.ansible.com/ansible-core/2.15/dev_guide/testing/sanity/pylint.html)] failed with 10 errors:", 
+            "output": "plugins/module_utils/base_action.py:6:4: ansible-bad-module-import: Import external package or ansible.module_utils not ansible.plugins.action\nplugins/modules/links.py:9:0: unused-wildcard-import: Unused import(s) add_fact from wildcard import of module_utils.args\nplugins/modules/links.py:9:0: wildcard-import: Wildcard import module_utils.args\nplugins/modules/links_load.py:8:0: wildcard-import: Wildcard import module_utils.args\nplugins/modules/services.py:7:0: unused-wildcard-import: Unused import(s) add_fact from wildcard import of module_utils.args\nplugins/modules/services.py:7:0: wildcard-import: Wildcard import module_utils.args\nplugins/modules/services.py:126:54: undefined-variable: Undefined variable 'traceback'\nplugins/modules/services_load.py:8:0: wildcard-import: Wildcard import module_utils.args\nplugins/modules/services_load.py:115:20: disallowed-name: Disallowed name \"_\"\nplugins/modules/site_load.py:8:0: wildcard-import: Wildcard import module_utils.args"
+>>>>>>> 9e073cd (Improved services and fixed sanity test issues)
+        }
+    ], 
+    "verified": false
+}

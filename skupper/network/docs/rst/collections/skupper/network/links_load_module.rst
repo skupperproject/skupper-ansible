@@ -38,7 +38,7 @@ skupper.network.links_load module -- Loads existing links to other sites
 .. Collection note
 
 .. note::
-    This module is part of the `skupper.network collection <https://galaxy.ansible.com/skupper/network>`_ (version 1.1.0).
+    This module is part of the `skupper.network collection <https://galaxy.ansible.com/skupper/network>`_ (version 1.1.3).
 
     To install it, use: :code:`ansible-galaxy collection install skupper.network`.
     You need further requirements to be able to use this module,

@@ -6,7 +6,7 @@
 Skupper.Network
 ===============
 
-Collection version 1.1.0
+Collection version 1.1.3
 
 .. contents::
    :local:
@@ -50,6 +50,8 @@ Modules
 
 * :ansplugin:`links module <skupper.network.links#module>` -- Update links based on provided links list
 * :ansplugin:`links_load module <skupper.network.links_load#module>` -- Loads existing links to other sites
+* :ansplugin:`services module <skupper.network.services#module>` -- Update services based on provided services list
+* :ansplugin:`services_load module <skupper.network.services_load#module>` -- Loads existing services and targets
 * :ansplugin:`site_load module <skupper.network.site_load#module>` -- Loads site information as ansible facts into the respective host
 
 .. toctree::
@@ -58,6 +60,8 @@ Modules
 
     links_module
     links_load_module
+    services_module
+    services_load_module
     site_load_module
 
 

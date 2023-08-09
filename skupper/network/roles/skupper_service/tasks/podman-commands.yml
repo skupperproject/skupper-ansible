@@ -1,9 +1,0 @@
-- name: Create skupper service
-  ansible.builtin.include_tasks: podman-command-create.yml
-
-- name: Bind skupper service to target
-  ansible.builtin.include_tasks: podman-command-bind.yml
-  when: has_targets
-  with_items: "{{ item.value.targets }}"
-  loop_control:
-    loop_var: target

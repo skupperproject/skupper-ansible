@@ -1,0 +1,14 @@
+{
+    "docs": "https://docs.ansible.com/ansible-core/2.15/dev_guide/testing/sanity/import.html", 
+    "results": [
+        {
+            "message": "The test `ansible-test sanity --test import --python 3.11` [[explain](https://docs.ansible.com/ansible-core/2.15/dev_guide/testing/sanity/import.html)] failed with 1 error:", 
+<<<<<<< HEAD
+            "output": "plugins/modules/links.py:8:1: traceback: SyntaxError: from __future__ imports must occur at the beginning of the file"
+=======
+            "output": "plugins/module_utils/base_action.py:15:0: traceback: NameError: name 'ActionBase' is not defined"
+>>>>>>> 9e073cd (Improved services and fixed sanity test issues)
+        }
+    ], 
+    "verified": false
+}

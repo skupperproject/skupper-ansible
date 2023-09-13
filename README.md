@@ -12,7 +12,7 @@ skupperproject.skupper
 
 * [skupper](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/network/roles/skupper)
 * [skupper_cli_install](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/network/roles/skupper_cli_install)
-* [skupper_common) (internal - should not be used directly](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/network/roles/skupper_common)
+* [skupper_common (internal - should not be used directly)](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/network/roles/skupper_common)
 * [skupper_init](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/network/roles/skupper_init)
 * [skupper_delete](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/network/roles/skupper_delete)
 * [skupper_token](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/network/roles/skupper_token)

@@ -18,6 +18,7 @@ description:
 extends_documentation_fragment:
     - skupper.network.common
 requirements:
+    - python >= 3.9
     - kubectl if using kubernetes platform
     - podman v4+ if using podman as the site platform
 author: "Fernando Giorgetti (@fgiorgetti)"

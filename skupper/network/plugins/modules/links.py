@@ -17,6 +17,7 @@ description:
     - Links with a corresponding token (provided by skupper_token role) or manually through the token property will be created.
     - If a corresponding token cannot be found for a requested link, it will fail.
 requirements:
+    - python >= 3.9
     - kubectl if using kubernetes platform
     - podman v4+ if using podman as the site platform
 version_added: "1.1.0"

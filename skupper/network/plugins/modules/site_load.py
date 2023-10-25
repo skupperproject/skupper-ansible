@@ -20,6 +20,7 @@ description:
     Kubernetes options can be set through host variables (kubeconfig, context, namespace).
     Podman endpoint can be customized through init.podmanEndpoint host variable.
 requirements:
+    - python >= 3.9
     - kubectl if using kubernetes platform
     - podman v4+ if using podman as the site platform
 version_added: "1.1.0"

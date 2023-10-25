@@ -19,6 +19,7 @@ description:
     as unmapped and might be removed if links module is invoked.
 
 requirements:
+    - python >= 3.9
     - kubectl if using kubernetes platform
     - podman v4+ if using podman as the site platform
 author: "Fernando Giorgetti (@fgiorgetti)"

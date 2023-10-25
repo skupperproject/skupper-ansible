@@ -18,3 +18,7 @@ skupperproject.skupper
 * [skupper_link](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/network/roles/skupper_link)
 * [skupper_service](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/network/roles/skupper_service)
 * [skupper_update](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/network/roles/skupper_update)
+
+## Requirements
+
+* python >= 3.9

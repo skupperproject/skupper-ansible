@@ -14,6 +14,7 @@ short_description: Loads existing services and targets
 description:
     Loads existing Skupper services and targets. Existing services will be returned under the `existing_services` fact.
 requirements:
+    - python >= 3.9
     - kubectl if using kubernetes platform
     - podman v4+ if using podman as the site platform
 author: "Fernando Giorgetti (@fgiorgetti)"

@@ -1,7 +1,7 @@
 # Defining services
 
-This is just an extremely simple way to call the skupper_service role,
-passing just list of **_services_** to de defined against a specific site.
+An extremely simple way to call the skupper_service role, providing just
+the list of **_services_** to be defined against a specific site.
 
 The playbook used here, expects that the **_sample_** namespace already
 exists and has a running skupper site.

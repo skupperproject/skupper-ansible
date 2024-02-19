@@ -71,7 +71,7 @@ Looking at the variables on the `west` host on the `inventory.yml` file, we see:
                   name: "backend"
 ```
 
-When the `skupper` is invoked, it will try to initialize the skupper site,
+When the `skupper` role is invoked, it will try to initialize the skupper site,
 maintain the services according to the inventory, generate a token to the respective site (ansible host)
 and go through the requested links. If you specify a link to a given site (by ansible host name), the skupper_link
 role will expect that the skupper_token role was executed for that host, otherwise it will expect that a token is

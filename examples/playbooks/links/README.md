@@ -19,14 +19,14 @@ the other site **_sample-b_** defines a link to the **_sample-a_** site.
 ## Playbook
 
 Along with the skupper_token and skupper_link roles, the playbook also 
-performs some extra steps, that the token creation and linking between
-sites work.
+performs some extra steps, so that the token creation and linking between
+the two sites work.
 
 Here are all the steps being performed:
 
 * Create namespaces (sample-a and sample-b)
 * Ensures skupper is initialized on both namespaces
-* Deletes named secret **_sample-a-token_** from sample-a namespace
+* Deletes secret named **_sample-a-token_** from sample-a namespace
   (to prevent issues with the skupper token creation)
 * Invoke skupper_token role (against sample-a)
 * Invoke skupper_link role (against sample-b)

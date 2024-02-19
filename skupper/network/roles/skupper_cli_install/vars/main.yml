@@ -1,6 +1,6 @@
 ---
 # constants file for skupper_cli_install
-default_version: 1.4.3
+default_version: 1.5.3
 default_os: linux
 default_arch: amd64
 arch_values:

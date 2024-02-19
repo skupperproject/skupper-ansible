@@ -1,0 +1,17 @@
+---
+- hosts: all
+  tasks:
+    - name: Creating the sample namespace
+      kubernetes.core.k8s:
+        kind: Namespace
+        name: sample
+        state: present
+    - ansible.builtin.import_role:
+        name: skupper.network.skupper_init
+      vars:
+        namespace: sample
+        init:
+          siteName: sample-site
+          enableFlowCollector: 'true'
+          enableConsole: 'true'
+          consoleAuth: unsecured

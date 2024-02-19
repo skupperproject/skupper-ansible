@@ -24,14 +24,14 @@ class ActionModule(BaseActionModule):
                 if cost != int(ex_link['cost']):
                     delete.append(ex_link)
                     if 'token' not in link or link['token'] in (None, ""):
-                        link['token'] = self.get_token(link['host'])
+                        link['token'] = self.get_token(link['host'], task_vars)
                     create.append(link)
         # links to be created
         for link in links:
             ex_link = self.get_link(existing_links, link['host'])
             if not ex_link:
                 if 'token' not in link or link['token'] in (None, ""):
-                    link['token'] = self.get_token(link['host'])
+                    link['token'] = self.get_token(link['host'], task_vars)
                 create.append(link)
 
         # executing module
@@ -47,6 +47,6 @@ class ActionModule(BaseActionModule):
                 return link
         return None
 
-    def get_token(self, host) -> str:
-        hostvar = self.hostvars[host]
-        return hostvar['generatedToken'] if 'generatedToken' in hostvar else ""
+    def get_token(self, host, task_vars) -> str:
+        token = self.get_host_or_task_var(host, 'generatedToken', task_vars, '')
+        return token

@@ -1,14 +1,9 @@
 {
-    "docs": "https://docs.ansible.com/ansible-core/2.15/dev_guide/testing/sanity/pep8.html", 
+    "docs": "https://docs.ansible.com/ansible-core/2.16/dev_guide/testing/sanity/pep8.html", 
     "results": [
         {
-<<<<<<< HEAD
-            "message": "The test `ansible-test sanity --test pep8` [[explain](https://docs.ansible.com/ansible-core/2.15/dev_guide/testing/sanity/pep8.html)] failed with 2 errors:", 
-            "output": "tests/unit/plugins/modules/test_services_load.py:495:4: W292: no newline at end of file\ntests/unit/plugins/modules/test_services_load.py:495:161: E501: line too long (1028 > 160 characters)"
-=======
-            "message": "The test `ansible-test sanity --test pep8` [[explain](https://docs.ansible.com/ansible-core/2.15/dev_guide/testing/sanity/pep8.html)] failed with 12 errors:", 
-            "output": "plugins/modules/links.py:18:61: W291: trailing whitespace\nplugins/modules/links.py:26:54: W291: trailing whitespace\nplugins/modules/links_load.py:19:90: W291: trailing whitespace\nplugins/modules/links_load.py:22:65: W291: trailing whitespace\nplugins/modules/links_load.py:26:54: W291: trailing whitespace\nplugins/modules/services.py:16:67: W291: trailing whitespace\nplugins/modules/services.py:20:120: W291: trailing whitespace\nplugins/modules/services.py:23:54: W291: trailing whitespace\nplugins/modules/services_load.py:19:40: W291: trailing whitespace\nplugins/modules/services_load.py:23:54: W291: trailing whitespace\nplugins/modules/site_load.py:24:81: W291: trailing whitespace\nplugins/modules/site_load.py:27:54: W291: trailing whitespace"
->>>>>>> 9e073cd (Improved services and fixed sanity test issues)
+            "message": "The test `ansible-test sanity --test pep8` [[explain](https://docs.ansible.com/ansible-core/2.16/dev_guide/testing/sanity/pep8.html)] failed with 1 error:", 
+            "output": "plugins/action/services.py:47:17: E127: continuation line over-indented for visual indent"
         }
     ], 
     "verified": false

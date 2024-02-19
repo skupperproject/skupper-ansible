@@ -64,11 +64,11 @@ class TestLinksLoad(unittest.TestCase):
         self.assert_links(result)
 
     def assert_links(self, result):
-        self.assertEquals(True, result['changed'])
+        self.assertEqual(True, result['changed'])
         self.assertIsNotNone(result['ansible_facts']['existing_links'])
 
         links = result['ansible_facts']['existing_links']
-        self.assertEquals(2, len(links))
+        self.assertEqual(2, len(links))
         idx = 1
         for link in links:
             linkid = idx

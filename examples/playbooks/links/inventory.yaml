@@ -1,0 +1,14 @@
+all:
+  children:
+    public:
+      hosts:
+        sample-a:
+          ansible_connection: local
+          namespace: sample-a
+          token:
+            name: sample-a-token
+        sample-b:
+          ansible_connection: local
+          namespace: sample-b
+          links:
+            - host: sample-a

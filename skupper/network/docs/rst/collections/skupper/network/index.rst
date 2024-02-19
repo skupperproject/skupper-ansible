@@ -1,12 +1,15 @@
 
 
+.. meta::
+  :antsibull-docs: 2.7.0
+
 
 .. _plugins_in_skupper.network:
 
 Skupper.Network
 ===============
 
-Collection version 1.1.3
+Collection version 1.2.1
 
 .. contents::
    :local:
@@ -25,13 +28,18 @@ Provides roles to help managing Skupper sites
 
 * 2.14.0 or newer
 
-.. raw:: html
+.. ansible-links::
 
-  <p class="ansible-links">
-    <a href="http://github.com/skupperproject/skupper-ansible/issues" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="http://skupper.io" aria-role="button" target="_blank" rel="noopener external">Homepage</a>
-    <a href="http://github.com/skupperproject/skupper-ansible" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
-  </p>
+  - title: "Issue Tracker"
+    url: "http://github.com/skupperproject/skupper-ansible/issues"
+    external: true
+  - title: "Homepage"
+    url: "http://skupper.io"
+    external: true
+  - title: "Repository (Sources)"
+    url: "http://github.com/skupperproject/skupper-ansible"
+    external: true
+
 
 
 

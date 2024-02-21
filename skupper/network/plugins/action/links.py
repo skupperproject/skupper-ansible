@@ -16,20 +16,38 @@ class ActionModule(BaseActionModule):
         delete = list()
         # links to be removed or re-created (cost changed)
         for ex_link in existing_links:
-            link = self.get_link(links, ex_link['host'])
+            link = None
+            # static token links
+            # when links are not defined based on inventory host names
+            # only validate if the link name still exists and cost has not changed
+            if 'host' not in ex_link or ex_link['host'] == "" and 'name' in ex_link and ex_link['name'] != "":
+                link = self.get_link(links, ex_link['name'], 'name')
+                if link and 'host' not in link:
+                    link['host'] = ""
+            else:
+                # continue searching by matching inventory host names
+                link = self.get_link(links, ex_link['host'])
             if not link:
-                delete.append(ex_link)
+                delete.append({'name': ex_link['name']})
             else:
                 cost = int(link['cost']) if 'cost' in link else 1
                 if cost != int(ex_link['cost']):
-                    delete.append(ex_link)
+                    delete.append({'name': ex_link['name']})
                     if 'token' not in link or link['token'] in (None, ""):
                         link['token'] = self.get_token(link['host'], task_vars)
                     create.append(link)
         # links to be created
         for link in links:
-            ex_link = self.get_link(existing_links, link['host'])
+            ex_link = None
+            if 'host' in link and link['host'] != "":
+                ex_link = self.get_link(existing_links, link['host'])
+            elif 'name' in link and link['name'] != "":
+                ex_link = self.get_link(existing_links, link['name'], 'name')
+                if ex_link and 'host' not in ex_link:
+                    ex_link['host'] = ""
             if not ex_link:
+                if 'host' not in link or not link['host']:
+                    link['host'] = ""
                 if 'token' not in link or link['token'] in (None, ""):
                     link['token'] = self.get_token(link['host'], task_vars)
                 create.append(link)
@@ -41,9 +59,9 @@ class ActionModule(BaseActionModule):
         return result
 
     @staticmethod
-    def get_link(links, host):
+    def get_link(links, host, link_property="host"):
         for link in links:
-            if link['host'] == host:
+            if link[link_property] == host:
                 return link
         return None
 

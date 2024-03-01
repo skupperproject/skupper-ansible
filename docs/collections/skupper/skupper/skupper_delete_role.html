@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta content="2.7.0" name="antsibull-docs" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>skupper.skupper.skupper_delete role – Deletes a Skupper site &mdash; Ansible collections  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5707b69d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/ansible.css?v=c5b67dd2" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/antsibull-minimal.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/rtd-ethical-ads.css?v=289b023e" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/images/Ansible-Mark-RGB_Black.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=7f41d439"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="skupper.skupper.skupper_deploy role – Configures your entire Virtual Application Network (VAN)" href="skupper_deploy_role.html" />
+    <link rel="prev" title="skupper.skupper.skupper_cli_install role – Installs the Skupper CLI" href="skupper_cli_install_role.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
+
+
+
+
+</head>
+
+<body class="wy-body-for-nav"><!-- extra body elements for Ansible beyond RTD Sphinx Theme -->
+
+<div class="DocSite-globalNav ansibleNav">
+  <ul>
+    <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+    <li><a href="https://forum.ansible.com/" target="_blank">Ansible community forum</a></li>
+    <li><a href="https://docs.ansible.com/" target="_blank">Documentation</a></li>
+  </ul>
+</div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="../../../_static/images/Ansible-Mark-RGB_White.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">Ansible Collections Documentation</div>
+</a>
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Ansible collections
+          </a><!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    
+  
+</div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <label class="sr-only" for="q">Search docs:</label>
+    <input type="text" class="st-default-search-input" id="q" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+              <p class="caption" role="heading"><span class="caption-text">Collections:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Collection Index</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Collections in the Skupper Namespace</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Skupper.Skupper</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="index.html#description">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="index.html#plugin-index">Plugin Index</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html#role-index">Role Index</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Plugin indexes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index_module.html">Index of all Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index_role.html">Index of all Roles</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference indexes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../environment_variables.html">Index of all Collection Environment Variables</a></li>
+</ul>
+<!-- extra nav elements for Ansible beyond RTD Sphinx Theme -->
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ansible collections</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Collection Index</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Collections in the Skupper Namespace</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Skupper.Skupper</a></li>
+      <li class="breadcrumb-item active">skupper.skupper.skupper_delete role – Deletes a Skupper site</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+  
+           <div itemprop="articleBody">
+             
+  <span class="target" id="ansible-collections-skupper-skupper-skupper-delete-role"></span><section id="skupper-skupper-skupper-delete-role-deletes-a-skupper-site">
+<h1>skupper.skupper.skupper_delete role – Deletes a Skupper site<a class="headerlink" href="#skupper-skupper-skupper-delete-role-deletes-a-skupper-site" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This role is part of the <a class="reference external" href="https://galaxy.ansible.com/ui/repo/published/skupper/skupper/">skupper.skupper collection</a> (version 1.6.0).</p>
+<p>It is not included in <code class="docutils literal notranslate"><span class="pre">ansible-core</span></code>.
+To check whether it is installed, run <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">list</span></code>.</p>
+<p>To install it use: <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">install</span> <span class="pre">skupper.skupper</span></code>.</p>
+<p>To use it in a playbook, specify: <code class="code docutils literal notranslate"><span class="pre">skupper.skupper.skupper_delete</span></code>.</p>
+</div>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#entry-point-main-deletes-a-skupper-site" id="id1">Entry point <code class="docutils literal notranslate"><span class="pre">main</span></code> – Deletes a Skupper site</a></p>
+<ul>
+<li><p><a class="reference internal" href="#synopsis" id="id2">Synopsis</a></p></li>
+<li><p><a class="reference internal" href="#authors" id="id3">Authors</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="entry-point-main-deletes-a-skupper-site">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Entry point <code class="docutils literal notranslate"><span class="pre">main</span></code> – Deletes a Skupper site</a><a class="headerlink" href="#entry-point-main-deletes-a-skupper-site" title="Link to this heading"></a></h2>
+<p class="ansible-version-added">New in skupper.skupper 1.6.0</p>
+<section id="synopsis">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">Synopsis</a><a class="headerlink" href="#synopsis" title="Link to this heading"></a></h3>
+<ul>
+<li><div class="line-block">
+<div class="line">Deletes a Skupper site based on provided skupper options.</div>
+<div class="line">For more information see <a class="reference external" href="skupper_option_role.html">skupper.skupper.skupper_option role</a>.</div>
+</div>
+</li>
+</ul>
+</section>
+<section id="authors">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Authors</a><a class="headerlink" href="#authors" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Skupper team</p></li>
+</ul>
+<section id="collection-links">
+<h4>Collection links<a class="headerlink" href="#collection-links" title="Link to this heading"></a></h4>
+<ul class="ansible-links">
+<li><span><a aria-role="button" class="ansible-link reference external" href="http://github.com/skupperproject/skupper-ansible/issues" rel="noopener external" target="_blank">Issue Tracker</a></span></li>
+<li><span><a aria-role="button" class="ansible-link reference external" href="http://skupper.io" rel="noopener external" target="_blank">Homepage</a></span></li>
+<li><span><a aria-role="button" class="ansible-link reference external" href="http://github.com/skupperproject/skupper-ansible" rel="noopener external" target="_blank">Repository (Sources)</a></span></li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+
+<footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="skupper_cli_install_role.html" class="btn btn-neutral float-left" title="skupper.skupper.skupper_cli_install role – Installs the Skupper CLI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="skupper_deploy_role.html" class="btn btn-neutral float-right" title="skupper.skupper.skupper_deploy role – Configures your entire Virtual Application Network (VAN)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Ansible contributors.</p>
+  </div>
+
+  
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script><!-- extra footer elements for Ansible beyond RTD Sphinx Theme -->
+
+</body>
+</html>

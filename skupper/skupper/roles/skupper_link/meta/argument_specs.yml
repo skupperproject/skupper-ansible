@@ -1,0 +1,57 @@
+argument_specs:
+  main:
+    short_description: Maintains existing links on a site
+    description: |
+      | Maintains existing links on a site based on the provided links object.
+      | All desired links must be provided as part of the C(skupper_link_links) list.
+      | Links must specify a target hostname (a valid host from the Ansible inventory), in such
+      | case the token for the respective link is expected to be available as a host fact (for the target host)
+      | named C(skupper_token_generated_token). This fact is set automatically if the L(skupper.skupper.skupper_token role,skupper_token_role.html)
+      | is invoked prior to this one.
+      | Alternatively if the intention is to use a statically provided token, then the C(token) parameter of the link object
+      | must be populated as well as the C(name) of the link.
+      | This role uses the M(skupper.skupper.links_load) and M(skupper.skupper.links) modules to ensure all desired links are defined.
+    version_added: 1.6.0
+    author: Skupper team
+    options:
+      skupper_link_links:
+        description: |
+          List of all desired links to exist at a given site.
+          Links that are defined on the list, but does not exist, will be created.
+          The links that exist on the Skupper site but are not defined through this list
+          will be removed.
+        version_added: 1.6.0
+        type: list
+        elements: dict
+        options:
+          host:
+            description: |
+              The Ansible Inventory hostname to use as a target for this link.
+              It can be populated if the L(skupper.skupper.skupper_token role,skupper_token_role.html) has been invoked earlier,
+              of when using the L(skupper.skupper.skupper_deploy role,skupper_deploy_role.html) (which also invokes the C(skupper_token role)
+              as a dependency.
+              In case the intention is to use a static token, this argument must not be provided.
+            version_added: 1.6.0
+            type: str
+            required: false
+          name:
+            description: |
+              The name of the link to be defined at the target site.
+              When using a static token, this argument is mandatory, as it is used to determine if the link already exists.
+            version_added: 1.6.0
+            type: str
+            required: false
+          cost:
+            description: The cost of the link.
+            version_added: 1.6.0
+            type: int
+            default: 1
+          token:
+            description: |
+              A static token to be used when creating this link.
+              When a static token is provided, the C(name) argument must also be set and the C(host) argument
+              must not be provided.
+              The token must be represented as a YAML string.
+            version_added: 1.6.0
+            type: str
+            required: false

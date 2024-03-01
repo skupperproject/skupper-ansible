@@ -1,0 +1,13 @@
+all:
+  children:
+    public:
+      hosts:
+        sample-a:
+          ansible_connection: local
+          skupper_option_namespace: sample-a
+          skupper_token_name: sample-a-token
+        sample-b:
+          ansible_connection: local
+          skupper_option_namespace: sample-b
+          skupper_link_links:
+            - host: sample-a

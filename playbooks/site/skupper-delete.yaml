@@ -1,0 +1,7 @@
+---
+- hosts: all
+  collections:
+    - skupper.skupper
+  tasks:
+    - import_role:
+        name: skupper_delete

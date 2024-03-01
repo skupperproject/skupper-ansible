@@ -4,33 +4,31 @@ all:
       hosts:
         west:
           ansible_connection: local
-          namespace: west
-          init:
-            siteName: west
-            enableServiceSync: 'false'
-            enableFlowCollector: 'true'
-            enableConsole: 'true'
-            consolePassword: 'admin'
-          services:
-            frontend:
+          skupper_option_namespace: west
+          skupper_init_site_name: west
+          skupper_init_enable_service_sync: 'false'
+          skupper_init_enable_flow_collector: 'true'
+          skupper_init_enable_console: 'true'
+          skupper_init_console_password: 'admin'
+          skupper_service_services:
+            - name: frontend
               ports:
                 - 8080
               targets:
                 - type: "deployment"
                   name: "frontend"
-            backend:
+            - name: backend
               ports:
                 - 8080
         east:
           ansible_connection: local
-          namespace: east
-          init:
-            siteName: east
-            enableServiceSync: 'false'
-          links:
+          skupper_option_namespace: east
+          skupper_init_site_name: east
+          skupper_init_enable_service_sync: 'false'
+          skupper_link_links:
             - host: west
-          services:
-            backend:
+          skupper_service_services:
+            - name: backend
               ports:
                 - 8080
               targets:

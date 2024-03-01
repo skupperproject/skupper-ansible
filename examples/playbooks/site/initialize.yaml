@@ -9,9 +9,8 @@
     - ansible.builtin.import_role:
         name: skupper.network.skupper_init
       vars:
-        namespace: sample
-        init:
-          siteName: sample-site
-          enableFlowCollector: 'true'
-          enableConsole: 'true'
-          consoleAuth: unsecured
+        skupper_option_namespace: sample
+        skupper_init_site_name: sample-site
+        skupper_init_enable_flow_collector: 'true'
+        skupper_init_enable_console: 'true'
+        skupper_init_console_auth: unsecured

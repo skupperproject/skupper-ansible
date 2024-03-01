@@ -4,6 +4,9 @@
     - skupper.network
   tasks:
     - import_role:
-        name: skupper-token
-    - import_role:
         name: skupper-link
+      vars:
+        skupper_link_links:
+          - name: link1
+            token: |
+              your token as a YAML

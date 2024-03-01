@@ -1,7 +1,7 @@
 skupper_service
 ===============
 
-Creates all services defined through the `services` variable for the
+Creates all services defined through the `skupper_service_services` variable for the
 related ansible host.
 
 It creates the service, binding it to all (optional) targets.
@@ -14,12 +14,12 @@ Requirements
 Role Variables
 --------------
 
-A `services` array element must be defined at the host, so that the role
+A `skupper_service_services` array element must be defined at the host, so that the role
 can iterate through each service, creating and binding it to the defined
 target.
 
 ```yaml
-services:
+skupper_service_services:
   # Sample service definition (indexed by name)
   name:
     ports: []                    # int array
@@ -54,7 +54,7 @@ Dependencies
 
 **Role**
 
-* skupper_common
+* skupper_option
 
 Example Playbook
 ----------------
@@ -62,7 +62,7 @@ Example Playbook
 ---
 - hosts: all
   roles:
-    - skupper_service
+    - skupper.network.skupper_service
 
 Example Inventory
 -----------------
@@ -72,7 +72,7 @@ can be specified. Note that it has the `services` field.
 
 ```yaml
   site-a:
-    services:
+    skupper_service_services:
       nginx:
         ports:
           - 8080
@@ -80,7 +80,7 @@ can be specified. Note that it has the `services` field.
           - label1=value1
           - label2=value2
   site-b:
-    services:
+    skupper_service_services:
       nginx:
         ports:
           - 8080
@@ -88,7 +88,7 @@ can be specified. Note that it has the `services` field.
           - type: deployment
             name: nginx
   rhel9:
-    services:
+    skupper_service_services:
       nginx:
         ports: [8080]
         targets:

@@ -2,10 +2,10 @@
 # tasks file for skupper_token
 - name: Kubernetes tasks
   ansible.builtin.include_tasks: kube-tasks.yml
-  when: platform == 'kubernetes'
+  when: skupper_option_platform == 'kubernetes'
 - name: Podman tasks
   ansible.builtin.include_tasks: podman-tasks.yml
-  when: platform == 'podman'
+  when: skupper_option_platform == 'podman'
 
 - name: Common tasks
   ansible.builtin.include_tasks: common-tasks.yml

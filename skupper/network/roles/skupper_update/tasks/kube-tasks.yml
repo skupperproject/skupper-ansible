@@ -4,24 +4,12 @@
       - skupper
       - update
       - --platform
-      - "{{ platform }}"
-
-- name: Adding --kubeconfig
-  ansible.builtin.set_fact:
-    skupper_update_command: "{{ skupper_update_command + ['--kubeconfig', kubeconfig] }}"
-  when: kubeconfig is defined and kubeconfig | length() > 0
-
-- name: Adding --context
-  ansible.builtin.set_fact:
-    skupper_update_command: "{{ skupper_update_command + ['--context', context] }}"
-  when: context is defined and context | length() > 0
-
-- name: Adding --namespace
-  ansible.builtin.set_fact:
-    skupper_update_command: "{{ skupper_update_command + ['--namespace', namespace] }}"
-  when: namespace is defined and namespace | length() > 0
-
-- name: Adding --force-restart
-  ansible.builtin.set_fact:
-    skupper_update_command: "{{ skupper_update_command + ['--force-restart'] }}"
-  when: update['forceRestart'] is defined and ( update.forceRestart | bool )
+      - "{{ skupper_option_platform }}"
+      - --kubeconfig
+      - "{{ skupper_option_kubeconfig }}"
+      - --context
+      - "{{ skupper_option_context }}"
+      - --namespace
+      - "{{ skupper_option_namespace }}"
+      - --force-restart
+      - "{{ skupper_update_force_restart }}"

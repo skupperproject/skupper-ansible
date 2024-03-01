@@ -23,7 +23,7 @@ skupper.network.site_load module -- Loads site information as ansible facts into
 .. Collection note
 
 .. note::
-    This module is part of the `skupper.network collection <https://galaxy.ansible.com/skupper/network>`_ (version 1.2.1).
+    This module is part of the `skupper.network collection <https://galaxy.ansible.com/skupper/network>`_ (version 1.6.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.

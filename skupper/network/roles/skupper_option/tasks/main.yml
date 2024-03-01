@@ -1,0 +1,6 @@
+---
+# tasks file for skupper_option
+- name: Validating skupper platform
+  ansible.builtin.fail:
+    msg: "Invalid platform - valid platforms: {{ valid_platforms }}"
+  when: skupper_option_platform not in skupper_option_valid_platforms

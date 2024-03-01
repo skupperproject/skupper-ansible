@@ -15,4 +15,4 @@ galaxy_info:
     - link
 
 dependencies:
-  - role: skupper_common
+  - role: skupper_option

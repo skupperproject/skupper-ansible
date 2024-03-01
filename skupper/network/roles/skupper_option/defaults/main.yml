@@ -1,0 +1,6 @@
+---
+# defaults file for skupper_option
+skupper_option_platform: "kubernetes"
+skupper_option_kubeconfig: ""
+skupper_option_context: ""
+skupper_option_namespace: ""

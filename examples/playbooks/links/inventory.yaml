@@ -4,11 +4,10 @@ all:
       hosts:
         sample-a:
           ansible_connection: local
-          namespace: sample-a
-          token:
-            name: sample-a-token
+          skupper_option_namespace: sample-a
+          skupper_token_name: sample-a-token
         sample-b:
           ansible_connection: local
-          namespace: sample-b
-          links:
+          skupper_option_namespace: sample-b
+          skupper_link_links:
             - host: sample-a

@@ -2,10 +2,11 @@ skupper_token
 =============
 
 Generates a skupper token, saving the resulting token as a runtime
-host variable named `generatedToken`.
+host variable named `generated_token`.
 
 The `skupper_link` role expects that the target hosts defined as part
-of the `links` object have a `generatedToken` variable defined.
+of the `links` object have a `generated_token` variable defined, when
+links are defined using a host (from ansible inventory).
 
 Requirements
 ------------
@@ -18,24 +19,23 @@ Role Variables
 All flags in the token element are optinal.
 
 ```yaml
-token:
-  #
-  # common flags
-  #
-  name: ""
+#
+# common flags
+#
+skupper_token_name: ""
 
-  #
-  # kube specific flags
-  #
-  expiry: "15m0s"
-  password: ""
-  type: "claim"
-  uses: 1
+#
+# kube specific flags
+#
+skupper_token_expiry: "15m0s"
+skupper_token_password: ""
+skupper_token_type: "claim"
+skupper_token_uses: 1
 
-  #
-  # podman specific flags
-  #
-  ingress-host: ""
+#
+# podman specific flags
+#
+skupper_token_ingress_host: ""
 ```
 
 Dependencies
@@ -43,7 +43,7 @@ Dependencies
 
 **Role**
 
-* skupper_common
+* skupper_option
 
 Example Playbook
 ----------------
@@ -51,7 +51,7 @@ Example Playbook
 ---
 - hosts: all
   roles:
-    - skupper_token
+    - skupper.network.skupper_token
 
 Example Inventory
 -----------------
@@ -62,11 +62,9 @@ as the `token` field.
 
 ```yaml
   site-a:
-    token:
-      type: cert
+    skupper_token_type: cert
   site-b:
-    token:
-      uses: 5
+    skupper_token_uses: 5
   rhel9:
 ```
 

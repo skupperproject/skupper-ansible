@@ -8,7 +8,8 @@ dep:
 	pip install -r ./skupper/network/docs/requirements.txt
 
 ansible-lint:
-	cd skupper/network && ansible-lint --skip-list 'var-naming[pattern],var-naming[no-role-prefix]'
+	cd skupper/network && ansible-lint
+	#cd skupper/network && ansible-lint --skip-list 'var-naming[pattern],var-naming[no-role-prefix]'
 
 release-changelog:
 	pip install --user -U antsibull-changelog

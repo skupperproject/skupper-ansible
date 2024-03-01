@@ -5,8 +5,8 @@
       ansible.builtin.import_role:
         name: skupper.network.skupper_service
       vars:
-        namespace: sample
-        services:
+        skupper_option_namespace: sample
+        skupper_service_services:
           sample-service:
             ports:
               - 8080

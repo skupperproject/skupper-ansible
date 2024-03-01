@@ -1,22 +1,19 @@
 ---
 # defaults file for skupper_token
-token:
-  #
-  # common flags
-  #
-  # name: ""
-
-  #
-  # kube specific flags
-  #
-  # expiry: "15m0s"
-  # password: ""
-  # type: "claim"
-  # uses: 1
-
-  #
-  # podman specific flags
-  #
-  # ingress-host: ""
+#
+# common flags
+#
+skupper_token_name: "skupper"
+#
+# kube specific flags
+#
+skupper_token_expiry: "15m0s"
+skupper_token_password: ""
+skupper_token_type: "claim"
+skupper_token_uses: 1
+#
+# podman specific flags
+#
+skupper_token_ingress_host: ""
 # return variable that holds the generated token content for the given host
-# generatedToken:
+skupper_token_generated_token: ""

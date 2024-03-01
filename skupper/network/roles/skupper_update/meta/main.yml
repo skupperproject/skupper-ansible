@@ -15,4 +15,4 @@ galaxy_info:
     - update
 
 dependencies:
-  - role: skupper_common
+  - role: skupper_option

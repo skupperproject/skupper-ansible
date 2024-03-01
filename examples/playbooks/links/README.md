@@ -5,10 +5,12 @@ This example shows how to generate a token and link two sites.
 The skupper_token and skupper_link roles rely on host variables.
 When you invoke the `skupper_token` role for a given host, a skupper
 token will be created and stored as a **host variable** named
-**generatedToken**.
+**generated_token**.
 
 In case you have a pre-generated token to use, you can add it as part
-of the link definition. Therefore, you won't need to call the `skupper_token` role.
+of the link definition and instead of setting the `host` in the link definition,
+you must enter a `token` propery with the respective token in YAML.
+Therefore, you won't need to call the `skupper_token` role.
 
 Looking at the `inventory.yaml`, it defines 2 ansible nodes, each one
 representing a skupper site.

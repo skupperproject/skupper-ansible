@@ -1,5 +1,12 @@
 ancestor: null
 releases:
+  1.6.0:
+    changes:
+      major_changes:
+        - https://github.com/skupperproject/skupper-ansible/issues/19
+        - https://github.com/skupperproject/skupper-ansible/issues/31
+      release_summary: Renamed all variables to comply with Ansible lint standards
+    release_date: '2024-03-01'
   1.0.0:
     changes:
       bugfixes:

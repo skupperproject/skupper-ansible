@@ -12,9 +12,8 @@ Role Variables
 --------------
 
 ```yaml
-  update:
-    # restart skupper daemons even when update is not performed
-    forceRestart: false # boolean
+  # restart skupper daemons even when update is not performed
+  skupper_update_force_restart: false
 ```
 
 Dependencies
@@ -22,15 +21,17 @@ Dependencies
 
 **Role**
 
-* skupper_common
+* skupper_option
 
 Example Playbook
 ----------------
 
+```yaml
 ---
 - hosts: all
   roles:
-    - skupper_token
+    - skupper.network.skupper_update
+```
 
 Example Inventory
 -----------------
@@ -41,8 +42,7 @@ as the `update` field.
 
 ```yaml
   site-a:
-    update:
-      forceRestart: true
+    skupper_update_force_restart: true
 ```
 
 License

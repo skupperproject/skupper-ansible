@@ -18,12 +18,11 @@ class BaseActionModule(ActionBase):
         self.hostname = task_vars['vars']['inventory_hostname']
         self.hostvars = task_vars['hostvars'] if 'hostvars' in task_vars else dict()
         self.my_hostvars = self.hostvars[self.hostname] if self.hostname in self.hostvars else dict()
-        self.platform = self.get_my_host_or_task_var('platform', task_vars, 'kubernetes')
-        self.kubeconfig = self.get_my_host_or_task_var('kubeconfig', task_vars, '')
-        self.context = self.get_my_host_or_task_var('context', task_vars, '')
-        self.namespace = self.get_my_host_or_task_var('namespace', task_vars, '')
-        init = self.get_my_host_or_task_var('init', task_vars, dict())
-        self.podman_endpoint = init['podmanEndpoint'] if init and 'podmanEndpoint' in init else ""
+        self.platform = self.get_my_host_or_task_var('skupper_option_platform', task_vars, 'kubernetes')
+        self.kubeconfig = self.get_my_host_or_task_var('skupper_option_kubeconfig', task_vars, '')
+        self.context = self.get_my_host_or_task_var('skupper_option_context', task_vars, '')
+        self.namespace = self.get_my_host_or_task_var('skupper_option_namespace', task_vars, '')
+        self.podman_endpoint = self.get_my_host_or_task_var('skupper_init_podman_endpoint', task_vars, '')
         return result
 
     def module_args(self) -> dict:

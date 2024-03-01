@@ -32,9 +32,11 @@ Dependencies
 Example Playbook
 ----------------
 
-    - hosts: servers
+```yaml
+    - hosts: all
       roles:
-         - { role: skupper }
+         - skupper.network.skupper
+```
 
 License
 -------

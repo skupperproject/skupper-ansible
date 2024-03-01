@@ -7,4 +7,4 @@
       name: skupper_token
     - name: Displaying generated tokens
       debug:
-        msg: "Generated tokens -> {{ tokens.keys() }}"
+        msg: "Generated tokens -> {{ generated_token }}"

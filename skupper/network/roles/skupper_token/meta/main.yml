@@ -15,4 +15,4 @@ galaxy_info:
     - token
 
 dependencies:
-  - role: skupper_common
+  - role: skupper_option

@@ -12,13 +12,13 @@ Requirements
 Role Variables
 --------------
 
-This role processes a host variable named `links` which is supposed
+This role processes a host variable named `skupper_link_links` which is supposed
 to hold an array containing link elements with the following structure:
 
 ```yaml
-links:
-  - host: <inventory host>
-    name: <optional link name>
+skupper_link_links:
+  - host: <inventory host - required when relying on generated token; must be empty when using a static token>
+    name: <link name - optional when using host; required when using a static token>
     cost: <optional cost value>
     token: <optional static token yaml>
 ```
@@ -36,18 +36,39 @@ Dependencies
 
 **Role**
 
-* skupper_common
+* skupper_option
 * skupper_token (when linking by host name)
 
 Example Playbook
 ----------------
 
+Using a dynamically generated token:
+
+```yaml
 ---
 - hosts: all
-  roles:
-    - skupper_token
-    - skupper_link
+  tasks:
+    - ansible.builtin.include_role:
+        name: skupper.network.skupper_token
+    - ansible.builtin.include_role:
+        name: skupper.network.skupper_link
+```
 
+Using a static token:
+
+```yaml
+---
+- hosts: all
+  tasks:
+    - ansible.builtin.include_role:
+        name: skupper.network.skupper_link
+      vars:
+        skupper_link_links:
+          - name: link1
+            token: |
+              your token as YAML
+```
+      
 Example Inventory
 -----------------
 
@@ -58,7 +79,7 @@ can be specified. Note that it has the `links` field.
   site-a:
   site-b:
   rhel9:
-    links:
+    skupper_link_links:
       - host: site-a
       - host: site-b
         cost: 2

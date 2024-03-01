@@ -4,4 +4,4 @@
       - skupper
       - delete
       - --platform
-      - "{{ platform }}"
+      - "{{ skupper_option_platform }}"

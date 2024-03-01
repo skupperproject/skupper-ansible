@@ -20,7 +20,7 @@ galaxy_info:
     - expose
 
 dependencies:
-  - role: skupper_common
+  - role: skupper_option
   - role: skupper_init
   - role: skupper_token
   - role: skupper_link

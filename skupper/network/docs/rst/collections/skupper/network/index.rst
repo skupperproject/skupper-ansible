@@ -9,7 +9,7 @@
 Skupper.Network
 ===============
 
-Collection version 1.2.1
+Collection version 1.6.0
 
 .. contents::
    :local:

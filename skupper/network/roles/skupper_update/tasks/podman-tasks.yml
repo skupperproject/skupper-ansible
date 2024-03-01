@@ -4,9 +4,6 @@
       - skupper
       - update
       - --platform
-      - "{{ platform }}"
-
-- name: Adding --force-restart
-  ansible.builtin.set_fact:
-    skupper_update_command: "{{ skupper_update_command + ['--force-restart'] }}"
-  when: update['forceRestart'] is defined and ( update.forceRestart | bool )
+      - "{{ skupper_option_platform }}"
+      - --timeout
+      - "{{ skupper_update_podman_timeout }}"

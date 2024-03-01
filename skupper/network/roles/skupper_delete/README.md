@@ -23,7 +23,7 @@ Example Playbook
 
     - hosts: all
       roles:
-         - skupper_delete
+         - skupper.network.skupper_delete
 
 License
 -------

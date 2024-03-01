@@ -1,4 +1,4 @@
-skupper_common
+skupper_option
 =========
 
 This role is meant to be used as a dependency by other skupper roles.
@@ -19,9 +19,9 @@ composing the skupper command line.
 
 The following variables are just relevant to kubernetes platform:
 
-* kubeconfig: the kubeconfig file to use
-* context: the context in the kubeconfig file to use
-* namespace: the namespace to use
+* skupper_option_kubeconfig: the kubeconfig file to use
+* skupper_option_context: the context in the kubeconfig file to use
+* skupper_option_namespace: the namespace to use
 
 Dependencies
 ------------

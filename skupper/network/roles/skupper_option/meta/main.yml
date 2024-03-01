@@ -13,5 +13,6 @@ galaxy_info:
   galaxy_tags:
     - skupper
     - common
+    - option
 
 dependencies: []

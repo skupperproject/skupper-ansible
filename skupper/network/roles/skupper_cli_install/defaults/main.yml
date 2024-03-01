@@ -1,8 +1,7 @@
 ---
 # defaults file for skupper_cli_install
-skupper_cli:
-  # version: ""
-  # os: ""
-  # arch: ""
-  # location: ""
-  # force: False
+skupper_cli_install_version: "1.6.0"
+skupper_cli_install_os: "linux"
+skupper_cli_install_arch: "amd64"
+skupper_cli_install_location: "/usr/local/bin"
+skupper_cli_install_force: false

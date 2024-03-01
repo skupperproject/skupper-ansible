@@ -4,7 +4,7 @@
     - name: Creating the sample namespace
       kubernetes.core.k8s:
         kind: Namespace
-        name: "{{ namespace }}"
+        name: "{{ skupper_option_namespace }}"
         state: present
     - ansible.builtin.include_role:
         name: skupper.network.skupper_init
@@ -13,8 +13,8 @@
     - name: Removing secret
       kubernetes.core.k8s:
         kind: Secret
-        name: "{{ token.name }}"
-        namespace: "{{ namespace }}"
+        name: "{{ skupper_token_name }}"
+        namespace: "{{ skupper_option_namespace }}"
         state: absent
     - ansible.builtin.import_role:
         name: skupper.network.skupper_token

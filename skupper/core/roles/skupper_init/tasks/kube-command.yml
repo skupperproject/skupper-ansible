@@ -1,0 +1,172 @@
+- name: Preparing init command
+  ansible.builtin.set_fact:
+    skupper_init_command:
+      - skupper
+      - init
+      - --platform
+      - "{{ skupper_option_platform }}"
+      - --kubeconfig
+      - "{{ skupper_option_kubeconfig }}"
+      - --context
+      - "{{ skupper_option_context }}"
+      - --namespace
+      - "{{ skupper_option_namespace }}"
+      - --site-name
+      - "{{ skupper_init_site_name }}"
+      - --ingress
+      - "{{ skupper_init_ingress }}"
+      - --router-mode
+      - "{{ skupper_init_router_mode }}"
+      - --router-logging
+      - "{{ skupper_init_router_logging }}"
+      - --timeout
+      - "{{ skupper_init_timeout }}"
+      - --ingress-host
+      - "{{ skupper_init_ingress_host }}"
+      - --service-sync-site-ttl
+      - "{{ skupper_init_service_sync_site_ttl }}"
+      - --console-auth
+      - "{{ skupper_init_console_auth }}"
+      - --console-user
+      - "{{ skupper_init_console_user }}"
+      - --console-password
+      - "{{ skupper_init_console_password }}"
+      - --console-ingress
+      - "{{ skupper_init_console_ingress }}"
+      - --routers
+      - "{{ skupper_init_routers }}"
+      - --router-cpu
+      - "{{ skupper_init_router_cpu }}"
+      - --router-memory
+      - "{{ skupper_init_router_memory }}"
+      - --router-cpu-limit
+      - "{{ skupper_init_router_cpu_limit }}"
+      - --router-memory-limit
+      - "{{ skupper_init_router_memory_limit }}"
+      - --router-node-selector
+      - "{{ skupper_init_router_node_selector }}"
+      - --router-pod-affinity
+      - "{{ skupper_init_router_pod_affinity }}"
+      - --router-pod-antiaffinity
+      - "{{ skupper_init_router_pod_antiaffinity }}"
+      - --router-ingress-host
+      - "{{ skupper_init_router_ingress_host }}"
+      - --router-load-balancer-ip
+      - "{{ skupper_init_router_load_balancer_ip }}"
+      - --controller-cpu
+      - "{{ skupper_init_controller_cpu }}"
+      - --controller-memory
+      - "{{ skupper_init_controller_memory }}"
+      - --controller-cpu-limit
+      - "{{ skupper_init_controller_cpu_limit }}"
+      - --controller-memory-limit
+      - "{{ skupper_init_controller_memory_limit }}"
+      - --controller-node-selector
+      - "{{ skupper_init_controller_node_selector }}"
+      - --controller-pod-affinity
+      - "{{ skupper_init_controller_pod_affinity }}"
+      - --controller-pod-antiaffinity
+      - "{{ skupper_init_controller_pod_antiaffinity }}"
+      - --controller-ingress-host
+      - "{{ skupper_init_controller_ingress_host }}"
+      - --controller-load-balancer-ip
+      - "{{ skupper_init_controller_load_balancer_ip }}"
+      - --config-sync-cpu
+      - "{{ skupper_init_config_sync_cpu }}"
+      - --config-sync-memory
+      - "{{ skupper_init_config_sync_memory }}"
+      - --config-sync-cpu-limit
+      - "{{ skupper_init_config_sync_cpu_limit }}"
+      - --config-sync-memory-limit
+      - "{{ skupper_init_config_sync_memory_limit }}"
+      - --flow-collector-cpu
+      - "{{ skupper_init_flow_collector_cpu }}"
+      - --flow-collector-memory
+      - "{{ skupper_init_flow_collector_memory }}"
+      - --flow-collector-cpu-limit
+      - "{{ skupper_init_flow_collector_cpu_limit }}"
+      - --flow-collector-memory-limit
+      - "{{ skupper_init_flow_collector_memory_limit }}"
+      - --flow-collector-record-ttl
+      - "{{ skupper_init_flow_collector_record_ttl }}"
+      - --prometheus-cpu
+      - "{{ skupper_init_prometheus_cpu }}"
+      - --prometheus-memory
+      - "{{ skupper_init_prometheus_memory }}"
+      - --prometheus-cpu-limit
+      - "{{ skupper_init_prometheus_cpu_limit }}"
+      - --prometheus-memory-limit
+      - "{{ skupper_init_prometheus_memory_limit }}"
+      - --external-prometheus-server
+      - "{{ skupper_init_external_prometheus_server }}"
+      - --prometheus-auth
+      - "{{ skupper_init_prometheus_auth }}"
+      - --prometheus-user
+      - "{{ skupper_init_prometheus_user }}"
+      - --prometheus-password
+      - "{{ skupper_init_prometheus_password }}"
+
+- name: Adding --labels
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--labels', item] }}"
+  with_items: "{{ skupper_init_labels }}"
+  when: skupper_init_labels is defined and skupper_init_labels | length() > 0
+
+- name: Adding --create-network-policy
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--create-network-policy=' + (skupper_init_create_network_policy | string)] }}"
+  when: skupper_init_create_network_policy is defined
+
+- name: Adding --enable-service-sync
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-service-sync=' + (skupper_init_enable_service_sync | string)] }}"
+  when: skupper_init_enable_service_sync is defined
+
+- name: Adding --enable-console
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-console=' + (skupper_init_enable_console | string)] }}"
+  when: skupper_init_enable_console is defined
+
+- name: Adding --enable-flow-collector
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-flow-collector=' + (skupper_init_enable_flow_collector | string)] }}"
+  when: skupper_init_enable_flow_collector is defined
+
+- name: Adding --enable-rest-api
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-rest-api=' + (skupper_init_enable_rest_api | string)] }}"
+  when: skupper_init_enable_rest_api is defined
+
+- name: Adding --enable-cluster-permissions
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-cluster-permissions=' + (skupper_init_enable_cluster_permissions | string)] }}"
+  when: skupper_init_enable_cluster_permissions is defined
+
+- name: Adding --enable-skupper-events
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-skupper-events=' + (skupper_init_enable_skupper_events | string)] }}"
+  when: skupper_init_enable_skupper_events is defined
+
+- name: Adding --annotations
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--annotations', item] }}"
+  with_items: "{{ skupper_init_annotations }}"
+  when: skupper_init_annotations is defined and skupper_init_annotations | length() > 0
+
+- name: Adding --ingress-annotations
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--ingress-annotations', item] }}"
+  with_items: "{{ skupper_init_ingress_annotations }}"
+  when: skupper_init_ingress_annotations is defined and skupper_init_ingress_annotations | length() > 0
+
+- name: Adding --router-service-annotations
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--router-service-annotations', item] }}"
+  with_items: "{{ skupper_init_router_service_annotations }}"
+  when: skupper_init_router_service_annotations is defined and skupper_init_router_service_annotations | length() > 0
+
+- name: Adding --controller-service-annotations
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--controller-service-annotations', item] }}"
+  with_items: "{{ skupper_init_controller_service_annotations }}"
+  when: skupper_init_controller_service_annotations is defined and skupper_init_controller_service_annotations | length() > 0

@@ -7,7 +7,7 @@
         name: sample
         state: present
     - ansible.builtin.import_role:
-        name: skupper.network.skupper_init
+        name: skupper.core.skupper_init
       vars:
         skupper_option_namespace: sample
         skupper_init_site_name: sample-site

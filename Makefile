@@ -1,27 +1,26 @@
-TARBALL := $(shell echo "skupper/network/skupper-network-`grep -E '^version:' skupper/network/galaxy.yml | awk '{print $$NF}'`.tar.gz")
+TARBALL := $(shell echo "skupper/core/skupper-core-`grep -E '^version:' skupper/core/galaxy.yml | awk '{print $$NF}'`.tar.gz")
 
 all: ansible-lint build
 
 dep:
 	pip install -r ./requirements.txt
-	pip install -r ./skupper/network/tests/unit/requirements.txt
-	pip install -r ./skupper/network/docs/requirements.txt
+	pip install -r ./skupper/core/tests/unit/requirements.txt
+	pip install -r ./skupper/core/docs/requirements.txt
 
 ansible-lint:
-	cd skupper/network && ansible-lint
-	#cd skupper/network && ansible-lint --skip-list 'var-naming[pattern],var-naming[no-role-prefix]'
+	cd skupper/core && ansible-lint
 
 release-changelog:
 	pip install --user -U antsibull-changelog
-	cd skupper/network && antsibull-changelog release
+	cd skupper/core && antsibull-changelog release
 
 build-docs:
-	rm -rf skupper/network/docs/build skupper/network/docs/temp-rst
-	(cd skupper/network/docs && pip install --user -U -r requirements.txt && ./build.sh) && \
-	rm -rf ./docs && mv skupper/network/docs/build/html/ ./docs && touch ./docs/.nojekyll
+	rm -rf skupper/core/docs/build skupper/core/docs/temp-rst
+	(cd skupper/core/docs && pip install --user -U -r requirements.txt && ./build.sh) && \
+	rm -rf ./docs && mv skupper/core/docs/build/html/ ./docs && touch ./docs/.nojekyll
 
 build: clean build-docs
-	cd skupper/network && ansible-galaxy collection build
+	cd skupper/core && ansible-galaxy collection build
 
 clean:
 	@[[ -f "$(TARBALL)" ]] && rm $(TARBALL) || true
@@ -31,7 +30,18 @@ install:
 	@ansible-galaxy collection install -f "$(TARBALL)"
 
 sanity-tests:
-	cd skupper/network && ansible-test sanity -v --color
+	cd skupper/core && ansible-test sanity -v --color
 
 unit-tests:
-	cd skupper/network && ansible-test units -vvv --color
+	cd skupper/core && ansible-test units -vvv --color
+
+e2e-setup:
+	cd examples/hello-world && ansible-playbook -i inventory.yml setup.yml
+
+e2e-validate:
+	cd examples/hello-world && ansible-playbook -i inventory.yml test.yml
+
+e2e-teardown:
+	cd examples/hello-world && ansible-playbook -i inventory.yml teardown.yml
+
+e2e-test: e2e-setup e2e-validate e2e-teardown

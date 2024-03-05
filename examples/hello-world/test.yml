@@ -1,0 +1,11 @@
+---
+- hosts: west
+  tasks:
+  - name: Calling the backend service from the west namespace
+    command: "kubectl -n west create job test-backend-service --image curlimages/curl -- curl -s -v --fail http://backend:8080/api/hello"
+    register: out
+    failed_when: out.failed
+  - name: Waiting on job to complete
+    command: "kubectl -n west wait job/test-backend-service --for=condition=Complete=True"
+  - name: Deleting the test job
+    command: "kubectl -n west delete job test-backend-service"

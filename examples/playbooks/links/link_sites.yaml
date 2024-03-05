@@ -7,7 +7,7 @@
         name: "{{ skupper_option_namespace }}"
         state: present
     - ansible.builtin.include_role:
-        name: skupper.network.skupper_init
+        name: skupper.core.skupper_init
 - hosts: sample-a
   tasks:
     - name: Removing secret
@@ -17,8 +17,8 @@
         namespace: "{{ skupper_option_namespace }}"
         state: absent
     - ansible.builtin.import_role:
-        name: skupper.network.skupper_token
+        name: skupper.core.skupper_token
 - hosts: sample-b
   tasks:
     - ansible.builtin.import_role:
-        name: skupper.network.skupper_link
+        name: skupper.core.skupper_link

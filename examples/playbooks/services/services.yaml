@@ -3,7 +3,7 @@
   tasks:
     - name: Updating service definitions
       ansible.builtin.import_role:
-        name: skupper.network.skupper_service
+        name: skupper.core.skupper_service
       vars:
         skupper_option_namespace: sample
         skupper_service_services:

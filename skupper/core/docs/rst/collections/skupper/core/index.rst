@@ -73,6 +73,31 @@ Modules
     site_load_module
 
 
+Role Index
+----------
+
+These are the roles in the skupper.core collection:
+
+* :ansplugin:`skupper_cli_install role <skupper.core.skupper_cli_install#role>` -- Installs the Skupper CLI
+* :ansplugin:`skupper_delete role <skupper.core.skupper_delete#role>` -- Deletes a Skupper site
+* :ansplugin:`skupper_init role <skupper.core.skupper_init#role>` -- Initializes a Skupper site
+* :ansplugin:`skupper_link role <skupper.core.skupper_link#role>` -- Maintains existing links on a site
+* :ansplugin:`skupper_option role <skupper.core.skupper_option#role>` -- Provides common parameters to be used across the skupper.core roles.
+* :ansplugin:`skupper_token role <skupper.core.skupper_token#role>` -- Creates a Skupper token that can be used by other sites to establish links
+* :ansplugin:`skupper_update role <skupper.core.skupper_update#role>` -- Updates a Skupper site
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+
+    skupper_cli_install_role
+    skupper_delete_role
+    skupper_init_role
+    skupper_link_role
+    skupper_option_role
+    skupper_token_role
+    skupper_update_role
+
 
 .. seealso::
 

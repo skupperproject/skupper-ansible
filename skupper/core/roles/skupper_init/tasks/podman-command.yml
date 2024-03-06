@@ -31,6 +31,22 @@
       - "{{ skupper_init_flow_collector_record_ttl }}"
       - --bind-port-flow-collector
       - "{{ skupper_init_bind_port_flow_collector }}"
+      - --router-cpu-limit
+      - "{{ skupper_init_router_cpu_limit }}"
+      - --router-memory-limit
+      - "{{ skupper_init_router_memory_limit }}"
+      - --controller-cpu-limit
+      - "{{ skupper_init_controller_cpu_limit }}"
+      - --controller-memory-limit
+      - "{{ skupper_init_controller_memory_limit }}"
+      - --flow-collector-cpu-limit
+      - "{{ skupper_init_flow_collector_cpu_limit }}"
+      - --flow-collector-memory-limit
+      - "{{ skupper_init_flow_collector_memory_limit }}"
+      - --prometheus-cpu-limit
+      - "{{ skupper_init_prometheus_cpu_limit }}"
+      - --prometheus-memory-limit
+      - "{{ skupper_init_prometheus_memory_limit }}"
 
 - name: Adding --ingress-host
   ansible.builtin.set_fact:
@@ -59,3 +75,8 @@
   ansible.builtin.set_fact:
     skupper_init_command: "{{ skupper_init_command + ['--enable-flow-collector=' + (skupper_init_enable_flow_collector | string)] }}"
   when: skupper_init_enable_flow_collector is defined
+
+- name: Adding --enable-ipv6
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-ipv6=' + (skupper_init_enable_ipv6 | string)] }}"
+  when: skupper_init_enable_ipv6 is defined

@@ -1,10 +1,12 @@
 
+.. Created with antsibull-docs 2.7.0
+
 .. _docsite_root_index:
 
 Welcome to my Ansible collection documentation
 ==============================================
 
-This docsite contains documentation of skupper.network.
+This docsite contains documentation of skupper.core.
 
 
 .. toctree::

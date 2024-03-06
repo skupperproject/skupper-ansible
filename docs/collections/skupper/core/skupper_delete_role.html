@@ -5,7 +5,7 @@
 <meta content="2.7.0" name="antsibull-docs" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Skupper.Core &mdash; Ansible collections  documentation</title>
+  <title>skupper.core.skupper_delete role – Deletes a Skupper site &mdash; Ansible collections  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5707b69d" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/ansible.css?v=c5b67dd2" />
       <link rel="stylesheet" type="text/css" href="../../../_static/antsibull-minimal.css" />
@@ -24,8 +24,8 @@
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="skupper.core.links module – Update links based on provided links list" href="links_module.html" />
-    <link rel="prev" title="Collections in the Skupper Namespace" href="../index.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
+    <link rel="next" title="skupper.core.skupper_init role – Initializes a Skupper site" href="skupper_init_role.html" />
+    <link rel="prev" title="skupper.core.skupper_cli_install role – Installs the Skupper CLI" href="skupper_cli_install_role.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
 
 
 
@@ -79,10 +79,10 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Collection Index</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Collections in the Skupper Namespace</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Skupper.Core</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#description">Description</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#plugin-index">Plugin Index</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#role-index">Role Index</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Skupper.Core</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="index.html#description">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="index.html#plugin-index">Plugin Index</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html#role-index">Role Index</a></li>
 </ul>
 </li>
 </ul>
@@ -117,7 +117,8 @@
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Collection Index</a></li>
           <li class="breadcrumb-item"><a href="../index.html">Collections in the Skupper Namespace</a></li>
-      <li class="breadcrumb-item active">Skupper.Core</li>
+          <li class="breadcrumb-item"><a href="index.html">Skupper.Core</a></li>
+      <li class="breadcrumb-item active">skupper.core.skupper_delete role – Deletes a Skupper site</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -128,69 +129,50 @@
   
            <div itemprop="articleBody">
              
-  <section id="skupper-core">
-<span id="plugins-in-skupper-core"></span><h1>Skupper.Core<a class="headerlink" href="#skupper-core" title="Link to this heading"></a></h1>
-<p>Collection version 1.6.0</p>
+  <span class="target" id="ansible-collections-skupper-core-skupper-delete-role"></span><section id="skupper-core-skupper-delete-role-deletes-a-skupper-site">
+<h1>skupper.core.skupper_delete role – Deletes a Skupper site<a class="headerlink" href="#skupper-core-skupper-delete-role-deletes-a-skupper-site" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This role is part of the <a class="reference external" href="https://galaxy.ansible.com/ui/repo/published/skupper/core/">skupper.core collection</a> (version 1.6.0).</p>
+<p>It is not included in <code class="docutils literal notranslate"><span class="pre">ansible-core</span></code>.
+To check whether it is installed, run <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">list</span></code>.</p>
+<p>To install it use: <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">install</span> <span class="pre">skupper.core</span></code>.</p>
+<p>To use it in a playbook, specify: <code class="code docutils literal notranslate"><span class="pre">skupper.core.skupper_delete</span></code>.</p>
+</div>
 <nav class="contents local" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#description" id="id1">Description</a></p></li>
-<li><p><a class="reference internal" href="#plugin-index" id="id2">Plugin Index</a></p></li>
-<li><p><a class="reference internal" href="#role-index" id="id3">Role Index</a></p></li>
+<li><p><a class="reference internal" href="#entry-point-main-deletes-a-skupper-site" id="id1">Entry point <code class="docutils literal notranslate"><span class="pre">main</span></code> – Deletes a Skupper site</a></p>
+<ul>
+<li><p><a class="reference internal" href="#synopsis" id="id2">Synopsis</a></p></li>
+<li><p><a class="reference internal" href="#authors" id="id3">Authors</a></p></li>
+</ul>
+</li>
 </ul>
 </nav>
-<section id="description">
-<h2><a class="toc-backref" href="#id1" role="doc-backlink">Description</a><a class="headerlink" href="#description" title="Link to this heading"></a></h2>
-<p>Provides roles to help managing Skupper sites</p>
-<p><strong>Author:</strong></p>
+<section id="entry-point-main-deletes-a-skupper-site">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Entry point <code class="docutils literal notranslate"><span class="pre">main</span></code> – Deletes a Skupper site</a><a class="headerlink" href="#entry-point-main-deletes-a-skupper-site" title="Link to this heading"></a></h2>
+<p class="ansible-version-added">New in skupper.core 1.6.0</p>
+<section id="synopsis">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">Synopsis</a><a class="headerlink" href="#synopsis" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Fernando Giorgetti &lt;<a class="reference external" href="mailto:fgiorgetti&#37;&#52;&#48;gmail&#46;com">fgiorgetti<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;</p></li>
+<li><p>Deletes a Skupper site based on provided skupper options.
+For more information see <a class="reference external" href="skupper_option_role.html">skupper.core.skupper_option role</a>.</p></li>
 </ul>
-<p><strong>Supported ansible-core versions:</strong></p>
+</section>
+<section id="authors">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Authors</a><a class="headerlink" href="#authors" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>2.14.0 or newer</p></li>
+<li><p>Skupper team</p></li>
 </ul>
+<section id="collection-links">
+<h4>Collection links<a class="headerlink" href="#collection-links" title="Link to this heading"></a></h4>
 <ul class="ansible-links">
 <li><span><a aria-role="button" class="ansible-link reference external" href="http://github.com/skupperproject/skupper-ansible/issues" rel="noopener external" target="_blank">Issue Tracker</a></span></li>
 <li><span><a aria-role="button" class="ansible-link reference external" href="http://skupper.io" rel="noopener external" target="_blank">Homepage</a></span></li>
 <li><span><a aria-role="button" class="ansible-link reference external" href="http://github.com/skupperproject/skupper-ansible" rel="noopener external" target="_blank">Repository (Sources)</a></span></li>
 </ul>
-<div class="toctree-wrapper compound">
-</div>
-</section>
-<section id="plugin-index">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink">Plugin Index</a><a class="headerlink" href="#plugin-index" title="Link to this heading"></a></h2>
-<p>These are the plugins in the skupper.core collection:</p>
-<section id="modules">
-<h3>Modules<a class="headerlink" href="#modules" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><a class="reference internal" href="links_module.html#ansible-collections-skupper-core-links-module"><span class="std std-ref">links module</span></a> – Update links based on provided links list</p></li>
-<li><p><a class="reference internal" href="links_load_module.html#ansible-collections-skupper-core-links-load-module"><span class="std std-ref">links_load module</span></a> – Loads existing links to other sites</p></li>
-<li><p><a class="reference internal" href="services_module.html#ansible-collections-skupper-core-services-module"><span class="std std-ref">services module</span></a> – Update services based on provided services list</p></li>
-<li><p><a class="reference internal" href="services_load_module.html#ansible-collections-skupper-core-services-load-module"><span class="std std-ref">services_load module</span></a> – Loads existing services and targets</p></li>
-<li><p><a class="reference internal" href="site_load_module.html#ansible-collections-skupper-core-site-load-module"><span class="std std-ref">site_load module</span></a> – Loads site information as ansible facts into the respective host</p></li>
-</ul>
-<div class="toctree-wrapper compound">
-</div>
 </section>
 </section>
-<section id="role-index">
-<h2><a class="toc-backref" href="#id3" role="doc-backlink">Role Index</a><a class="headerlink" href="#role-index" title="Link to this heading"></a></h2>
-<p>These are the roles in the skupper.core collection:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="skupper_cli_install_role.html#ansible-collections-skupper-core-skupper-cli-install-role"><span class="std std-ref">skupper_cli_install role</span></a> – Installs the Skupper CLI</p></li>
-<li><p><a class="reference internal" href="skupper_delete_role.html#ansible-collections-skupper-core-skupper-delete-role"><span class="std std-ref">skupper_delete role</span></a> – Deletes a Skupper site</p></li>
-<li><p><a class="reference internal" href="skupper_init_role.html#ansible-collections-skupper-core-skupper-init-role"><span class="std std-ref">skupper_init role</span></a> – Initializes a Skupper site</p></li>
-<li><p><a class="reference internal" href="skupper_link_role.html#ansible-collections-skupper-core-skupper-link-role"><span class="std std-ref">skupper_link role</span></a> – Maintains existing links on a site</p></li>
-<li><p><a class="reference internal" href="skupper_option_role.html#ansible-collections-skupper-core-skupper-option-role"><span class="std std-ref">skupper_option role</span></a> – Provides common parameters to be used across the skupper.core roles.</p></li>
-<li><p><a class="reference internal" href="skupper_token_role.html#ansible-collections-skupper-core-skupper-token-role"><span class="std std-ref">skupper_token role</span></a> – Creates a Skupper token that can be used by other sites to establish links</p></li>
-<li><p><a class="reference internal" href="skupper_update_role.html#ansible-collections-skupper-core-skupper-update-role"><span class="std std-ref">skupper_update role</span></a> – Updates a Skupper site</p></li>
-</ul>
-<div class="toctree-wrapper compound">
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>List of <a class="reference internal" href="../../index.html#list-of-collections"><span class="std std-ref">collections</span></a> with docs hosted here.</p>
-</div>
 </section>
 </section>
 
@@ -200,8 +182,8 @@
           
 
 <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../index.html" class="btn btn-neutral float-left" title="Collections in the Skupper Namespace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="links_module.html" class="btn btn-neutral float-right" title="skupper.core.links module – Update links based on provided links list" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skupper_cli_install_role.html" class="btn btn-neutral float-left" title="skupper.core.skupper_cli_install role – Installs the Skupper CLI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="skupper_init_role.html" class="btn btn-neutral float-right" title="skupper.core.skupper_init role – Initializes a Skupper site" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

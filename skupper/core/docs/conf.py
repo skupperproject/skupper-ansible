@@ -2,15 +2,17 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# Created with antsibull-docs 2.7.0
+
 # This file only contains a selection of the most common options. For a full list see the
 # documentation:
 # http://www.sphinx-doc.org/en/master/config
 
-project = 'Skupper Ansible collection'
-copyright = 'Skupper Ansible contributors'
+project = 'Ansible collections'
+copyright = 'Ansible contributors'
 
-title = 'Skupper Ansible Collection Documentation'
-html_short_title = 'Skupper Ansible Documentation'
+title = 'Ansible Collections Documentation'
+html_short_title = 'Ansible Collections Documentation'
 
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx', 'sphinx_antsibull_ext']
 
@@ -41,3 +43,4 @@ intersphinx_mapping = {
 default_role = 'any'
 
 nitpicky = True
+

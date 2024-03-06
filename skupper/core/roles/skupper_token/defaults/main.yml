@@ -15,5 +15,3 @@ skupper_token_uses: 1
 # podman specific flags
 #
 skupper_token_ingress_host: ""
-# return variable that holds the generated token content for the given host
-skupper_token_generated_token: ""

@@ -97,14 +97,6 @@
       - "{{ skupper_init_prometheus_cpu_limit }}"
       - --prometheus-memory-limit
       - "{{ skupper_init_prometheus_memory_limit }}"
-      - --external-prometheus-server
-      - "{{ skupper_init_external_prometheus_server }}"
-      - --prometheus-auth
-      - "{{ skupper_init_prometheus_auth }}"
-      - --prometheus-user
-      - "{{ skupper_init_prometheus_user }}"
-      - --prometheus-password
-      - "{{ skupper_init_prometheus_password }}"
 
 - name: Adding --labels
   ansible.builtin.set_fact:

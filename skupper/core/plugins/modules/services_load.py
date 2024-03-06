@@ -33,16 +33,16 @@ RETURN = r'''
 existing_services:
   description: List of existing services and targets
   returned: always
-  type: dict
+  type: list
   sample:
     existing_services:
-      nearestprime:
+      - name: nearestprime
         ports:
           - 8000
         targets:
           - type: deployment
             name: nearestprime
-      db:
+      - name: db
         ports:
           - 5432
 '''

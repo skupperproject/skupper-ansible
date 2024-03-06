@@ -23,7 +23,7 @@ skupper.core.site_load module -- Loads site information as ansible facts into th
 .. Collection note
 
 .. note::
-    This module is part of the `skupper.core collection <https://galaxy.ansible.com/skupper/core>`_ (version 1.6.0).
+    This module is part of the `skupper.core collection <https://galaxy.ansible.com/ui/repo/published/skupper/core/>`_ (version 1.6.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.

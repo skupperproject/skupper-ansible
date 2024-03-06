@@ -4,7 +4,5 @@
 
 # Created with antsibull-docs 2.7.0
 
-antsibull-docs >= 2.0.0, < 3.0.0
-ansible-pygments
-sphinx
-sphinx-ansible-theme >= 0.9.0
+/temp-rst
+/build

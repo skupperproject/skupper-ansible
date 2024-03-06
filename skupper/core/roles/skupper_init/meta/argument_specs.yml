@@ -1,0 +1,472 @@
+argument_specs:
+  main:
+    short_description: Initializes a Skupper site
+    description: |
+      Initializes a Skupper site based on provided options and parameters.
+      Some arguments are only used when C(skupper_option_platform) is set to C(kubernetes)
+      and others when set to C(podman).
+      These arguments are similar to the arguments accepted by the Skupper CLI, when
+      the initialization is performed against a given platform (kubernetes or podman).
+    version_added: 1.6.0
+    author: Skupper team
+    options:
+      # Common arguments to both kubernetes and podman platforms
+      skupper_init_site_name:
+        description: A specific name for this skupper installation
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_ingress:
+        description: |
+          Ingress types varies based on target platform.
+          On Kubernetes:
+          You can use one of: [route|loadbalancer|nodeport|nginx-ingress-v1|contour-http-proxy|ingress|none].
+          If not specified route is used when available, otherwise loadbalancer is used.
+          On Podman:
+          You can use one of: [external|none].
+          Default is set to external if not provided.
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_router_mode:
+        description: |
+          Router mode, one of: [interior, edge (only kubernetes)].
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: interior
+      skupper_init_labels:
+        description: Labels to add to resources created by Skupper
+        version_added: 1.6.0
+        type: list
+        required: false
+        elements: str
+      skupper_init_router_logging:
+        description: |
+          Logging settings for router. 'trace', 'debug', 'info' (default), 'notice', 'warning', and 'error' are valid values.
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: info
+      skupper_init_timeout:
+        description: Configurable timeout for site initialization (using duration format)
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: 2m
+      skupper_init_enable_flow_collector:
+        description: Enable cross-site flow collection for the application network
+        version_added: 1.6.0
+        type: bool
+        required: false
+        default: false
+      skupper_init_enable_console:
+        description: Enable skupper console must be used in conjunction with '--enable-flow-collector' flag
+        version_added: 1.6.0
+        type: bool
+        required: false
+        default: false
+      skupper_init_console_auth:
+        description: |
+          Authentication mode for console(s).
+          On Kubernetes, use one of: 'openshift', 'internal', 'unsecured' (default "internal").
+          On Podman, use one of: 'internal', 'unsecured' (default "internal")
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: internal
+      skupper_init_console_user:
+        description: Skupper console user. Valid only when --console-auth=internal
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: admin
+      skupper_init_console_password:
+        description: Skupper console password. Valid only when --console-auth=internal
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_flow_collector_record_ttl:
+        description: |
+          Time after which terminated flow records are deleted, i.e. those flow records that have an end time set.
+          Default is 15 minutes (duration format).
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: 15m
+      skupper_init_router_cpu_limit:
+        description: |
+          CPU limit for router pods.
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_router_memory_limit:
+        description: |
+          Memory limit for router pods.
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_controller_cpu_limit:
+        description: |
+          CPU limit for controller pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_controller_memory_limit:
+        description: |
+          Memory limit for controller pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_flow_collector_cpu_limit:
+        description: |
+          CPU limit for flow collector pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_flow_collector_memory_limit:
+        description: |
+          Memory limit for flow collector pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_prometheus_cpu_limit:
+        description: |
+          CPU limit for prometheus pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_prometheus_memory_limit:
+        description: |
+          Memory limit for prometheus pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      # Kubernetes specific arguments
+      skupper_init_ingress_host:
+        description: |
+          Hostname or alias by which the ingress route or proxy can be reached.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_create_network_policy:
+        description: |
+          Create network policy to restrict access to skupper services exposed through this site to current pods in namespace.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: bool
+        required: false
+        default: false
+      skupper_init_enable_service_sync:
+        description: |
+          Participate in cross-site service synchronization.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: bool
+        required: false
+        default: false
+      skupper_init_enable_rest_api:
+        description: |
+          Enable REST API.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: bool
+        required: false
+        default: false
+      skupper_init_enable_cluster_permissions:
+        description: |
+          Enable cluster wide permissions in order to expose deployments.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: bool
+        required: false
+        default: false
+      skupper_init_enable_skupper_events:
+        description: |
+          Enable sending Skupper events to Kubernetes.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: bool
+        required: false
+        default: true
+      skupper_init_console_ingress:
+        description: |
+          Determines if/how console is exposed outside cluster. If not specified uses value of --ingress.
+          One of: [route|loadbalancer|nodeport|nginx-ingress-v1|contour-http-proxy|ingress|none].
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_annotations:
+        description: |
+          Annotations to add to skupper pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: list
+        required: false
+        elements: str
+      skupper_init_ingress_annotations:
+        description: |
+          Annotations to add to skupper ingress.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: list
+        required: false
+        elements: str
+      skupper_init_router_service_annotations:
+        description: |
+          Annotations to add to skupper router service.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: list
+        required: false
+        elements: str
+      skupper_init_controller_service_annotations:
+        description: |
+          Annotations to add to skupper controller service.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: list
+        required: false
+        elements: str
+      skupper_init_routers:
+        description: |
+          Number of router replicas to start.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: int
+        required: false
+        default: 1
+      skupper_init_router_cpu:
+        description: |
+          CPU request for router pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_router_memory:
+        description: |
+          Memory request for router pods
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_router_node_selector:
+        description: |
+          Node selector to control placement of router pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_router_pod_affinity:
+        description: |
+          Pod affinity label matches to control placement of router pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_router_pod_antiaffinity:
+        description: |
+          Pod antiaffinity label matches to control placement of router pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_router_ingress_host:
+        description: |
+          Host through which node is accessible when using nodeport as ingress.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_router_load_balancer_ip:
+        description: |
+          Load balancer ip that will be used for router service, if supported by cloud provider.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_controller_cpu:
+        description: |
+          CPU request for controller pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_controller_memory:
+        description: |
+          Memory request for controller pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        required: false
+      skupper_init_controller_node_selector:
+        description: |
+          Node selector to control placement of controller pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_controller_pod_affinity:
+        description: |
+          Pod affinity label matches to control placement of controller pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_controller_pod_antiaffinity:
+        description: |
+          Pod antiaffinity label matches to control placement of controller pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_controller_ingress_host:
+        description: |
+          Host through which node is accessible when using nodeport as ingress.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_controller_load_balancer_ip:
+        description: |
+          Load balancer ip that will be used for controller service, if supported by cloud provider.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_config_sync_cpu:
+        description: |
+          CPU request for config-sync pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_config_sync_memory:
+        description: |
+          Memory request for config-sync pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_config_sync_cpu_limit:
+        description: |
+          CPU limit for config-sync pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_config_sync_memory_limit:
+        description: |
+          Memory limit for config-sync pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_flow_collector_cpu:
+        description: |
+          CPU request for flow collector pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_flow_collector_memory:
+        description: |
+          Memory request for flow collector pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_prometheus_cpu:
+        description: |
+          CPU request for prometheus pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_prometheus_memory:
+        description: |
+          Memory request for prometheus pods.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_service_sync_site_ttl:
+        description: |
+          Time after which stale services, i.e. those whose site has not been heard from, created through service-sync are removed.
+          Duration format.
+          This argument is only used when C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: "0"
+      # Podman specific arguments
+      skupper_init_ingress_hosts:
+        description: |
+          Hostname or alias by which the ingress route or proxy can be reached.
+          Tokens can only be generated for addresses provided through ingress-hosts.
+          This argument is only used when C(skupper_option_platform=podman).
+        version_added: 1.6.0
+        type: list
+        required: false
+        default: []
+        elements: str
+      skupper_init_ingress_bind_ips:
+        description: |
+          IP addresses in the host machines that will be bound to the inter-router and edge ports.
+          This argument is only used when C(skupper_option_platform=podman).
+        version_added: 1.6.0
+        type: list
+        required: false
+        default: []
+        elements: str
+      skupper_init_bind_port:
+        description: |
+          Ingress host binding port used for incoming links from sites using interior mode.
+          This argument is only used when C(skupper_option_platform=podman).
+        version_added: 1.6.0
+        type: int
+        default: 55671
+      skupper_init_bind_port_edge:
+        description: |
+          Ingress host binding port used for incoming links from sites using edge mode.
+          This argument is only used when C(skupper_option_platform=podman).
+        version_added: 1.6.0
+        type: int
+        default: 45671
+      skupper_init_container_network:
+        description: |
+          Container network name to be used.
+          This argument is only used when C(skupper_option_platform=podman).
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: skupper
+      skupper_init_podman_endpoint:
+        description: |
+          Local podman endpoint to use.
+          This argument is only used when C(skupper_option_platform=podman).
+        version_added: 1.6.0
+        type: str
+        default: ""
+      skupper_init_bind_port_flow_collector:
+        description: |
+          Ingress host binding port used for flow-collector and console.
+          This argument is only used when C(skupper_option_platform=podman).
+        version_added: 1.6.0
+        type: int
+        required: false
+        default: 8010
+      skupper_init_enable_ipv6:
+        description: Enable IPV6 on the container network to be created (ignored when using an existing container network)
+        version_added: 1.6.0
+        type: bool
+        required: false
+        default: false

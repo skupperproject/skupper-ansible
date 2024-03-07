@@ -80,13 +80,13 @@ class TestSiteLoad(unittest.TestCase):
             site_load.main()
 
         result = ex.exception.args[0]
-        self.assertEquals(True, result['changed'])
+        self.assertEqual(True, result['changed'])
         self.assertIsNotNone(result['ansible_facts']['site'])
 
         site = result['ansible_facts']['site']
-        self.assertEquals(site['host'], 'my-hostname')
-        self.assertEquals(site['name'], 'my_name')
-        self.assertEquals(site['id'], 'my_id')
+        self.assertEqual(site['host'], 'my-hostname')
+        self.assertEqual(site['name'], 'my_name')
+        self.assertEqual(site['id'], 'my_id')
 
     def test_site_load_podman(self):
         set_module_args({
@@ -98,11 +98,11 @@ class TestSiteLoad(unittest.TestCase):
             site_load.main()
 
         result = ex.exception.args[0]
-        self.assertEquals(True, result['changed'])
+        self.assertEqual(True, result['changed'])
         self.assertIsNotNone(result['ansible_facts']['site'])
 
         site = result['ansible_facts']['site']
         self.mock_open_state.assert_called_with('/my-volume/mountpoint/skrouterd.json')
-        self.assertEquals(site['host'], 'my-podman-hostname')
-        self.assertEquals(site['name'], 'my_podman_name')
-        self.assertEquals(site['id'], 'my_podman_id')
+        self.assertEqual(site['host'], 'my-podman-hostname')
+        self.assertEqual(site['name'], 'my_podman_name')
+        self.assertEqual(site['id'], 'my_podman_id')

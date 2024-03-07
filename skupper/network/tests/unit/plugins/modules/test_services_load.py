@@ -74,42 +74,42 @@ class TestServicesLoad(unittest.TestCase):
             services_load.main()
 
         result = ex.exception.args[0]
-        self.assertEquals(True, result['changed'])
+        self.assertEqual(True, result['changed'])
         self.assertIsNotNone(result['ansible_facts']['existing_services'])
 
         services = result['ansible_facts']['existing_services']
-        self.assertEquals(4, len(services))
+        self.assertEqual(4, len(services))
         for name, service in services.items():
             if name == "my-service-a":
-                self.assertEquals([8080, 9090], service['ports'])
-                self.assertEquals('http', service['protocol'])
-                self.assertEquals(2, len(service['labels']))
-                self.assertEquals(['label1=value1', 'label2=value2'], service['labels'])
-                self.assertEquals(1, len(service['targets']))
-                self.assertEquals('deployment', service['targets'][0]['type'])
-                self.assertEquals('nginx', service['targets'][0]['name'])
-                self.assertEquals(2, len(service['targets'][0]['ports']))
-                self.assertEquals(['8080:8080', '9090:8080'], service['targets'][0]['ports'])
+                self.assertEqual([8080, 9090], service['ports'])
+                self.assertEqual('http', service['protocol'])
+                self.assertEqual(2, len(service['labels']))
+                self.assertEqual(['label1=value1', 'label2=value2'], service['labels'])
+                self.assertEqual(1, len(service['targets']))
+                self.assertEqual('deployment', service['targets'][0]['type'])
+                self.assertEqual('nginx', service['targets'][0]['name'])
+                self.assertEqual(2, len(service['targets'][0]['ports']))
+                self.assertEqual(['8080:8080', '9090:8080'], service['targets'][0]['ports'])
             elif name == "nginx-dc":
-                self.assertEquals([8080], service['ports'])
-                self.assertEquals('tcp', service['protocol'])
-                self.assertEquals(1, len(service['targets']))
-                self.assertEquals('deploymentconfig', service['targets'][0]['type'])
-                self.assertEquals('nginx-dc', service['targets'][0]['name'])
-                self.assertEquals(1, len(service['targets'][0]['ports']))
-                self.assertEquals(['8080:8080'], service['targets'][0]['ports'])
+                self.assertEqual([8080], service['ports'])
+                self.assertEqual('tcp', service['protocol'])
+                self.assertEqual(1, len(service['targets']))
+                self.assertEqual('deploymentconfig', service['targets'][0]['type'])
+                self.assertEqual('nginx-dc', service['targets'][0]['name'])
+                self.assertEqual(1, len(service['targets'][0]['ports']))
+                self.assertEqual(['8080:8080'], service['targets'][0]['ports'])
             elif name == "nginx-skupper":
-                self.assertEquals([8080], service['ports'])
-                self.assertEquals('tcp', service['protocol'])
-                self.assertEquals(1, len(service['targets']))
-                self.assertEquals('service', service['targets'][0]['type'])
-                self.assertEquals('nginx.my-namespace', service['targets'][0]['name'])
+                self.assertEqual([8080], service['ports'])
+                self.assertEqual('tcp', service['protocol'])
+                self.assertEqual(1, len(service['targets']))
+                self.assertEqual('service', service['targets'][0]['type'])
+                self.assertEqual('nginx.my-namespace', service['targets'][0]['name'])
             elif name == "postgres":
-                self.assertEquals([5432], service['ports'])
-                self.assertEquals('tcp', service['protocol'])
-                self.assertEquals(1, len(service['targets']))
-                self.assertEquals('statefulset', service['targets'][0]['type'])
-                self.assertEquals('postgres', service['targets'][0]['name'])
+                self.assertEqual([5432], service['ports'])
+                self.assertEqual('tcp', service['protocol'])
+                self.assertEqual(1, len(service['targets']))
+                self.assertEqual('statefulset', service['targets'][0]['type'])
+                self.assertEqual('postgres', service['targets'][0]['name'])
 
     def test_site_load_podman(self):
         set_module_args({
@@ -120,30 +120,30 @@ class TestServicesLoad(unittest.TestCase):
         with self.assertRaises(AnsibleExitJson) as ex:
             services_load.main()
         result = ex.exception.args[0]
-        self.assertEquals(True, result['changed'])
+        self.assertEqual(True, result['changed'])
         self.assertIsNotNone(result['ansible_facts']['existing_services'])
 
         services = result['ansible_facts']['existing_services']
-        self.assertEquals(2, len(services))
+        self.assertEqual(2, len(services))
         for name, service in services.items():
             if name == "my-service-a":
-                self.assertEquals([8080, 9090], service['ports'])
-                self.assertEquals('http', service['protocol'])
-                self.assertEquals(1, len(service['targets']))
-                self.assertEquals('host', service['targets'][0]['type'])
-                self.assertEquals('10.0.0.1', service['targets'][0]['name'])
-                self.assertEquals(2, len(service['targets'][0]['ports']))
-                self.assertEquals(['8080:8080', '9090:8080'], service['targets'][0]['ports'])
+                self.assertEqual([8080, 9090], service['ports'])
+                self.assertEqual('http', service['protocol'])
+                self.assertEqual(1, len(service['targets']))
+                self.assertEqual('host', service['targets'][0]['type'])
+                self.assertEqual('10.0.0.1', service['targets'][0]['name'])
+                self.assertEqual(2, len(service['targets'][0]['ports']))
+                self.assertEqual(['8080:8080', '9090:8080'], service['targets'][0]['ports'])
             elif name == "postgres":
-                self.assertEquals([5432], service['ports'])
-                self.assertEquals('tcp', service['protocol'])
-                self.assertEquals(2, len(service['targets']))
-                self.assertEquals('host', service['targets'][0]['type'])
-                self.assertEquals('10.0.0.2', service['targets'][0]['name'])
-                self.assertEquals(['5432:5432'], service['targets'][0]['ports'])
-                self.assertEquals('host', service['targets'][1]['type'])
-                self.assertEquals('10.0.0.3', service['targets'][1]['name'])
-                self.assertEquals(['5432:2345'], service['targets'][1]['ports'])
+                self.assertEqual([5432], service['ports'])
+                self.assertEqual('tcp', service['protocol'])
+                self.assertEqual(2, len(service['targets']))
+                self.assertEqual('host', service['targets'][0]['type'])
+                self.assertEqual('10.0.0.2', service['targets'][0]['name'])
+                self.assertEqual(['5432:5432'], service['targets'][0]['ports'])
+                self.assertEqual('host', service['targets'][1]['type'])
+                self.assertEqual('10.0.0.3', service['targets'][1]['name'])
+                self.assertEqual(['5432:2345'], service['targets'][1]['ports'])
 
 
 deployments_json = """{

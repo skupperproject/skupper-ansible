@@ -2,6 +2,11 @@ TARBALL := $(shell echo "skupper/network/skupper-network-`grep -E '^version:' sk
 
 all: ansible-lint build
 
+dep:
+	pip install -r ./requirements.txt
+	pip install -r ./skupper/network/tests/unit/requirements.txt
+	pip install -r ./skupper/network/docs/requirements.txt
+
 ansible-lint:
 	cd skupper/network && ansible-lint --skip-list 'var-naming[pattern],var-naming[no-role-prefix]'
 

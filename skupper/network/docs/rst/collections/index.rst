@@ -1,6 +1,9 @@
 
 :orphan:
 
+.. meta::
+  :antsibull-docs: 2.7.0
+
 .. _list_of_collections:
 
 Collection Index

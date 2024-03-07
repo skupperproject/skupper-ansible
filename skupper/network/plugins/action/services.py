@@ -42,7 +42,9 @@ class ActionModule(BaseActionModule):
 
         # determining services to create and delete
         # services = task_vars['vars']['services'] if 'services' in task_vars['vars'] else dict()
-        services = self.my_hostvars['services'] if 'services' in self.my_hostvars else dict()
+        services = self.my_hostvars['services'] if 'services' in self.my_hostvars else \
+            task_vars['vars']['services'] if 'services' in task_vars['vars'] \
+            else dict()
         existing_services = task_vars['vars']['existing_services'] if 'existing_services' in task_vars['vars'] \
             else dict()
 

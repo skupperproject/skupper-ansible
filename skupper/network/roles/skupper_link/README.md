@@ -20,11 +20,16 @@ links:
   - host: <inventory host>
     name: <optional link name>
     cost: <optional cost value>
+    token: <optional static token yaml>
 ```
 
 Before executing this role, make sure that the skupper_token role was also
 executed as that role will save the tokens as a host variable, so the host
 variable must be populated before skupper can create links to a given site.
+
+In case you have a static token to use, then you don't need to invoke the
+skupper_token role previously. But when defining links using statically
+provided tokens, make sure to add a name to the link.
 
 Dependencies
 ------------
@@ -32,7 +37,7 @@ Dependencies
 **Role**
 
 * skupper_common
-* skupper_token
+* skupper_token (when linking by host name)
 
 Example Playbook
 ----------------

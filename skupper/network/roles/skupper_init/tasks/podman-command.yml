@@ -6,6 +6,7 @@
       - --platform
       - "{{ platform }}"
 
+
 - name: Adding --site-name
   ansible.builtin.set_fact:
     skupper_init_command: "{{ skupper_init_command + ['--site-name', init.siteName] }}"

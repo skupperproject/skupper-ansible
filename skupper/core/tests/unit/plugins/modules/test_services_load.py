@@ -79,8 +79,8 @@ class TestServicesLoad(unittest.TestCase):
 
         services = result['ansible_facts']['existing_services']
         self.assertEqual(4, len(services))
-        for name, service in services.items():
-            if name == "my-service-a":
+        for service in services:
+            if service['name'] == "my-service-a":
                 self.assertEqual([8080, 9090], service['ports'])
                 self.assertEqual('http', service['protocol'])
                 self.assertEqual(2, len(service['labels']))
@@ -90,7 +90,7 @@ class TestServicesLoad(unittest.TestCase):
                 self.assertEqual('nginx', service['targets'][0]['name'])
                 self.assertEqual(2, len(service['targets'][0]['ports']))
                 self.assertEqual(['8080:8080', '9090:8080'], service['targets'][0]['ports'])
-            elif name == "nginx-dc":
+            elif service['name'] == "nginx-dc":
                 self.assertEqual([8080], service['ports'])
                 self.assertEqual('tcp', service['protocol'])
                 self.assertEqual(1, len(service['targets']))
@@ -98,13 +98,13 @@ class TestServicesLoad(unittest.TestCase):
                 self.assertEqual('nginx-dc', service['targets'][0]['name'])
                 self.assertEqual(1, len(service['targets'][0]['ports']))
                 self.assertEqual(['8080:8080'], service['targets'][0]['ports'])
-            elif name == "nginx-skupper":
+            elif service['name'] == "nginx-skupper":
                 self.assertEqual([8080], service['ports'])
                 self.assertEqual('tcp', service['protocol'])
                 self.assertEqual(1, len(service['targets']))
                 self.assertEqual('service', service['targets'][0]['type'])
                 self.assertEqual('nginx.my-namespace', service['targets'][0]['name'])
-            elif name == "postgres":
+            elif service['name'] == "postgres":
                 self.assertEqual([5432], service['ports'])
                 self.assertEqual('tcp', service['protocol'])
                 self.assertEqual(1, len(service['targets']))
@@ -125,8 +125,8 @@ class TestServicesLoad(unittest.TestCase):
 
         services = result['ansible_facts']['existing_services']
         self.assertEqual(2, len(services))
-        for name, service in services.items():
-            if name == "my-service-a":
+        for service in services:
+            if service['name'] == "my-service-a":
                 self.assertEqual([8080, 9090], service['ports'])
                 self.assertEqual('http', service['protocol'])
                 self.assertEqual(1, len(service['targets']))
@@ -134,7 +134,7 @@ class TestServicesLoad(unittest.TestCase):
                 self.assertEqual('10.0.0.1', service['targets'][0]['name'])
                 self.assertEqual(2, len(service['targets'][0]['ports']))
                 self.assertEqual(['8080:8080', '9090:8080'], service['targets'][0]['ports'])
-            elif name == "postgres":
+            elif service['name'] == "postgres":
                 self.assertEqual([5432], service['ports'])
                 self.assertEqual('tcp', service['protocol'])
                 self.assertEqual(2, len(service['targets']))

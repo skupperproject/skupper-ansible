@@ -19,6 +19,7 @@ build-docs: build install
 	antsibull-docs sphinx-init --use-current --dest-dir ./skupper/core/docs skupper.core
 	(cd skupper/core/docs && pip install --user -U -r requirements.txt && ./build.sh) && \
 	rm -rf ./docs && mv skupper/core/docs/build/html/ ./docs && touch ./docs/.nojekyll
+	rm -rf ./skupper/core/docs/*
 
 build: clean 
 	cd skupper/core && ansible-galaxy collection build

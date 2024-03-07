@@ -1,5 +1,4 @@
 *.tar.gz
-skupper/core/docs/build
-skupper/core/docs/temp-rst
+skupper/core/docs/
 skupper/core/tests/output
 __pycache__/

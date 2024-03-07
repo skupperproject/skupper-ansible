@@ -7,7 +7,7 @@ all:
           skupper_init_site_name: public-ibmcloud
           skupper_token_uses: 2
           skupper_service_services:
-            frontend:
+            - name: frontend
               ports:
                 - 8080
     dmz:
@@ -40,11 +40,11 @@ all:
             - host: rhel9
             - host: rhel8
           skupper_service_services:
-            frontend:
+            - name: frontend
               ports: [8080]
               targets:
                 - type: "host"
                   name: "192.168.122.1"
-              hostIp: "192.168.122.1"
-              hostPorts:
+              host_ip: "192.168.122.1"
+              host_ports:
                 - 8080:9090

@@ -44,6 +44,11 @@ options:
                 required: true
                 type: dict
                 suboptions:
+                    name:
+                        description:
+                            - Service name
+                        required: false
+                        type: str
                     ports:
                         description:
                             - List of ports
@@ -62,29 +67,29 @@ options:
                         required: false
                         type: str
                         choices: ["json", "multipart"]
-                    generateTlsSecrets:
+                    generate_tls_secrets:
                         description:
                             - If enabled, service communication will be encrypted using TLS
                         required: false
                         type: bool
-                    eventChannel:
+                    event_channel:
                         description:
                             - If specified this service will be a channel for multicast events
                         required: false
                         type: bool
-                    containerName:
+                    container_name:
                         description:
                             - Alternative container name to be used for proxy container
                             - This option is only relevant on podman sites
                         required: false
                         type: str
-                    hostIp:
+                    host_ip:
                         description:
                             - Host IP to be bound to the proxy container port(s)
                             - This option is only relevant on podman sites
                         required: false
                         type: str
-                    hostPorts:
+                    host_ports:
                         description:
                             - List of ports to be mapped to the container port
                             - "Format for each entry is: <service-port>:<host-port>"
@@ -297,17 +302,17 @@ class Services:
                 command += ["--protocol", spec['protocol']]
             if spec['aggregate'] and spec['aggregate'] != "":
                 command += ["--aggregate", spec['aggregate']]
-            if spec['generateTlsSecrets'] is not None:
-                command += ["--generate-tls-secrets=%s" % spec['generateTlsSecrets']]
-            if spec['eventChannel'] is not None:
-                command += ["--event-channel=%s" % spec['eventChannel']]
+            if spec['generate_tls_secrets'] is not None:
+                command += ["--generate-tls-secrets=%s" % spec['generate_tls_secrets']]
+            if spec['event_channel'] is not None:
+                command += ["--event-channel=%s" % spec['event_channel']]
             if self.platform == "podman":
-                if spec['containerName'] and spec['containerName'] != "":
-                    command += ["--container-name", spec['containerName']]
-                if spec['hostIp'] and spec['hostIp'] != "":
-                    command += ["--host-ip", spec['hostIp']]
-                if spec['hostPorts'] and len(spec['hostPorts']) > 0:
-                    for host_port in spec['hostPorts']:
+                if spec['container_name'] and spec['container_name'] != "":
+                    command += ["--container-name", spec['container_name']]
+                if spec['host_ip'] and spec['host_ip'] != "":
+                    command += ["--host-ip", spec['host_ip']]
+                if spec['host_ports'] and len(spec['host_ports']) > 0:
+                    for host_port in spec['host_ports']:
                         command += ["--host-port", host_port]
             rc, stdout, stderr = self._module.run_command(command)
             if rc != 0:
@@ -324,14 +329,15 @@ argument_spec = dict(
     create=dict(type='list', required=False, elements='dict', options=dict(
         name=dict(type='str', required=True),
         spec=dict(type='dict', required=True, options=dict(
+            name=dict(type='str', required=False),
             ports=dict(type='list', required=True, elements='int'),
             protocol=dict(type='str', default="tcp", choices=["tcp", "http", "http2"]),
             aggregate=dict(type='str', required=False, choices=["json", "multipart"]),
-            generateTlsSecrets=dict(type='bool', required=False),
-            eventChannel=dict(type='bool', required=False),
-            containerName=dict(type='str', required=False),
-            hostIp=dict(type='str', required=False),
-            hostPorts=dict(type='list', required=False, elements='str'),
+            generate_tls_secrets=dict(type='bool', required=False),
+            event_channel=dict(type='bool', required=False),
+            container_name=dict(type='str', required=False),
+            host_ip=dict(type='str', required=False),
+            host_ports=dict(type='list', required=False, elements='str'),
         )),
         targets=dict(type='list', required=False, elements='dict', options=dict(
             type=dict(type='str', required=True),

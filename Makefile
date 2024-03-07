@@ -1,6 +1,6 @@
 TARBALL := $(shell echo "skupper/core/skupper-core-`grep -E '^version:' skupper/core/galaxy.yml | awk '{print $$NF}'`.tar.gz")
 
-all: ansible-lint build build-docs
+all: ansible-lint build-docs
 
 dep:
 	pip install -r ./requirements.txt

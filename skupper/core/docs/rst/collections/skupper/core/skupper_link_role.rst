@@ -55,14 +55,14 @@ Synopsis
 .. Description
 
 - Maintains existing links on a site based on the provided links object.
-  All desired links must be provided as part of the \ :literal:`skupper\_link\_links`\  object.
+  All desired links must be provided as part of the \ :literal:`skupper\_link\_links`\  list.
   Links must specify a target hostname (a valid host from the Ansible inventory), in such
   case the token for the respective link is expected to be available as a host fact (for the target host)
   named \ :literal:`skupper\_token\_generated\_token`\ . This fact is set automatically if the \ `skupper.core.skupper\_token role <skupper_token_role.html>`__\ 
   is invoked prior to this one.
   Alternatively if the intention is to use a statically provided token, then the \ :literal:`token`\  parameter of the link object
   must be populated as well as the \ :literal:`name`\  of the link.
-  This role uses the \ :ref:`skupper.core.links\_load <ansible_collections.skupper.core.links_load_module>`\  and \ :ref:`skupper.core.links <ansible_collections.skupper.core.links_module>`\  modules to ensure all desired are defined.
+  This role uses the \ :ref:`skupper.core.links\_load <ansible_collections.skupper.core.links_load_module>`\  and \ :ref:`skupper.core.links <ansible_collections.skupper.core.links_module>`\  modules to ensure all desired links are defined.
 
 
 .. Requirements

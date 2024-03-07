@@ -61,17 +61,18 @@ class ServiceTarget:
 
 class Service:
     def __init__(self, **kwargs):
+        self.name: str = ""
         self.ports: list[int] = []
         self.protocol: str = ""
         self.targets: typing.Optional[list[dict]] = None
         self.labels: typing.Optional[list] = None
         self.aggregate: typing.Optional[str] = None
-        self.generateTlsSecrets: typing.Optional[bool] = None
-        self.eventChannel: typing.Optional[bool] = None
+        self.generate_tls_secrets: typing.Optional[bool] = None
+        self.event_channel: typing.Optional[bool] = None
         # podman only
-        self.containerName: typing.Optional[str] = None
-        self.hostIp: typing.Optional[str] = None
-        self.hostPorts: typing.Optional[list[str]] = None
+        self.container_name: typing.Optional[str] = None
+        self.host_ip: typing.Optional[str] = None
+        self.host_ports: typing.Optional[list[str]] = None
         self.__dict__.update(kwargs)
         if self.protocol == "":
             self.protocol = "tcp"

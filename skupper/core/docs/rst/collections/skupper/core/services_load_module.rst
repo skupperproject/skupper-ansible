@@ -360,7 +360,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`dictionary`
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
 
       .. raw:: html
 
@@ -380,7 +380,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
       .. rst-class:: ansible-option-sample
 
-      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`{"existing\_services": {"db": {"ports": [5432]}, "nearestprime": {"ports": [8000], "targets": [{"name": "nearestprime", "type": "deployment"}]}}}`
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`{"existing\_services": [{"name": "nearestprime", "ports": [8000], "targets": [{"name": "nearestprime", "type": "deployment"}]}, {"name": "db", "ports": [5432]}]}`
 
 
       .. raw:: html

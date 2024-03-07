@@ -4,48 +4,119 @@ argument_specs:
     description: |
       Maintains existing services on a site based on the provided services object.
       All desired services must be provided as part of the C(skupper_service_services) list.
+      Existing services that are no longer defined as part of the C(skupper_service_services) list will be removed.
+      Modifications done to existing service definitions will cause the service to be deleted and created.
+      Targets will be maintained similarly.
       This role uses the M(skupper.core.services_load) and M(skupper.core.services) modules to ensure all desired services are defined.
     version_added: 1.6.0
     author: Skupper team
     options:
-      skupper_link_links:
+      skupper_service_services:
         description: |
-          List of all desired links to exist at a given site.
-          Links that are defined on the list, but does not exist, will be created.
-          The links that exist on the Skupper site but are not defined through this list
+          List of all desired services to exist at a given site.
+          Services that are defined on the list, but does not exist, will be created.
+          The services that exist on the Skupper site but are not defined through this list
           will be removed.
+          Changes to existing service definition will cause the service to be deleted and created.
+          Targets will be maintained similarly.
         version_added: 1.6.0
         type: list
         elements: dict
         options:
-          host:
-            description: |
-              The Ansible Inventory hostname to use as a target for this link.
-              It can be populated if the L(skupper.core.skupper_token role,skupper_token_role.html) has been invoked earlier,
-              of when using the L(skupper.core.network_config role,network_config_role.html) (which also invokes the C(skupper_token role)
-              as a dependency.
-              In case the intention is to use a static token, this argument must not be provided.
-            version_added: 1.6.0
-            type: str
-            required: false
           name:
             description: |
-              The name of the link to be defined at the target site.
-              When using a static token, this argument is mandatory, as it is used to determine if the link already exists.
+              The name of the service to be defined at the target site.
             version_added: 1.6.0
             type: str
-            required: false
-          cost:
-            description: The cost of the link.
-            version_added: 1.6.0
-            type: int
-            default: 1
-          token:
+            required: true
+          ports:
             description: |
-              A static token to be used when creating this link.
-              When a static token is provided, the C(name) argument must also be set and the C(host) argument
-              must not be provided.
-              The token must be represented as a YAML string.
+              List of ports provided by the service
+            version_added: 1.6.0
+            type: list
+            elements: int
+            required: true
+          protocol:
+            description: |
+              The protocol to be used.
+              One of: tcp, http or http2.
+            version_added: 1.6.0
+            type: str
+            default: tcp
+          labels:
+            description: |
+              Labels added to the Skupper service.
+            version_added: 1.6.0
+            type: list
+            elements: str
+            required: false
+          aggregate:
+            description: |
+              The aggregation strategy to use. One of 'json' or 'multipart'.
+              If specified requests to this service will be sent to all registered implementations and the responses aggregated.
             version_added: 1.6.0
             type: str
             required: false
+          generate_tls_secrets:
+            description: |
+              If specified, the service communication will be encrypted using TLS
+            version_added: 1.6.0
+            type: bool
+            default: false
+          event_channel:
+            description: |
+              If specified, this service will be a channel for multicast events.
+            version_added: 1.6.0
+            type: bool
+            default: false
+          container_name:
+            description: |
+              Name of the container to create on podman sites.
+              This argument is only used when C(skupper_option_platform=podman).
+            version_added: 1.6.0
+            type: str
+            required: false
+          host_ip:
+            description: |
+              Optional host ip address used to bind to the service ports.
+              This argument is only used when C(skupper_option_platform=podman).
+            version_added: 1.6.0
+            type: str
+            required: false
+          host_ports:
+            description: |
+              A list that maps service ports to host ports
+              This argument is only used when C(skupper_option_platform=podman).
+            version_added: 1.6.0
+            type: list
+            elements: int
+            required: false
+          targets:
+            description: |
+              List of targets to bind.
+            version_added: 1.6.0
+            type: list
+            elements: dict
+            required: false
+            options:
+              type:
+                description: |
+                  Type of target to bind.
+                  On Kubernetes, one of: deployment, statefulset, service, deploymentconfig.
+                  On Podman, only: host.
+                version_added: 1.6.0
+                type: str
+                required: true
+              name:
+                description: |
+                  Name that represents the defined target type.
+                version_added: 1.6.0
+                type: str
+                required: true
+              ports:
+                description: |
+                  A list that maps service ports to the target ports.
+                version_added: 1.6.0
+                type: list
+                elements: int
+                required: false

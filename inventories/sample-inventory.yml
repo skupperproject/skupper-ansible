@@ -8,7 +8,7 @@ all:
           skupper_option_namespace: "public1"
           skupper_token_type: cert
           skupper_service_services:
-            nginx:
+            - name: nginx
               ports:
                 - 8080
               labels:
@@ -22,7 +22,7 @@ all:
           skupper_link_links:
             - host: public1
           skupper_service_services:
-            nginx:
+            - name: nginx
               ports:
                 - 8080
               targets:
@@ -44,11 +44,11 @@ all:
               cost: 2
               name: link-to-public1
           skupper_service_services:
-            nginx:
+            - name: nginx
               ports: [8080]
               targets:
                 - type: "host"
                   name: "192.168.122.1"
-              hostIp: "192.168.122.1"
-              hostPorts:
+              host_ip: "192.168.122.1"
+              host_ports:
                 - 8080:8888

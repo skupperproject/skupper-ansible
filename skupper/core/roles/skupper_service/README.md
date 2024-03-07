@@ -21,15 +21,15 @@ target.
 ```yaml
 skupper_service_services:
   # Sample service definition (indexed by name)
-  name:
+  - name:                        # name of the service
     ports: []                    # int array
     protocol: ""                 # choice tcp, http, http2
     labels: []                   # label and value separated by equal sign
     aggregate: ""                # choice: json, multiplart
-    generateTlsSecrets: False    # boolean
-    eventChannel: False          # boolean
-    targets: []                  # array of type and name
-      type: ""                   # type of target to bind (values vary based on selected platform)
+    generate_tls_secrets: false  # boolean
+    event_channel: false         # boolean
+    targets:                     # array of type and name
+    - type: ""                   # type of target to bind (values vary based on selected platform)
       name: ""                   # value that represents the selected target type
       ports: []                  # array mapping service ports to target ports
 
@@ -43,9 +43,9 @@ skupper_service_services:
     # podman flags
     #
     # valid targetType values: "host"
-    containerName: ""   # optinal alternative name for service container
-    hostIp: ""          # optional host ip address used to bind to the service ports
-    hostPorts: []       # array mapping service ports to a host port
+    container_name: ""   # optinal alternative name for service container
+    host_ip: ""          # optional host ip address used to bind to the service ports
+    host_ports: []       # array mapping service ports to a host port
 
 ```
 
@@ -73,7 +73,7 @@ can be specified. Note that it has the `services` field.
 ```yaml
   site-a:
     skupper_service_services:
-      nginx:
+      - name: nginx
         ports:
           - 8080
         labels:
@@ -81,7 +81,7 @@ can be specified. Note that it has the `services` field.
           - label2=value2
   site-b:
     skupper_service_services:
-      nginx:
+      - name: nginx
         ports:
           - 8080
         targets:
@@ -89,13 +89,13 @@ can be specified. Note that it has the `services` field.
             name: nginx
   rhel9:
     skupper_service_services:
-      nginx:
+      - name: nginx
         ports: [8080]
         targets:
           - type: "host"
             name: "192.168.122.1"
-        hostIp: "192.168.122.1"
-        hostPorts:
+        host_ip: "192.168.122.1"
+        host_ports:
           - 8080:8888
 ```
 

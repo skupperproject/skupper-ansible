@@ -157,13 +157,13 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <h3><a class="toc-backref" href="#id2" role="doc-backlink">Synopsis</a><a class="headerlink" href="#synopsis" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Maintains existing links on a site based on the provided links object.
-All desired links must be provided as part of the <code class="docutils literal notranslate"><span class="pre">skupper_link_links</span></code> object.
+All desired links must be provided as part of the <code class="docutils literal notranslate"><span class="pre">skupper_link_links</span></code> list.
 Links must specify a target hostname (a valid host from the Ansible inventory), in such
 case the token for the respective link is expected to be available as a host fact (for the target host)
 named <code class="docutils literal notranslate"><span class="pre">skupper_token_generated_token</span></code>. This fact is set automatically if the <a class="reference external" href="skupper_token_role.html">skupper.core.skupper_token role</a>is invoked prior to this one.
 Alternatively if the intention is to use a statically provided token, then the <code class="docutils literal notranslate"><span class="pre">token</span></code> parameter of the link object
 must be populated as well as the <code class="docutils literal notranslate"><span class="pre">name</span></code> of the link.
-This role uses the <a class="reference internal" href="links_load_module.html#ansible-collections-skupper-core-links-load-module"><span class="std std-ref">skupper.core.links_load</span></a> and <a class="reference internal" href="links_module.html#ansible-collections-skupper-core-links-module"><span class="std std-ref">skupper.core.links</span></a> modules to ensure all desired are defined.</p></li>
+This role uses the <a class="reference internal" href="links_load_module.html#ansible-collections-skupper-core-links-load-module"><span class="std std-ref">skupper.core.links_load</span></a> and <a class="reference internal" href="links_module.html#ansible-collections-skupper-core-links-module"><span class="std std-ref">skupper.core.links</span></a> modules to ensure all desired links are defined.</p></li>
 </ul>
 </section>
 <section id="parameters">

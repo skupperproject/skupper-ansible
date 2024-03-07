@@ -348,21 +348,21 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-create/spec/containerName"></div>
+        <div class="ansibleOptionAnchor" id="parameter-create/spec/container_name"></div>
 
       .. raw:: latex
 
         \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
 
-      .. _ansible_collections.skupper.core.services_module__parameter-create/spec/containername:
+      .. _ansible_collections.skupper.core.services_module__parameter-create/spec/container_name:
 
       .. rst-class:: ansible-option-title
 
-      **containerName**
+      **container_name**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-create/spec/containerName" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-create/spec/container_name" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
 
@@ -392,21 +392,21 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-create/spec/eventChannel"></div>
+        <div class="ansibleOptionAnchor" id="parameter-create/spec/event_channel"></div>
 
       .. raw:: latex
 
         \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
 
-      .. _ansible_collections.skupper.core.services_module__parameter-create/spec/eventchannel:
+      .. _ansible_collections.skupper.core.services_module__parameter-create/spec/event_channel:
 
       .. rst-class:: ansible-option-title
 
-      **eventChannel**
+      **event_channel**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-create/spec/eventChannel" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-create/spec/event_channel" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
 
@@ -442,21 +442,21 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-create/spec/generateTlsSecrets"></div>
+        <div class="ansibleOptionAnchor" id="parameter-create/spec/generate_tls_secrets"></div>
 
       .. raw:: latex
 
         \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
 
-      .. _ansible_collections.skupper.core.services_module__parameter-create/spec/generatetlssecrets:
+      .. _ansible_collections.skupper.core.services_module__parameter-create/spec/generate_tls_secrets:
 
       .. rst-class:: ansible-option-title
 
-      **generateTlsSecrets**
+      **generate_tls_secrets**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-create/spec/generateTlsSecrets" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-create/spec/generate_tls_secrets" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
 
@@ -492,21 +492,21 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-create/spec/hostIp"></div>
+        <div class="ansibleOptionAnchor" id="parameter-create/spec/host_ip"></div>
 
       .. raw:: latex
 
         \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
 
-      .. _ansible_collections.skupper.core.services_module__parameter-create/spec/hostip:
+      .. _ansible_collections.skupper.core.services_module__parameter-create/spec/host_ip:
 
       .. rst-class:: ansible-option-title
 
-      **hostIp**
+      **host_ip**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-create/spec/hostIp" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-create/spec/host_ip" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
 
@@ -536,21 +536,21 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-create/spec/hostPorts"></div>
+        <div class="ansibleOptionAnchor" id="parameter-create/spec/host_ports"></div>
 
       .. raw:: latex
 
         \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
 
-      .. _ansible_collections.skupper.core.services_module__parameter-create/spec/hostports:
+      .. _ansible_collections.skupper.core.services_module__parameter-create/spec/host_ports:
 
       .. rst-class:: ansible-option-title
 
-      **hostPorts**
+      **host_ports**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-create/spec/hostPorts" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-create/spec/host_ports" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
 
@@ -573,6 +573,48 @@ Parameters
       Format for each entry is: \<service-port\>:\<host-port\>
 
       This option is only relevant on podman sites
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-create/spec/name"></div>
+
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
+      .. _ansible_collections.skupper.core.services_module__parameter-create/spec/name:
+
+      .. rst-class:: ansible-option-title
+
+      **name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-create/spec/name" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Service name
 
 
       .. raw:: html

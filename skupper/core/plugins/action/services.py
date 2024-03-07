@@ -42,20 +42,25 @@ class ActionModule(BaseActionModule):
 
         # determining services to create and delete
         # services = task_vars['vars']['services'] if 'services' in task_vars['vars'] else dict()
-        services = self.get_my_host_or_task_var('skupper_service_services', task_vars, dict())
+        services = self.get_my_host_or_task_var('skupper_service_services', task_vars, list())
         existing_services = task_vars['vars']['existing_services'] if 'existing_services' in task_vars['vars'] \
-            else dict()
+            else list()
 
         # lists with ServiceParam dictionaries to be passed as arguments to the module
         create = list()
         delete = list()
 
+        # extracting service names
+        service_names = [s['name'] for s in services if 'name' in s.keys()]
+        existing_service_names = [s['name'] for s in existing_services if 'name' in s.keys()]
+
         # services to be removed or updated
-        for svc_name, ex_svc_info in existing_services.items():
-            if svc_name not in services:
+        for ex_svc_info in existing_services:
+            svc_name = ex_svc_info['name']
+            if svc_name not in service_names:
                 delete.append(ServiceParam(name=svc_name).vars())
             else:
-                svc_info = services[svc_name]
+                svc_info = next(s for s in services if s['name'] == svc_name)
                 ex_svc = Service(**ex_svc_info)
                 ex_labels = self.labels_as_dict(ex_svc.labels if ex_svc.labels else dict())
                 svc = Service(**svc_info)
@@ -108,7 +113,8 @@ class ActionModule(BaseActionModule):
                                                labels=self.labels_dict_to_list(del_labels, True)
                                                ).vars())
 
-        for svc_name, svc_info in services.items():
+        for svc_info in services:
+            svc_name = svc_info['name']
             # new service found
             svc = Service(**svc_info)
 
@@ -122,7 +128,7 @@ class ActionModule(BaseActionModule):
                     target['ports'] = all_target_ports
 
             labels = self.labels_as_dict(svc.labels if svc.labels else dict())
-            if svc_name not in existing_services:
+            if svc_name not in existing_service_names:
                 create.append(ServiceParam(
                     name=svc_name,
                     spec=svc.vars(),
@@ -132,7 +138,7 @@ class ActionModule(BaseActionModule):
                 continue
 
             # validating new targets
-            ex_svc_info = existing_services[svc_name]
+            ex_svc_info = next(s for s in existing_services if s['name'] == svc_name)
             ex_targets = ex_svc_info['targets'] if 'targets' in ex_svc_info else list()
             add_targets = list[dict]()
             for target in targets:

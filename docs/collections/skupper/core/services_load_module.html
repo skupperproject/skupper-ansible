@@ -244,11 +244,11 @@ see <a class="reference internal" href="#ansible-collections-skupper-core-servic
 <tbody>
 <tr class="row-even"><td><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="return-existing_services"></div><p class="ansible-option-title" id="ansible-collections-skupper-core-services-load-module-return-existing-services"><strong>existing_services</strong></p>
-<a class="ansibleOptionLink" href="#return-existing_services" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">dictionary</span></p>
+<a class="ansibleOptionLink" href="#return-existing_services" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>List of existing services and targets</p>
 <p class="ansible-option-line"><strong class="ansible-option-returned-bold">Returned:</strong> always</p>
-<p class="ansible-option-line ansible-option-sample"><strong class="ansible-option-sample-bold">Sample:</strong> <code class="ansible-option-sample docutils literal notranslate"><span class="pre">{&quot;existing_services&quot;:</span> <span class="pre">{&quot;db&quot;:</span> <span class="pre">{&quot;ports&quot;:</span> <span class="pre">[5432]},</span> <span class="pre">&quot;nearestprime&quot;:</span> <span class="pre">{&quot;ports&quot;:</span> <span class="pre">[8000],</span> <span class="pre">&quot;targets&quot;:</span> <span class="pre">[{&quot;name&quot;:</span> <span class="pre">&quot;nearestprime&quot;,</span> <span class="pre">&quot;type&quot;:</span> <span class="pre">&quot;deployment&quot;}]}}}</span></code></p>
+<p class="ansible-option-line ansible-option-sample"><strong class="ansible-option-sample-bold">Sample:</strong> <code class="ansible-option-sample docutils literal notranslate"><span class="pre">{&quot;existing_services&quot;:</span> <span class="pre">[{&quot;name&quot;:</span> <span class="pre">&quot;nearestprime&quot;,</span> <span class="pre">&quot;ports&quot;:</span> <span class="pre">[8000],</span> <span class="pre">&quot;targets&quot;:</span> <span class="pre">[{&quot;name&quot;:</span> <span class="pre">&quot;nearestprime&quot;,</span> <span class="pre">&quot;type&quot;:</span> <span class="pre">&quot;deployment&quot;}]},</span> <span class="pre">{&quot;name&quot;:</span> <span class="pre">&quot;db&quot;,</span> <span class="pre">&quot;ports&quot;:</span> <span class="pre">[5432]}]}</span></code></p>
 </div></td>
 </tr>
 </tbody>

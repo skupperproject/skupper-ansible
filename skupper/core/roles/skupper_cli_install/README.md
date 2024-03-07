@@ -18,7 +18,6 @@ Example Playbook
 
   ---
   - hosts: all
-    user: root
     roles:
       - skupper.core.skupper_cli_install
 

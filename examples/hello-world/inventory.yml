@@ -11,13 +11,13 @@ all:
           skupper_init_enable_console: 'true'
           skupper_init_console_password: 'admin'
           skupper_service_services:
-            frontend:
+            - name: frontend
               ports:
                 - 8080
               targets:
                 - type: "deployment"
                   name: "frontend"
-            backend:
+            - name: backend
               ports:
                 - 8080
         east:
@@ -28,7 +28,7 @@ all:
           skupper_link_links:
             - host: west
           skupper_service_services:
-            backend:
+            - name: backend
               ports:
                 - 8080
               targets:

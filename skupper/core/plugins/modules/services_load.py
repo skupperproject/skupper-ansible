@@ -95,9 +95,9 @@ class ServicesLoader:
                     if svc_port is not None:
                         host_ports.append("%s:%s" % (svc_port, ctr_port if ctr_port is not None else svc_port))
             info = dict()
-            info['containerName'] = name if name != address else None
-            info['hostIp'] = host_ip
-            info['hostPorts'] = host_ports if len(host_ports) > 0 else None
+            info['container_name'] = name if name != address else None
+            info['host_ip'] = host_ip
+            info['host_ports'] = host_ports if len(host_ports) > 0 else None
             self.podman_containers[address] = info
 
         vol_info = self._podman() + ['volume', 'inspect', 'skupper-services']
@@ -168,25 +168,26 @@ class ServicesLoader:
             base_cmd.append("--url=%s" % self.podman_endpoint)
         return base_cmd
 
-    def load_services(self, services_json: dict) -> dict:
-        services = dict()
+    def load_services(self, services_json: dict) -> list:
+        services = list()
         for name in services_json:
             info = services_json[name]
             service = Service()
+            service.name = name
             service_targets = list()
             service.ports = info['ports']
             service.protocol = info['protocol']
             service.labels = ["%s=%s" % (k, v) for k, v in info['labels'].items()] if 'labels' in info else None
             service.aggregate = info['aggregate'] if 'aggregate' in info else None
-            service.generateTlsSecrets = info['tlsCredentials'] if 'tlsCredentials' in info else None
-            service.eventChannel = info['eventchannel'] if 'eventchannel' in info else None
+            service.generate_tls_secrets = info['tlsCredentials'] if 'tlsCredentials' in info else None
+            service.event_channel = info['eventchannel'] if 'eventchannel' in info else None
 
             # retrieving podman specific settings
             if self.platform == "podman" and name in self.podman_containers:
                 container_info = self.podman_containers[name]
-                service.containerName = container_info['containerName']
-                service.hostIp = container_info['hostIp']
-                service.hostPorts = container_info['hostPorts']
+                service.container_name = container_info['container_name']
+                service.host_ip = container_info['host_ip']
+                service.host_ports = container_info['host_ports']
 
             # processing (optional) targets
             if 'targets' in info and info['targets'] is not None:
@@ -211,7 +212,7 @@ class ServicesLoader:
             if len(service_targets) > 0:
                 service.targets = service_targets
 
-            services[name] = {k: v for k, v in vars(service).items() if v}
+            services.append({k: v for k, v in vars(service).items() if v})
 
         return services
 

@@ -1,28 +1,28 @@
-TARBALL := $(shell echo "skupper/core/skupper-core-`grep -E '^version:' skupper/core/galaxy.yml | awk '{print $$NF}'`.tar.gz")
+TARBALL := $(shell echo "skupper/skupper/skupper-skupper-`grep -E '^version:' skupper/skupper/galaxy.yml | awk '{print $$NF}'`.tar.gz")
 
 all: ansible-lint build-docs
 
 dep:
 	pip install -r ./requirements.txt
-	pip install -r ./skupper/core/tests/unit/requirements.txt
-	pip install -r ./skupper/core/docs/requirements.txt
+	pip install -r ./skupper/skupper/tests/unit/requirements.txt
+	pip install -r ./skupper/skupper/docs/requirements.txt
 
 ansible-lint:
-	cd skupper/core && ansible-lint -v
+	cd skupper/skupper && ansible-lint -v
 
 release-changelog:
 	pip install --user -U antsibull-changelog
-	cd skupper/core && antsibull-changelog release
+	cd skupper/skupper && antsibull-changelog release
 
 build-docs: build install
-	rm -rf ./skupper/core/docs/*
-	antsibull-docs sphinx-init --use-current --dest-dir ./skupper/core/docs skupper.core
-	(cd skupper/core/docs && pip install --user -U -r requirements.txt && ./build.sh) && \
-	rm -rf ./docs && mv skupper/core/docs/build/html/ ./docs && touch ./docs/.nojekyll
-	rm -rf ./skupper/core/docs/*
+	rm -rf ./skupper/skupper/docs/*
+	antsibull-docs sphinx-init --use-current --dest-dir ./skupper/skupper/docs skupper.skupper
+	(cd skupper/skupper/docs && pip install --user -U -r requirements.txt && ./build.sh) && \
+	rm -rf ./docs && mv skupper/skupper/docs/build/html/ ./docs && touch ./docs/.nojekyll
+	rm -rf ./skupper/skupper/docs/*
 
 build: clean 
-	cd skupper/core && ansible-galaxy collection build
+	cd skupper/skupper && ansible-galaxy collection build
 
 clean:
 	@[[ -f "$(TARBALL)" ]] && rm $(TARBALL) || true
@@ -32,10 +32,10 @@ install:
 	@ansible-galaxy collection install -f "$(TARBALL)"
 
 sanity-tests:
-	cd skupper/core && ansible-test sanity -v --color
+	cd skupper/skupper && ansible-test sanity -v --color
 
 unit-tests:
-	cd skupper/core && ansible-test units -vvv --color
+	cd skupper/skupper && ansible-test units -vvv --color
 
 e2e-setup:
 	cd examples/hello-world && ansible-playbook -i inventory.yml setup.yml

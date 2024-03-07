@@ -1,0 +1,122 @@
+argument_specs:
+  main:
+    short_description: Maintains existing services on a site
+    description: |
+      Maintains existing services on a site based on the provided services object.
+      All desired services must be provided as part of the C(skupper_service_services) list.
+      Existing services that are no longer defined as part of the C(skupper_service_services) list will be removed.
+      Modifications done to existing service definitions will cause the service to be deleted and created.
+      Targets will be maintained similarly.
+      This role uses the M(skupper.skupper.services_load) and M(skupper.skupper.services) modules to ensure all desired services are defined.
+    version_added: 1.6.0
+    author: Skupper team
+    options:
+      skupper_service_services:
+        description: |
+          List of all desired services to exist at a given site.
+          Services that are defined on the list, but does not exist, will be created.
+          The services that exist on the Skupper site but are not defined through this list
+          will be removed.
+          Changes to existing service definition will cause the service to be deleted and created.
+          Targets will be maintained similarly.
+        version_added: 1.6.0
+        type: list
+        elements: dict
+        options:
+          name:
+            description: |
+              The name of the service to be defined at the target site.
+            version_added: 1.6.0
+            type: str
+            required: true
+          ports:
+            description: |
+              List of ports provided by the service
+            version_added: 1.6.0
+            type: list
+            elements: int
+            required: true
+          protocol:
+            description: |
+              The protocol to be used.
+              One of: tcp, http or http2.
+            version_added: 1.6.0
+            type: str
+            default: tcp
+          labels:
+            description: |
+              Labels added to the Skupper service.
+            version_added: 1.6.0
+            type: list
+            elements: str
+            required: false
+          aggregate:
+            description: |
+              The aggregation strategy to use. One of 'json' or 'multipart'.
+              If specified requests to this service will be sent to all registered implementations and the responses aggregated.
+            version_added: 1.6.0
+            type: str
+            required: false
+          generate_tls_secrets:
+            description: |
+              If specified, the service communication will be encrypted using TLS
+            version_added: 1.6.0
+            type: bool
+            default: false
+          event_channel:
+            description: |
+              If specified, this service will be a channel for multicast events.
+            version_added: 1.6.0
+            type: bool
+            default: false
+          container_name:
+            description: |
+              Name of the container to create on podman sites.
+              This argument is only used when C(skupper_option_platform=podman).
+            version_added: 1.6.0
+            type: str
+            required: false
+          host_ip:
+            description: |
+              Optional host ip address used to bind to the service ports.
+              This argument is only used when C(skupper_option_platform=podman).
+            version_added: 1.6.0
+            type: str
+            required: false
+          host_ports:
+            description: |
+              A list that maps service ports to host ports
+              This argument is only used when C(skupper_option_platform=podman).
+            version_added: 1.6.0
+            type: list
+            elements: str
+            required: false
+          targets:
+            description: |
+              List of targets to bind.
+            version_added: 1.6.0
+            type: list
+            elements: dict
+            required: false
+            options:
+              type:
+                description: |
+                  Type of target to bind.
+                  On Kubernetes, one of: deployment, statefulset, service, deploymentconfig.
+                  On Podman, only: host.
+                version_added: 1.6.0
+                type: str
+                required: true
+              name:
+                description: |
+                  Name that represents the defined target type.
+                version_added: 1.6.0
+                type: str
+                required: true
+              ports:
+                description: |
+                  A list that maps service ports to the target ports.
+                version_added: 1.6.0
+                type: list
+                elements: int
+                required: false

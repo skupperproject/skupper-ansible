@@ -1,7 +1,7 @@
 ---
 - hosts: all
   collections:
-    - skupper.core
+    - skupper.skupper
   tasks:
     - import_role:
         name: skupper-link

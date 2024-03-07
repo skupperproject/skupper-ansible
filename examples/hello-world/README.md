@@ -26,10 +26,10 @@ providing the necessary information for all skupper roles.
 
 The `setup.yml` playbook will prepare the Kubernetes namespaces with
 workloads used by the hello world example, and later it will invoke the
-`skupper` role, which will set up the entire skupper.core.
+`skupper` role, which will set up the entire skupper.skupper.
 
 This role is idempotent, so as long as your host variables describe your desired
-skupper.core state, calling the `skupper` role again should only update the
+skupper.skupper state, calling the `skupper` role again should only update the
 modified resources.
 
 Looking at the variables on the `west` host on the `inventory.yml` file, we see:

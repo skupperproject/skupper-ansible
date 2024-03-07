@@ -3,4 +3,4 @@
   tasks:
   - ansible.builtin.include_tasks: setup-k8s.yml
   - import_role:
-      name: skupper.core.network_config
+      name: skupper.skupper.network_config

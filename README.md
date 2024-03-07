@@ -10,15 +10,15 @@ skupperproject.skupper
 
 ## Roles
 
-* [skupper](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/core/roles/skupper)
-* [skupper_cli_install](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/core/roles/skupper_cli_install)
-* [skupper_option (internal - should not be used directly)](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/core/roles/skupper_option)
-* [skupper_init](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/core/roles/skupper_init)
-* [skupper_delete](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/core/roles/skupper_delete)
-* [skupper_token](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/core/roles/skupper_token)
-* [skupper_link](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/core/roles/skupper_link)
-* [skupper_service](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/core/roles/skupper_service)
-* [skupper_update](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/core/roles/skupper_update)
+* [skupper](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/skupper/roles/skupper)
+* [skupper_cli_install](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/skupper/roles/skupper_cli_install)
+* [skupper_option (internal - should not be used directly)](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/skupper/roles/skupper_option)
+* [skupper_init](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/skupper/roles/skupper_init)
+* [skupper_delete](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/skupper/roles/skupper_delete)
+* [skupper_token](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/skupper/roles/skupper_token)
+* [skupper_link](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/skupper/roles/skupper_link)
+* [skupper_service](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/skupper/roles/skupper_service)
+* [skupper_update](https://github.com/skupperproject/skupper-ansible/tree/main/skupper/skupper/roles/skupper_update)
 
 ## Requirements
 

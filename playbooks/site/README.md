@@ -1,6 +1,6 @@
 # Initializing a site
 
-The `initialize.yaml` playbook demonstrates how to initialize Skupper
+The `skupper-init.yaml` playbook demonstrates how to initialize Skupper
 on a given namespace, using the **_skupper_init_** role.
 
 Before initializing, the playbook also ensures that the **_sample_**

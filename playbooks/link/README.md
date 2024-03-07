@@ -9,7 +9,8 @@ token will be created and stored as a **host variable** named
 
 In case you have a pre-generated token to use, you can add it as part
 of the link definition and instead of setting the `host` in the link definition,
-you must enter a `token` propery with the respective token in YAML.
+you must add a `token` argument with the respective token in YAML format. You also
+need to provide a `name` to the respective link.
 Therefore, you won't need to call the `skupper_token` role.
 
 Looking at the `inventory.yaml`, it defines 2 ansible nodes, each one

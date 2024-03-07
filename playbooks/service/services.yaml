@@ -7,6 +7,6 @@
       vars:
         skupper_option_namespace: sample
         skupper_service_services:
-          sample-service:
+          - name: sample-service
             ports:
               - 8080

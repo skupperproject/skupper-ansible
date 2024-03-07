@@ -1,7 +1,0 @@
----
-- hosts: all
-  collections:
-    - skupper.core
-  tasks:
-    - import_role:
-        name: skupper_init

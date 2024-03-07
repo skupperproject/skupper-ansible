@@ -4,4 +4,4 @@
     - skupper.core
   tasks:
     - import_role:
-        name: skupper
+        name: network_config

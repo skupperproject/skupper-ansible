@@ -1,0 +1,12 @@
+- name: Preparing token create command
+  ansible.builtin.set_fact:
+    skupper_token_command:
+      - skupper
+      - token
+      - create
+      - --platform
+      - "{{ skupper_option_platform }}"
+      - --name
+      - "{{ skupper_token_name }}"
+      - --ingress-host
+      - "{{ skupper_token_ingress_host }}"

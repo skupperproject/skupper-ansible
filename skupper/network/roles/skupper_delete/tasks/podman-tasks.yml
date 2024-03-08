@@ -1,2 +1,0 @@
-- name: Prepare delete command
-  ansible.builtin.include_tasks: podman-command.yml

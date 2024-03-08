@@ -1,0 +1,24 @@
+---
+- hosts: all
+  tasks:
+    - name: Creating the sample namespace
+      kubernetes.core.k8s:
+        kind: Namespace
+        name: "{{ skupper_option_namespace }}"
+        state: present
+    - ansible.builtin.include_role:
+        name: skupper.skupper.skupper_init
+- hosts: sample-a
+  tasks:
+    - name: Removing secret
+      kubernetes.core.k8s:
+        kind: Secret
+        name: "{{ skupper_token_name }}"
+        namespace: "{{ skupper_option_namespace }}"
+        state: absent
+    - ansible.builtin.import_role:
+        name: skupper.skupper.skupper_token
+- hosts: sample-b
+  tasks:
+    - ansible.builtin.import_role:
+        name: skupper.skupper.skupper_link

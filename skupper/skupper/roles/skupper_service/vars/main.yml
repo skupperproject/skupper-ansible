@@ -1,0 +1,4 @@
+---
+# vars file for skupper_service
+skupper_service_valid_target_types_kube: ["deployment", "statefulset", "pods", "service"]
+skupper_service_valid_target_types_podman: ["host"]

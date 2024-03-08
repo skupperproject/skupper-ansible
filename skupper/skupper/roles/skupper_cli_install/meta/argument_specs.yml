@@ -1,0 +1,39 @@
+argument_specs:
+  main:
+    short_description: Installs the Skupper CLI
+    description: |
+      | Installs the Skupper CLI from released versions available
+      | through U(https://github.com/skupperproject/skupper/releases).
+    version_added: 1.6.0
+    author: Skupper team
+    options:
+      skupper_cli_install_version:
+        description: The Skupper CLI version to be installed
+        version_added: 1.6.0
+        type: str
+        required: true
+        default: 1.6.0
+      skupper_cli_install_os:
+        description: Target OS
+        version_added: 1.6.0
+        type: str
+        required: true
+        default: linux
+      skupper_cli_install_arch:
+        description: Target Architecture
+        version_added: 1.6.0
+        type: str
+        required: true
+        default: amd64
+      skupper_cli_install_location:
+        description: Target installation directory
+        version_added: 1.6.0
+        type: str
+        required: true
+        default: "/usr/local/bin"
+      skupper_cli_install_force:
+        description: Target installation directory
+        version_added: 1.6.0
+        type: bool
+        required: true
+        default: false

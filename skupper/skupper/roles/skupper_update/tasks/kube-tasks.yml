@@ -1,0 +1,15 @@
+- name: Preparing update command
+  ansible.builtin.set_fact:
+    skupper_update_command:
+      - skupper
+      - update
+      - --platform
+      - "{{ skupper_option_platform }}"
+      - --kubeconfig
+      - "{{ skupper_option_kubeconfig }}"
+      - --context
+      - "{{ skupper_option_context }}"
+      - --namespace
+      - "{{ skupper_option_namespace }}"
+      - --force-restart
+      - "{{ skupper_update_force_restart }}"

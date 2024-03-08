@@ -1,0 +1,60 @@
+---
+# tasks file for skupper_cli_install
+- name: Determining skupper binary location
+  ansible.builtin.set_fact:
+    skupper_cli_install_dest_file: "{{ skupper_cli_install_location }}/skupper"
+
+- name: Verifying if skupper binary already exists
+  ansible.builtin.stat:
+    path: "{{ skupper_cli_install_dest_file }}"
+  register: skupper_bin
+
+- name: Exit if skupper binary exists or force is set to false
+  ansible.builtin.meta: end_host
+  when: skupper_bin.stat.exists and not (skupper_cli_install_force | bool)
+
+- name: Remove skupper binary if exists and force is set to true
+  ansible.builtin.file:
+    path: "{{ skupper_cli_install_dest_file }}"
+    state: absent
+  when: skupper_bin.stat.exists and (skupper_cli_install_force | bool)
+
+- name: Verify destination directory exists
+  ansible.builtin.stat:
+    path: "{{ skupper_cli_install_location }}"
+  register: skupper_dir
+
+- name: Ensure destination directory exists
+  ansible.builtin.file:
+    path: "{{ skupper_cli_install_location }}"
+    state: directory
+    mode: "{{ skupper_cli_install_dir_mode }}"
+  when: not skupper_dir.stat.exists
+
+- name: Determining tarball
+  ansible.builtin.set_fact:
+    tarball: "skupper-cli-{{ skupper_cli_install_version }}-{{ skupper_cli_install_os }}-{{ skupper_cli_install_arch }}.tgz"
+
+- name: Determining download info
+  ansible.builtin.set_fact:
+    download_url: "{{ skupper_cli_install_download_url_base }}/{{ skupper_cli_install_version }}/{{ tarball }}"
+
+- name: Download info
+  ansible.builtin.debug:
+    msg: "Downloading {{ skupper_cli_install_download_url_base }}/{{ skupper_cli_install_version }}/{{ tarball }} into {{ skupper_cli_install_location }}"
+
+- name: Downloading tar ball
+  ansible.builtin.unarchive:
+    src: "{{ download_url }}"
+    dest: "{{ skupper_cli_install_location }}"
+    remote_src: true
+
+- name: Verifying installation
+  ansible.builtin.stat:
+    path: "{{ skupper_cli_install_dest_file }}"
+  register: skupper_bin
+
+- name: Skupper binary installed
+  ansible.builtin.fail:
+    msg: "Installation failed - {{ skupper_cli_install_dest_file }} not found"
+  when: not skupper_bin.stat.exists

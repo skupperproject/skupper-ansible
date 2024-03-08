@@ -1,0 +1,10 @@
+---
+# tasks file for skupper_link
+
+# updating link definitions based on defined links (host variable)
+- name: Loading site ids
+  skupper.skupper.site_load:
+- name: Loading existing links
+  skupper.skupper.links_load:
+- name: Updating links
+  skupper.skupper.links:

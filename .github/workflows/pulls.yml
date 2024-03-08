@@ -22,5 +22,5 @@ jobs:
       - name: Run unit tests
         run: |
           cd ansible_collections
-          pip3 install -r ./skupper/network/tests/unit/requirements.txt
+          pip3 install -r ./skupper/skupper/tests/unit/requirements.txt
           make unit-tests

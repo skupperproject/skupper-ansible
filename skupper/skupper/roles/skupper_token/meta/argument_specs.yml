@@ -1,0 +1,60 @@
+argument_specs:
+  main:
+    short_description: Creates a Skupper token that can be used by other sites to establish links
+    description: |
+      | Creates a Skupper token that can be used by other sites to establish links.
+      | The token is generated as a host fact named C(skupper_token_generated_token).
+    version_added: 1.6.0
+    author: Skupper team
+    options:
+      skupper_token_name:
+        description: |
+          Name of the token that will be created.
+          When using C(skupper_token_type=claim), only one token can exist with a given name.
+        version_added: 1.6.0
+        type: str
+        default: "skupper"
+      skupper_token_expiry:
+        description: |
+          Duration for which a token claim is considered as valid.
+          This is only used when C(skupper_token_type=claim) and C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: "15m0s"
+      skupper_token_password:
+        description: |
+          Password to be set of the token claim. If empty, a random password will be generated (default).
+          This is only used when C(skupper_token_type=claim) and C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: ""
+      skupper_token_type:
+        description: |
+          The token type to use.
+          When using C(skupper_option_platform=podman), the only allowed value is C(cert).
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: "claim"
+        choices:
+          - claim
+          - cert
+      skupper_token_uses:
+        description: |
+          Number of times that the given token claim can be redeemed.
+          This is only used when C(skupper_token_type=claim) and C(skupper_option_platform=kubernetes).
+        version_added: 1.6.0
+        type: int
+        default: 1
+      skupper_token_ingress_host:
+        description: |
+          The ingress-host to use in the generated token on Podman sites.
+          Usually when a podman site has more than one ingress host, this might be needed.
+          This can only be used when C(skupper_option_platform=podman).
+          If absent or empty, Skupper will use the first available ingress host.
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: ""

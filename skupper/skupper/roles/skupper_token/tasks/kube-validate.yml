@@ -1,0 +1,10 @@
+---
+- name: Validate token type
+  ansible.builtin.fail:
+    msg: "Invalid token type {{ skupper_token_type }} - valid types are {{ skupper_token_valid_token_types }}"
+  when: skupper_token_type not in skupper_token_valid_token_types
+
+- name: Validating if a token can be created
+  ansible.builtin.set_fact:
+    skupper_token_allowed: true
+  when: skupper_init_router_mode is not defined or skupper_init_router_mode != 'edge'

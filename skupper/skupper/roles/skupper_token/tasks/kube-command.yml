@@ -1,0 +1,24 @@
+- name: Preparing token create command
+  ansible.builtin.set_fact:
+    skupper_token_command:
+      - skupper
+      - token
+      - create
+      - --platform
+      - "{{ skupper_option_platform }}"
+      - --kubeconfig
+      - "{{ skupper_option_kubeconfig }}"
+      - --context
+      - "{{ skupper_option_context }}"
+      - --namespace
+      - "{{ skupper_option_namespace }}"
+      - --name
+      - "{{ skupper_token_name }}"
+      - --expiry
+      - "{{ skupper_token_expiry }}"
+      - --password
+      - "{{ skupper_token_password }}"
+      - --token-type
+      - "{{ skupper_token_type }}"
+      - --uses
+      - "{{ skupper_token_uses }}"

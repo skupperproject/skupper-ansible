@@ -1,0 +1,6 @@
+---
+# vars file for skupper_token
+skupper_token_default_type_kube: claim
+skupper_token_valid_token_types:
+  - claim
+  - cert

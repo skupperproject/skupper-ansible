@@ -1,0 +1,8 @@
+---
+# tasks file for skupper_service
+
+- name: Loading existing services
+  skupper.skupper.services_load:
+
+- name: Updating service definitions
+  skupper.skupper.services:

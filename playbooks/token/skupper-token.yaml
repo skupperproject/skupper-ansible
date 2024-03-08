@@ -1,0 +1,10 @@
+---
+- hosts: all
+  collections:
+    - skupper.skupper
+  tasks:
+    - import_role:
+        name: skupper_token
+    - name: Displaying generated tokens
+      debug:
+        msg: "Generated tokens -> {{ generated_token }}"

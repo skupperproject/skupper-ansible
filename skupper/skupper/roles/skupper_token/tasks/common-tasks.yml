@@ -1,0 +1,39 @@
+---
+# Create a temporary file to store the token
+- name: Create temporary file for token
+  ansible.builtin.tempfile:
+    state: file
+    suffix: tokentemp
+  register: tokentemp
+
+# Add the temp file name to the token create command
+- name: Adding temporary file name to token create command
+  ansible.builtin.set_fact:
+    skupper_token_command: "{{ skupper_token_command + [tokentemp.path] }}"
+
+# executing and validating result
+- name: Executing skupper token create
+  ansible.builtin.command:
+    argv: "{{ skupper_token_command }}"
+  register: token_status
+  changed_when: not token_status.failed
+  failed_when: >
+    token_status.failed and
+    "tokens cannot be generated for sites initialized with ingress type none" not in token_status.stderr_lines[0]
+
+# reading generated token
+- name: Reading token
+  ansible.builtin.command: "cat {{ tokentemp.path }}"
+  register: token_content
+  changed_when: not token_content.failed
+
+# saving generated token into tokens dictionary
+- name: Saving token into tokens dictionary
+  ansible.builtin.set_fact:
+    generated_token: "{{ token_content.stdout }}"
+
+# remove the generated token file
+- name: Remove generated token file
+  ansible.builtin.file:
+    path: "{{ tokentemp.path }}"
+    state: absent

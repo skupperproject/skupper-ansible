@@ -1,5 +1,0 @@
----
-# defaults file for skupper_update
-update:
-  # Force restart of skupper daemons
-  # forceRestart: False # boolean

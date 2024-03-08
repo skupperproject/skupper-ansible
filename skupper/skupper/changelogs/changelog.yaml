@@ -1,0 +1,19 @@
+ancestor: null
+releases:
+  1.6.0:
+    changes:
+      major_changes:
+        - https://github.com/skupperproject/skupper-ansible/issues/19
+        - https://github.com/skupperproject/skupper-ansible/issues/31
+      release_summary: Collection renamed from network to core
+    release_date: '2024-03-01'
+  1.0.0:
+    changes:
+      bugfixes:
+        - https://github.com/skupperproject/skupper-ansible/issues/11
+        - https://github.com/skupperproject/skupper-ansible/issues/12
+        - https://github.com/skupperproject/skupper-ansible/issues/9
+      major_changes:
+        - https://github.com/skupperproject/skupper-ansible/issues/13
+      release_summary: Initial release supporting CLI flags for Skupper v1.4.0
+    release_date: '2023-05-31'

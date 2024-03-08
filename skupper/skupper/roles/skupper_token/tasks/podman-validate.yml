@@ -1,0 +1,5 @@
+---
+- name: Validating if a token can be created
+  ansible.builtin.set_fact:
+    skupper_token_allowed: true
+  when: skupper_init_ingress is not defined or skupper_init_ingress != 'none'

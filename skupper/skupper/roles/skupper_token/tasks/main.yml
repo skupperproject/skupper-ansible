@@ -1,0 +1,12 @@
+---
+# tasks file for skupper_token
+- name: Kubernetes tasks
+  ansible.builtin.include_tasks: kube-tasks.yml
+  when: skupper_option_platform == 'kubernetes'
+- name: Podman tasks
+  ansible.builtin.include_tasks: podman-tasks.yml
+  when: skupper_option_platform == 'podman'
+
+- name: Common tasks
+  ansible.builtin.include_tasks: common-tasks.yml
+  when: skupper_token_allowed is defined and skupper_token_allowed | bool

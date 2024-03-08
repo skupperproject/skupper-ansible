@@ -1,26 +1,28 @@
-TARBALL := $(shell echo "skupper/network/skupper-network-`grep -E '^version:' skupper/network/galaxy.yml | awk '{print $$NF}'`.tar.gz")
+TARBALL := $(shell echo "skupper/skupper/skupper-skupper-`grep -E '^version:' skupper/skupper/galaxy.yml | awk '{print $$NF}'`.tar.gz")
 
-all: ansible-lint build
+all: ansible-lint build-docs
 
 dep:
 	pip install -r ./requirements.txt
-	pip install -r ./skupper/network/tests/unit/requirements.txt
-	pip install -r ./skupper/network/docs/requirements.txt
+	pip install -r ./skupper/skupper/tests/unit/requirements.txt
+	pip install -r ./skupper/skupper/docs/requirements.txt
 
 ansible-lint:
-	cd skupper/network && ansible-lint --skip-list 'var-naming[pattern],var-naming[no-role-prefix]'
+	cd skupper/skupper && ansible-lint -v
 
 release-changelog:
 	pip install --user -U antsibull-changelog
-	cd skupper/network && antsibull-changelog release
+	cd skupper/skupper && antsibull-changelog release
 
-build-docs:
-	rm -rf skupper/network/docs/build skupper/network/docs/temp-rst
-	(cd skupper/network/docs && pip install --user -U -r requirements.txt && ./build.sh) && \
-	rm -rf ./docs && mv skupper/network/docs/build/html/ ./docs && touch ./docs/.nojekyll
+build-docs: build install
+	rm -rf ./skupper/skupper/docs/*
+	antsibull-docs sphinx-init --use-current --dest-dir ./skupper/skupper/docs skupper.skupper
+	(cd skupper/skupper/docs && pip install --user -U -r requirements.txt && ./build.sh) && \
+	rm -rf ./docs && mv skupper/skupper/docs/build/html/ ./docs && touch ./docs/.nojekyll
+	rm -rf ./skupper/skupper/docs/*
 
-build: clean build-docs
-	cd skupper/network && ansible-galaxy collection build
+build: clean 
+	cd skupper/skupper && ansible-galaxy collection build
 
 clean:
 	@[[ -f "$(TARBALL)" ]] && rm $(TARBALL) || true
@@ -30,7 +32,18 @@ install:
 	@ansible-galaxy collection install -f "$(TARBALL)"
 
 sanity-tests:
-	cd skupper/network && ansible-test sanity -v --color
+	cd skupper/skupper && ansible-test sanity -v --color
 
 unit-tests:
-	cd skupper/network && ansible-test units -vvv --color
+	cd skupper/skupper && ansible-test units -vvv --color
+
+e2e-setup:
+	cd examples/hello-world && ansible-playbook -i inventory.yml setup.yml
+
+e2e-validate:
+	cd examples/hello-world && ansible-playbook -i inventory.yml test.yml
+
+e2e-teardown:
+	cd examples/hello-world && ansible-playbook -i inventory.yml teardown.yml
+
+e2e-test: e2e-setup e2e-validate e2e-teardown

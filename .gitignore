@@ -1,5 +1,4 @@
 *.tar.gz
-skupper/network/docs/build
-skupper/network/docs/temp-rst
-skupper/network/tests/output
+skupper/skupper/docs/
+skupper/skupper/tests/output
 __pycache__/

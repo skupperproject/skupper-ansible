@@ -1,4 +1,4 @@
-skupper_delete
+skupper_teardown
 ==============
 
 Deletes a skupper site.
@@ -23,7 +23,7 @@ Example Playbook
 
     - hosts: all
       roles:
-         - skupper.skupper.skupper_delete
+         - skupper.skupper.skupper_teardown
 
 License
 -------

@@ -24,7 +24,7 @@
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="skupper.skupper.skupper_token role – Creates a Skupper token that can be used by other sites to establish links" href="skupper_token_role.html" />
+    <link rel="next" title="skupper.skupper.skupper_setup role – Configures your entire Virtual Application Network (VAN)" href="skupper_setup_role.html" />
     <link rel="prev" title="skupper.skupper.skupper_option role – Provides common parameters to be used across the skupper.skupper roles." href="skupper_option_role.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
 
 
@@ -158,8 +158,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <ul>
 <li><div class="line-block">
 <div class="line">Maintains existing services on a site based on the provided services object.</div>
-<div class="line">All desired services must be provided as part of the <code class="docutils literal notranslate"><span class="pre">skupper_service_services</span></code> list.</div>
-<div class="line">Existing services that are no longer defined as part of the <code class="docutils literal notranslate"><span class="pre">skupper_service_services</span></code> list will be removed.</div>
+<div class="line">All desired services must be provided as part of the <code class="docutils literal notranslate"><span class="pre">skupper_service_list</span></code> list.</div>
+<div class="line">Existing services that are no longer defined as part of the <code class="docutils literal notranslate"><span class="pre">skupper_service_list</span></code> list will be removed.</div>
 <div class="line">Modifications done to existing service definitions will cause the service to be deleted and created.</div>
 <div class="line">Targets will be maintained similarly.</div>
 <div class="line">This role uses the <a class="reference internal" href="services_load_module.html#ansible-collections-skupper-skupper-services-load-module"><span class="std std-ref">skupper.skupper.services_load</span></a> and <a class="reference internal" href="services_module.html#ansible-collections-skupper-skupper-services-module"><span class="std std-ref">skupper.skupper.services</span></a> modules to ensure</div>
@@ -178,8 +178,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </thead>
 <tbody>
 <tr class="row-even"><td><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services"><strong>skupper_service_services</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list"><strong>skupper_service_list</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-cell"><dl class="simple">
@@ -193,8 +193,8 @@ Targets will be maintained similarly.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services/aggregate"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services-aggregate"><strong>aggregate</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services/aggregate" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list/aggregate"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list-aggregate"><strong>aggregate</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/aggregate" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">
@@ -204,8 +204,8 @@ Targets will be maintained similarly.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services/container_name"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services-container-name"><strong>container_name</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services/container_name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list/container_name"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list-container-name"><strong>container_name</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/container_name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">
@@ -215,8 +215,8 @@ Targets will be maintained similarly.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services/event_channel"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services-event-channel"><strong>event_channel</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services/event_channel" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list/event_channel"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list-event-channel"><strong>event_channel</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/event_channel" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>If specified, this service will be a channel for multicast events.</p>
@@ -228,8 +228,8 @@ Targets will be maintained similarly.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services/generate_tls_secrets"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services-generate-tls-secrets"><strong>generate_tls_secrets</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services/generate_tls_secrets" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list/generate_tls_secrets"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list-generate-tls-secrets"><strong>generate_tls_secrets</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/generate_tls_secrets" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>If specified, the service communication will be encrypted using TLS</p>
@@ -241,8 +241,8 @@ Targets will be maintained similarly.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services/host_ip"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services-host-ip"><strong>host_ip</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services/host_ip" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list/host_ip"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list-host-ip"><strong>host_ip</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/host_ip" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">
@@ -252,8 +252,8 @@ Targets will be maintained similarly.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services/host_ports"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services-host-ports"><strong>host_ports</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services/host_ports" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list/host_ports"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list-host-ports"><strong>host_ports</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/host_ports" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">
@@ -263,32 +263,32 @@ Targets will be maintained similarly.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services/labels"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services-labels"><strong>labels</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services/labels" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list/labels"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list-labels"><strong>labels</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/labels" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Labels added to the Skupper service.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services/name"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services-name"><strong>name</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services/name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list/name"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list-name"><strong>name</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>The name of the service to be defined at the target site.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services/ports"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services-ports"><strong>ports</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services/ports" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=integer</span> / <span class="ansible-option-required">required</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list/ports"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list-ports"><strong>ports</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/ports" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=integer</span> / <span class="ansible-option-required">required</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>List of ports provided by the service</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services/protocol"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services-protocol"><strong>protocol</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services/protocol" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list/protocol"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list-protocol"><strong>protocol</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/protocol" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">
@@ -299,32 +299,32 @@ Targets will be maintained similarly.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services/targets"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services-targets"><strong>targets</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services/targets" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list/targets"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list-targets"><strong>targets</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/targets" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>List of targets to bind.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services/targets/name"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services-targets-name"><strong>name</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services/targets/name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list/targets/name"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list-targets-name"><strong>name</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/targets/name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Name that represents the defined target type.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services/targets/ports"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services-targets-ports"><strong>ports</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services/targets/ports" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=integer</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list/targets/ports"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list-targets-ports"><strong>ports</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/targets/ports" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=integer</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>A list that maps service ports to the target ports.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_services/targets/type"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-services-targets-type"><strong>type</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_service_services/targets/type" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_service_list/targets/type"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-service-role-parameter-main-skupper-service-list-targets-type"><strong>type</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/targets/type" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">
@@ -361,7 +361,7 @@ On Podman, only: host.</p>
 
 <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="skupper_option_role.html" class="btn btn-neutral float-left" title="skupper.skupper.skupper_option role – Provides common parameters to be used across the skupper.skupper roles." accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="skupper_token_role.html" class="btn btn-neutral float-right" title="skupper.skupper.skupper_token role – Creates a Skupper token that can be used by other sites to establish links" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="skupper_setup_role.html" class="btn btn-neutral float-right" title="skupper.skupper.skupper_setup role – Configures your entire Virtual Application Network (VAN)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

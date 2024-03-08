@@ -1,6 +1,9 @@
 ---
 - hosts: all
   tasks:
+    - name: Teardown Skupper
+      ansible.builtin.include_role:
+        name: skupper.skupper.skupper_teardown
     - name: Removing namespace
       command: "kubectl delete namespace {{ skupper_option_namespace }}"
       register: out

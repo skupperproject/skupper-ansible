@@ -1,7 +1,7 @@
-skupper_deploy
+skupper_setup
 ==============
 
-The `skupper_deploy` role performs the entire Skupper network deployment,
+The `skupper_setup` role performs the entire Skupper network deployment,
 defining links and services across all sites.
 
 It combines the execution of all the following roles:
@@ -35,7 +35,7 @@ Example Playbook
 ```yaml
     - hosts: all
       roles:
-         - skupper.skupper.skupper_deploy
+         - skupper.skupper.skupper_setup
 ```
 
 License

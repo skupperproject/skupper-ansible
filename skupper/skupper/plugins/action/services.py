@@ -42,7 +42,7 @@ class ActionModule(BaseActionModule):
 
         # determining services to create and delete
         # services = task_vars['vars']['services'] if 'services' in task_vars['vars'] else dict()
-        services = self.get_my_host_or_task_var('skupper_service_services', task_vars, list())
+        services = self.get_my_host_or_task_var('skupper_service_list', task_vars, list())
         existing_services = task_vars['vars']['existing_services'] if 'existing_services' in task_vars['vars'] \
             else list()
 

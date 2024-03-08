@@ -10,7 +10,7 @@ class ActionModule(BaseActionModule):
         module_args = self.module_args()
 
         # determining links to create and delete
-        links = task_vars['vars']['skupper_link_links'] if 'skupper_link_links' in task_vars['vars'] else list()
+        links = task_vars['vars']['skupper_link_list'] if 'skupper_link_list' in task_vars['vars'] else list()
         existing_links = task_vars['vars']['existing_links'] if 'existing_links' in task_vars['vars'] else list()
         create = list()
         delete = list()

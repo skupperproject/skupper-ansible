@@ -1,5 +1,5 @@
 ---
-# tasks file for skupper_delete
+# tasks file for skupper_teardown
 - name: Kubernetes tasks
   ansible.builtin.include_tasks: kube-command.yml
   when: skupper_option_platform == 'kubernetes'
@@ -10,7 +10,7 @@
 # executing and validating result
 - name: Executing skupper delete
   ansible.builtin.command:
-    argv: "{{ skupper_delete_command }}"
+    argv: "{{ skupper_teardown_command }}"
   register: delete_status
   changed_when: >
     not delete_status.failed and

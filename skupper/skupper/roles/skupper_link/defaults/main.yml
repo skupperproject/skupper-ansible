@@ -10,4 +10,4 @@
 # host, name and cost
 # it expects that the target 'host' has an ansible variable named generated_token
 #
-skupper_link_links: []
+skupper_link_list: []

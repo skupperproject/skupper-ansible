@@ -12,11 +12,11 @@ Requirements
 Role Variables
 --------------
 
-This role processes a host variable named `skupper_link_links` which is supposed
+This role processes a host variable named `skupper_link_list` which is supposed
 to hold an array containing link elements with the following structure:
 
 ```yaml
-skupper_link_links:
+skupper_link_list:
   - host: <inventory host - required when relying on generated token; must be empty when using a static token>
     name: <link name - optional when using host; required when using a static token>
     cost: <optional cost value>
@@ -63,7 +63,7 @@ Using a static token:
     - ansible.builtin.include_role:
         name: skupper.skupper.skupper_link
       vars:
-        skupper_link_links:
+        skupper_link_list:
           - name: link1
             token: |
               your token as YAML
@@ -79,7 +79,7 @@ can be specified. Note that it has the `links` field.
   site-a:
   site-b:
   rhel9:
-    skupper_link_links:
+    skupper_link_list:
       - host: site-a
       - host: site-b
         cost: 2

@@ -158,7 +158,7 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <ul>
 <li><div class="line-block">
 <div class="line">Maintains existing links on a site based on the provided links object.</div>
-<div class="line">All desired links must be provided as part of the <code class="docutils literal notranslate"><span class="pre">skupper_link_links</span></code> list.</div>
+<div class="line">All desired links must be provided as part of the <code class="docutils literal notranslate"><span class="pre">skupper_link_list</span></code> list.</div>
 <div class="line">Links must specify a target hostname (a valid host from the Ansible inventory), in such</div>
 <div class="line">case the token for the respective link is expected to be available as a host fact (for the target host)</div>
 <div class="line">named <code class="docutils literal notranslate"><span class="pre">skupper_token_generated_token</span></code>. This fact is set automatically if the <a class="reference external" href="skupper_token_role.html">skupper.skupper.skupper_token role</a></div>
@@ -180,8 +180,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 </thead>
 <tbody>
 <tr class="row-even"><td><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_link_links"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-link-role-parameter-main-skupper-link-links"><strong>skupper_link_links</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_link_links" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_link_list"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-link-role-parameter-main-skupper-link-list"><strong>skupper_link_list</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_link_list" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-cell"><dl class="simple">
@@ -193,8 +193,8 @@ will be removed.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_link_links/cost"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-link-role-parameter-main-skupper-link-links-cost"><strong>cost</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_link_links/cost" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_link_list/cost"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-link-role-parameter-main-skupper-link-list-cost"><strong>cost</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_link_list/cost" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>The cost of the link.</p>
@@ -202,21 +202,21 @@ will be removed.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_link_links/host"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-link-role-parameter-main-skupper-link-links-host"><strong>host</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_link_links/host" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_link_list/host"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-link-role-parameter-main-skupper-link-list-host"><strong>host</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_link_list/host" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">
 <dt>The Ansible Inventory hostname to use as a target for this link.</dt><dd><p>It can be populated if the <a class="reference external" href="skupper_token_role.html">skupper.skupper.skupper_token role</a> has been invoked earlier,
-of when using the <a class="reference external" href="skupper_deploy_role.html">skupper.skupper.skupper_deploy role</a> (which also invokes the <code class="docutils literal notranslate"><span class="pre">skupper_token</span> <span class="pre">role</span></code>as a dependency.
+of when using the <a class="reference external" href="skupper_setup_role.html">skupper.skupper.skupper_setup role</a> (which also invokes the <code class="docutils literal notranslate"><span class="pre">skupper_token</span> <span class="pre">role</span></code>as a dependency.
 In case the intention is to use a static token, this argument must not be provided.</p>
 </dd>
 </dl>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_link_links/name"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-link-role-parameter-main-skupper-link-links-name"><strong>name</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_link_links/name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_link_list/name"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-link-role-parameter-main-skupper-link-list-name"><strong>name</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_link_list/name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">
@@ -226,8 +226,8 @@ In case the intention is to use a static token, this argument must not be provid
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-<div class="ansibleOptionAnchor" id="parameter-main--skupper_link_links/token"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-link-role-parameter-main-skupper-link-links-token"><strong>token</strong></p>
-<a class="ansibleOptionLink" href="#parameter-main--skupper_link_links/token" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+<div class="ansibleOptionAnchor" id="parameter-main--skupper_link_list/token"></div><p class="ansible-option-title" id="ansible-collections-skupper-skupper-skupper-link-role-parameter-main-skupper-link-list-token"><strong>token</strong></p>
+<a class="ansibleOptionLink" href="#parameter-main--skupper_link_list/token" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">

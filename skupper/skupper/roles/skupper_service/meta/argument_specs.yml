@@ -3,8 +3,8 @@ argument_specs:
     short_description: Maintains existing services on a site
     description: |
       | Maintains existing services on a site based on the provided services object.
-      | All desired services must be provided as part of the C(skupper_service_services) list.
-      | Existing services that are no longer defined as part of the C(skupper_service_services) list will be removed.
+      | All desired services must be provided as part of the C(skupper_service_list) list.
+      | Existing services that are no longer defined as part of the C(skupper_service_list) list will be removed.
       | Modifications done to existing service definitions will cause the service to be deleted and created.
       | Targets will be maintained similarly.
       | This role uses the M(skupper.skupper.services_load) and M(skupper.skupper.services) modules to ensure
@@ -12,7 +12,7 @@ argument_specs:
     version_added: 1.6.0
     author: Skupper team
     options:
-      skupper_service_services:
+      skupper_service_list:
         description: |
           List of all desired services to exist at a given site.
           Services that are defined on the list, but does not exist, will be created.

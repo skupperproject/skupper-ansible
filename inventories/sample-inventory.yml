@@ -7,7 +7,7 @@ all:
           ansible_user: fgiorget
           skupper_option_namespace: "public1"
           skupper_token_type: cert
-          skupper_service_services:
+          skupper_service_list:
             - name: nginx
               ports:
                 - 8080
@@ -19,9 +19,9 @@ all:
           ansible_user: fgiorget
           skupper_option_namespace: "private1"
           skupper_token_uses: 5
-          skupper_link_links:
+          skupper_link_list:
             - host: public1
-          skupper_service_services:
+          skupper_service_list:
             - name: nginx
               ports:
                 - 8080
@@ -38,12 +38,12 @@ all:
             - 192.168.122.1
             - 192.168.15.10
           skupper_token_ingress_host: 192.168.122.1
-          skupper_link_links:
+          skupper_link_list:
             - host: private1
             - host: public1
               cost: 2
               name: link-to-public1
-          skupper_service_services:
+          skupper_service_list:
             - name: nginx
               ports: [8080]
               targets:

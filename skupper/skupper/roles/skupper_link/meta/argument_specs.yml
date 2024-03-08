@@ -3,7 +3,7 @@ argument_specs:
     short_description: Maintains existing links on a site
     description: |
       | Maintains existing links on a site based on the provided links object.
-      | All desired links must be provided as part of the C(skupper_link_links) list.
+      | All desired links must be provided as part of the C(skupper_link_list) list.
       | Links must specify a target hostname (a valid host from the Ansible inventory), in such
       | case the token for the respective link is expected to be available as a host fact (for the target host)
       | named C(skupper_token_generated_token). This fact is set automatically if the L(skupper.skupper.skupper_token role,skupper_token_role.html)
@@ -14,7 +14,7 @@ argument_specs:
     version_added: 1.6.0
     author: Skupper team
     options:
-      skupper_link_links:
+      skupper_link_list:
         description: |
           List of all desired links to exist at a given site.
           Links that are defined on the list, but does not exist, will be created.
@@ -28,7 +28,7 @@ argument_specs:
             description: |
               The Ansible Inventory hostname to use as a target for this link.
               It can be populated if the L(skupper.skupper.skupper_token role,skupper_token_role.html) has been invoked earlier,
-              of when using the L(skupper.skupper.skupper_deploy role,skupper_deploy_role.html) (which also invokes the C(skupper_token role)
+              of when using the L(skupper.skupper.skupper_setup role,skupper_setup_role.html) (which also invokes the C(skupper_token role)
               as a dependency.
               In case the intention is to use a static token, this argument must not be provided.
             version_added: 1.6.0

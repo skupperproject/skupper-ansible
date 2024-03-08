@@ -6,7 +6,7 @@ all:
           ansible_connection: local
           skupper_init_site_name: public-ibmcloud
           skupper_token_uses: 2
-          skupper_service_services:
+          skupper_service_list:
             - name: frontend
               ports:
                 - 8080
@@ -18,7 +18,7 @@ all:
           skupper_init_site_name: dmz-rhel9
           skupper_init_ingress_hosts:
             - 10.0.135.219
-          skupper_link_links:
+          skupper_link_list:
             - host: ibmcloud
         rhel8:
           ansible_host: 10.0.133.181
@@ -26,7 +26,7 @@ all:
           skupper_init_site_name: dmz-rhel8
           skupper_init_ingress_hosts:
             - 10.0.133.181
-          skupper_link_links:
+          skupper_link_list:
             - host: ibmcloud
     internal:
       hosts:
@@ -36,10 +36,10 @@ all:
           skupper_init_site_name: internal-fedora36
           skupper_init_ingress_hosts:
             - 192.168.122.1
-          skupper_link_links:
+          skupper_link_list:
             - host: rhel9
             - host: rhel8
-          skupper_service_services:
+          skupper_service_list:
             - name: frontend
               ports: [8080]
               targets:

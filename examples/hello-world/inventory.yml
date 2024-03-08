@@ -10,7 +10,7 @@ all:
           skupper_init_enable_flow_collector: 'true'
           skupper_init_enable_console: 'true'
           skupper_init_console_password: 'admin'
-          skupper_service_services:
+          skupper_service_list:
             - name: frontend
               ports:
                 - 8080
@@ -25,9 +25,9 @@ all:
           skupper_option_namespace: east
           skupper_init_site_name: east
           skupper_init_enable_service_sync: 'false'
-          skupper_link_links:
+          skupper_link_list:
             - host: west
-          skupper_service_services:
+          skupper_service_list:
             - name: backend
               ports:
                 - 8080

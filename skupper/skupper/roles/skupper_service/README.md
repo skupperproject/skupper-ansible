@@ -1,7 +1,7 @@
 skupper_service
 ===============
 
-Creates all services defined through the `skupper_service_services` variable for the
+Creates all services defined through the `skupper_service_list` variable for the
 related ansible host.
 
 It creates the service, binding it to all (optional) targets.
@@ -14,12 +14,12 @@ Requirements
 Role Variables
 --------------
 
-A `skupper_service_services` array element must be defined at the host, so that the role
+A `skupper_service_list` array element must be defined at the host, so that the role
 can iterate through each service, creating and binding it to the defined
 target.
 
 ```yaml
-skupper_service_services:
+skupper_service_list:
   # Sample service definition (indexed by name)
   - name:                        # name of the service
     ports: []                    # int array
@@ -72,7 +72,7 @@ can be specified. Note that it has the `services` field.
 
 ```yaml
   site-a:
-    skupper_service_services:
+    skupper_service_list:
       - name: nginx
         ports:
           - 8080
@@ -80,7 +80,7 @@ can be specified. Note that it has the `services` field.
           - label1=value1
           - label2=value2
   site-b:
-    skupper_service_services:
+    skupper_service_list:
       - name: nginx
         ports:
           - 8080
@@ -88,7 +88,7 @@ can be specified. Note that it has the `services` field.
           - type: deployment
             name: nginx
   rhel9:
-    skupper_service_services:
+    skupper_service_list:
       - name: nginx
         ports: [8080]
         targets:

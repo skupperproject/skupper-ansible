@@ -1,3 +1,3 @@
 ---
 # defaults file for skupper_service
-skupper_service_services: []
+skupper_service_list: []

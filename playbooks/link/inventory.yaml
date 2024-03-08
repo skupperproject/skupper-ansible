@@ -9,5 +9,5 @@ all:
         sample-b:
           ansible_connection: local
           skupper_option_namespace: sample-b
-          skupper_link_links:
+          skupper_link_list:
             - host: sample-a

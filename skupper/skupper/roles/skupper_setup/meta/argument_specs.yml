@@ -2,7 +2,7 @@ argument_specs:
   main:
     short_description: Configures your entire Virtual Application Network (VAN)
     description: |
-      | The C(skupper_deploy) role performs the entire Skupper network deployment,
+      | The C(skupper_setup) role performs the entire Skupper network deployment,
       | defining links and services across all sites.
       | It combines the execution of all the following roles:
       | * L(skupper.skupper.skupper_init,skupper_init_role.html)

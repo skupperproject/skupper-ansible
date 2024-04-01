@@ -1,0 +1,5 @@
+---
+# defaults file for skupper_update
+# Force restart of skupper daemons
+skupper_update_force_restart: false
+skupper_update_podman_timeout: 2m

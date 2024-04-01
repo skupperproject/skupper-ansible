@@ -1,0 +1,9 @@
+- name: Preparing update command
+  ansible.builtin.set_fact:
+    skupper_update_command:
+      - skupper
+      - update
+      - --platform
+      - "{{ skupper_option_platform }}"
+      - --timeout
+      - "{{ skupper_update_podman_timeout }}"

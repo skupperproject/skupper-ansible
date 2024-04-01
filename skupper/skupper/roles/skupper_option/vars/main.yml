@@ -1,0 +1,5 @@
+---
+# vars file for skupper_option
+skupper_option_valid_platforms:
+  - kubernetes
+  - podman

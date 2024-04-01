@@ -1,0 +1,37 @@
+argument_specs:
+  main:
+    short_description: Provides common parameters to be used across the skupper.skupper roles.
+    description: |
+      | Provides common parameters to be used across the skupper.skupper roles (except skupper_cli_install).
+      | This role is not supposed to be executed directly, as the intent is simply to be used as a dependency
+      | to all other skupper.skupper roles that need to use the global options.
+    version_added: 1.6.0
+    author: Skupper team
+    options:
+      skupper_option_platform:
+        description: "Target platform (kubernetes or podman)"
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: "kubernetes"
+        choices:
+          - kubernetes
+          - podman
+      skupper_option_namespace:
+        description: "Kubernetes namespace to use, if empty uses the currently set namespace"
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: ""
+      skupper_option_kubecontext:
+        description: "Kubernetes context to use, if empty uses the currently set context"
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: ""
+      skupper_option_kubeconfig:
+        description: "Kubeconfig file to use, if empty uses the default under ${HOME}/.kube/config"
+        version_added: 1.6.0
+        type: str
+        required: false
+        default: ""

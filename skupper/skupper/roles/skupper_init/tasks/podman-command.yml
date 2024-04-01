@@ -1,0 +1,82 @@
+- name: Preparing init command
+  ansible.builtin.set_fact:
+    skupper_init_command:
+      - skupper
+      - init
+      - --platform
+      - "{{ skupper_option_platform }}"
+      - --site-name
+      - "{{ skupper_init_site_name }}"
+      - --ingress
+      - "{{ skupper_init_ingress }}"
+      - --bind-port
+      - "{{ skupper_init_bind_port }}"
+      - --bind-port-edge
+      - "{{ skupper_init_bind_port_edge }}"
+      - --router-logging
+      - "{{ skupper_init_router_logging }}"
+      - --timeout
+      - "{{ skupper_init_timeout }}"
+      - --container-network
+      - "{{ skupper_init_container_network }}"
+      - --podman-endpoint
+      - "{{ skupper_init_podman_endpoint }}"
+      - --console-auth
+      - "{{ skupper_init_console_auth }}"
+      - --console-user
+      - "{{ skupper_init_console_user }}"
+      - --console-password
+      - "{{ skupper_init_console_password }}"
+      - --flow-collector-record-ttl
+      - "{{ skupper_init_flow_collector_record_ttl }}"
+      - --bind-port-flow-collector
+      - "{{ skupper_init_bind_port_flow_collector }}"
+      - --router-cpu-limit
+      - "{{ skupper_init_router_cpu_limit }}"
+      - --router-memory-limit
+      - "{{ skupper_init_router_memory_limit }}"
+      - --controller-cpu-limit
+      - "{{ skupper_init_controller_cpu_limit }}"
+      - --controller-memory-limit
+      - "{{ skupper_init_controller_memory_limit }}"
+      - --flow-collector-cpu-limit
+      - "{{ skupper_init_flow_collector_cpu_limit }}"
+      - --flow-collector-memory-limit
+      - "{{ skupper_init_flow_collector_memory_limit }}"
+      - --prometheus-cpu-limit
+      - "{{ skupper_init_prometheus_cpu_limit }}"
+      - --prometheus-memory-limit
+      - "{{ skupper_init_prometheus_memory_limit }}"
+
+- name: Adding --ingress-host
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--ingress-host', item] }}"
+  with_items: "{{ skupper_init_ingress_hosts }}"
+  when: skupper_init_ingress_hosts is defined and skupper_init_ingress_hosts | length() > 0
+
+- name: Adding --ingress-bind-ip
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--ingress-bind-ip', item] }}"
+  with_items: "{{ skupper_init_ingress_bind_ips }}"
+  when: skupper_init_ingress_bind_ips is defined and skupper_init_ingress_bind_ips | length() > 0
+
+- name: Adding --labels
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--labels', item] }}"
+  with_items: "{{ skupper_init_labels }}"
+  when: skupper_init_labels is defined and skupper_init_labels | length() > 0
+
+- name: Adding --enable-console
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-console=' + (skupper_init_enable_console | string)] }}"
+  when: skupper_init_enable_console is defined
+
+- name: Adding --enable-flow-collector
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-flow-collector=' + (skupper_init_enable_flow_collector | string)] }}"
+  when: skupper_init_enable_flow_collector is defined
+
+- name: Adding --enable-ipv6
+  ansible.builtin.set_fact:
+    skupper_init_command: "{{ skupper_init_command + ['--enable-ipv6=' + (skupper_init_enable_ipv6 | string)] }}"
+  when: skupper_init_enable_ipv6 is defined

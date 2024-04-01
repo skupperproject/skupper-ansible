@@ -1,0 +1,17 @@
+---
+# defaults file for skupper_token
+#
+# common flags
+#
+skupper_token_name: "skupper"
+#
+# kube specific flags
+#
+skupper_token_expiry: "15m0s"
+skupper_token_password: ""
+skupper_token_type: "claim"
+skupper_token_uses: 1
+#
+# podman specific flags
+#
+skupper_token_ingress_host: ""

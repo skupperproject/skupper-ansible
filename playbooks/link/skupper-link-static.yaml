@@ -1,0 +1,12 @@
+---
+- hosts: all
+  collections:
+    - skupper.skupper
+  tasks:
+    - import_role:
+        name: skupper-link
+      vars:
+        skupper_link_list:
+          - name: link1
+            token: |
+              your token as a YAML

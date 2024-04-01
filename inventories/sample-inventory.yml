@@ -5,11 +5,10 @@ all:
         public1:
           ansible_host: localhost
           ansible_user: fgiorget
-          namespace: "public1"
-          token:
-            type: cert
-          services:
-            nginx:
+          skupper_option_namespace: "public1"
+          skupper_token_type: cert
+          skupper_service_list:
+            - name: nginx
               ports:
                 - 8080
               labels:
@@ -18,13 +17,12 @@ all:
         private1:
           ansible_host: localhost
           ansible_user: fgiorget
-          namespace: "private1"
-          token:
-            uses: 5
-          links:
+          skupper_option_namespace: "private1"
+          skupper_token_uses: 5
+          skupper_link_list:
             - host: public1
-          services:
-            nginx:
+          skupper_service_list:
+            - name: nginx
               ports:
                 - 8080
               targets:
@@ -35,24 +33,22 @@ all:
         rhel9:
           ansible_host: localhost
           ansible_user: fgiorget
-          platform: "podman"
-          init:
-            ingressHosts:
-              - 192.168.122.1
-              - 192.168.15.10
-          token:
-            ingressHost: 192.168.122.1
-          links:
+          skupper_option_platform: "podman"
+          skupper_init_ingress_hosts:
+            - 192.168.122.1
+            - 192.168.15.10
+          skupper_token_ingress_host: 192.168.122.1
+          skupper_link_list:
             - host: private1
             - host: public1
               cost: 2
               name: link-to-public1
-          services:
-            nginx:
+          skupper_service_list:
+            - name: nginx
               ports: [8080]
               targets:
                 - type: "host"
                   name: "192.168.122.1"
-              hostIp: "192.168.122.1"
-              hostPorts:
+              host_ip: "192.168.122.1"
+              host_ports:
                 - 8080:8888

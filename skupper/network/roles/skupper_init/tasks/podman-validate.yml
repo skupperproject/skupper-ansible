@@ -1,7 +1,0 @@
----
-- name: "Validating ingress host"
-  ansible.builtin.fail:
-    msg: "Ingress host is required"
-  when:
-    - init['ingress'] is not defined or init['ingress'] != 'none'
-    - init['ingressHosts'] is not defined or (init['ingressHosts'] | length < 1)

@@ -26,10 +26,10 @@ providing the necessary information for all skupper roles.
 
 The `setup.yml` playbook will prepare the Kubernetes namespaces with
 workloads used by the hello world example, and later it will invoke the
-`skupper` role, which will set up the entire skupper network.
+`skupper_setup` role, which will set up the entire skupper network.
 
 This role is idempotent, so as long as your host variables describe your desired
-skupper network state, calling the `skupper` role again should only update the
+skupper.skupper state, calling the `skupper_setup` role again should only update the
 modified resources.
 
 Looking at the variables on the `west` host on the `inventory.yml` file, we see:
@@ -71,7 +71,7 @@ Looking at the variables on the `west` host on the `inventory.yml` file, we see:
                   name: "backend"
 ```
 
-When the `skupper` role is invoked, it will try to initialize the skupper site,
+When the `skupper_setup` role is invoked, it will try to initialize the skupper site,
 maintain the services according to the inventory, generate a token to the respective site (ansible host)
 and go through the requested links. If you specify a link to a given site (by ansible host name), the skupper_link
 role will expect that the skupper_token role was executed for that host, otherwise it will expect that a token is

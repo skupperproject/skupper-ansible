@@ -16,5 +16,5 @@ def get_sites(hostvars) -> list[dict]:
             except Exception as ex:
                 raise RuntimeError('Unable to load site for %s - %s' % (host, ex.__str__()))
         else:
-            raise RuntimeError('site information has not been loaded for: %s' % host)
+            continue
     return sites

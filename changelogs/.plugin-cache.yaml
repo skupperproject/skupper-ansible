@@ -1,0 +1,34 @@
+objects:
+  role: {}
+plugins:
+  become: {}
+  cache: {}
+  callback: {}
+  cliconf: {}
+  connection: {}
+  filter: {}
+  httpapi: {}
+  inventory: {}
+  lookup: {}
+  module:
+    resource:
+      description: Place skupper resources (yaml) in the provided namespace
+      name: resource
+      namespace: ''
+      version_added: 2.0.0
+    system:
+      description: Manages the lifecycle of non-kube namespaces
+      name: system
+      namespace: ''
+      version_added: 2.0.0
+    token:
+      description: Issue or retrieve access tokens and static links
+      name: token
+      namespace: ''
+      version_added: 2.0.0
+  netconf: {}
+  shell: {}
+  strategy: {}
+  test: {}
+  vars: {}
+version: 2.0.0

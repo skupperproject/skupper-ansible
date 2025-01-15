@@ -3,22 +3,22 @@ name: v2
 version: 2.0.0
 readme: README.md
 authors:
-- Fernando Giorgetti (@fgiorgetti)
+  - Fernando Giorgetti (@fgiorgetti)
 description: Collection to manage skupper v2 sites
 license:
-- GPL-2.0-or-later
+  - GPL-2.0-or-later
 license_file: 'LICENSE'
 tags:
-- skupper
-- networking
-- cloud
-- service
-- interconnect
-- kubernetes
-- openshift
-- podman
-- docker
-- linux
+  - skupper
+  - networking
+  - cloud
+  - service
+  - interconnect
+  - kubernetes
+  - openshift
+  - podman
+  - docker
+  - linux
 dependencies: {}
 repository: https://github.com/skupperproject/skupper-ansible
 documentation: https://skupperproject.github.io/skupper-ansible/

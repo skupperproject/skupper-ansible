@@ -6,9 +6,7 @@ PYTHON = 3.13
 all: clean unit coverage
 
 dep:
-	pip install -r ./requirements.txt
-	pip install -r ./tests/unit/requirements.txt
-	pip install -r ./docs/requirements.txt
+	pip install -r ./tests/unit/requirements.txt -U
 
 ansible-lint:
 	ansible-lint -v

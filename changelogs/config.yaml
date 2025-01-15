@@ -30,4 +30,3 @@ sections:
 title: skupper.v2
 trivial_section_name: trivial
 use_fqcn: true
-

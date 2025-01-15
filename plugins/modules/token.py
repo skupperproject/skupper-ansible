@@ -9,20 +9,20 @@ import glob
 import copy
 import yaml
 
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.k8s import (
+from ansible_collections.skupper.v2.plugins.module_utils.k8s import (
     K8sClient,
     has_condition
 )
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.args import (
+from ansible_collections.skupper.v2.plugins.module_utils.args import (
     common_args,
     is_valid_name,
     is_valid_host_ip
 )
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.common import (
+from ansible_collections.skupper.v2.plugins.module_utils.common import (
     is_non_kube,
     namespace_home,
 )
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.exceptions import (
+from ansible_collections.skupper.v2.plugins.module_utils.exceptions import (
     K8sException,
     RuntimeException
 )
@@ -64,7 +64,7 @@ options:
         - Static link hostname (podman, docker or systemd platforms)
 
 extends_documentation_fragment:
-    - fgiorgetti.skupperv2.common_options
+    - skupper.v2.common_options
 
 requirements:
     - "python >= 3.9"
@@ -87,20 +87,20 @@ token:
 EXAMPLES = r'''
 # Retrieving or issue a token (if my-grant does not exist or can be redeemed)
 - name: Retrieve token
-  fgiorgetti.skupperv2.token:
+  skupper.v2.token:
     name: my-grant
     platform: kubernetes
     namespace: west
 
 # Retrieving an accesstoken for any valid accessgrant
 - name: Retrieve token
-  fgiorgetti.skupperv2.token:
+  skupper.v2.token:
     platform: kubernetes
     namespace: west
 
 # Retrieve a static Link for host my.nonkube.host
 - name: Retrieve a static link
-  fgiorgetti.skupperv2.token:
+  skupper.v2.token:
     host: my.nonkube.host
     platform: podman
 '''

@@ -6,21 +6,21 @@ __metaclass__ = type
 import os
 import copy
 
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.k8s import (
+from ansible_collections.skupper.v2.plugins.module_utils.k8s import (
     K8sClient
 )
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.resource import (
+from ansible_collections.skupper.v2.plugins.module_utils.resource import (
     load,
     dump,
     delete as resource_delete
 )
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.common import (
+from ansible_collections.skupper.v2.plugins.module_utils.common import (
     is_non_kube
 )
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.exceptions import (
+from ansible_collections.skupper.v2.plugins.module_utils.exceptions import (
     RuntimeException
 )
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.args import (
+from ansible_collections.skupper.v2.plugins.module_utils.args import (
     common_args,
     is_valid_name
 )
@@ -71,7 +71,7 @@ options:
         choices: ["present", "latest", "absent"]
 
 extends_documentation_fragment:
-  - fgiorgetti.skupperv2.common_options
+  - skupper.v2.common_options
 
 requirements:
   - "python >= 3.9"
@@ -85,14 +85,14 @@ author:
 EXAMPLES = r'''
 # Applying resources to a kubernetes cluster
 - name: Apply Skupper Resources
-  fgiorgetti.skupperv2.resource:
+  skupper.v2.resource:
     path: /home/user/west/crs
     platform: kubernetes
     namespace: west
 
 # Applying remote resources to a kubernetes cluster
 - name: Apply Skupper Resources
-  fgiorgetti.skupperv2.resource:
+  skupper.v2.resource:
     path: /remote/home/user/west/crs
     remote: true
     platform: kubernetes
@@ -100,14 +100,14 @@ EXAMPLES = r'''
 
 # Applying resources to a non-kube namespace
 - name: Apply Skupper Resources
-  fgiorgetti.skupperv2.resource:
+  skupper.v2.resource:
     path: /home/user/west/crs
     platform: podman
     namespace: west
 
 # Define a single resource
 - name: Define resources for west site
-  fgiorgetti.skupperv2.resource:
+  skupper.v2.resource:
     def: >-
       ---
       apiVersion: skupper.io/v2alpha1

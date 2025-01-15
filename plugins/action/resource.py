@@ -27,7 +27,7 @@ class ActionModule(ActionBase):
                     module_args["def"] = load(module_args["path"], platform)
                     del module_args["path"]
 
-        module_return = self._execute_module(module_name='fgiorgetti.skupperv2.resource',
+        module_return = self._execute_module(module_name='skupper.v2.resource',
                                              module_args=module_args,
                                              task_vars=task_vars, tmp=tmp)
         result.update(module_return)

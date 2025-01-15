@@ -6,12 +6,12 @@ import yaml
 from unittest import TestCase
 from unittest.mock import patch
 from ansible.module_utils import basic
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.k8s import K8sClient
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.exceptions import K8sException
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.resource import (
+from ansible_collections.skupper.v2.plugins.module_utils.k8s import K8sClient
+from ansible_collections.skupper.v2.plugins.module_utils.exceptions import K8sException
+from ansible_collections.skupper.v2.plugins.module_utils.resource import (
     version_kind
 )
-from ansible_collections.fgiorgetti.skupperv2.tests.unit.utils.ansible_module_mock import (
+from ansible_collections.skupper.v2.tests.unit.utils.ansible_module_mock import (
     set_module_args,
     AnsibleExitJson,
     AnsibleFailJson,
@@ -138,7 +138,7 @@ class TestTokenModule(TestCase):
         def namespace_home_mock(ns): return os.path.join(
             self.temphome, ns or "default")
         self.mock_namespace_home = patch(
-            'ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.common.namespace_home', new=namespace_home_mock)
+            'ansible_collections.skupper.v2.plugins.module_utils.common.namespace_home', new=namespace_home_mock)
         self.mock_namespace_home.start()
         self.addCleanup(self.mock_namespace_home.stop)
 
@@ -152,8 +152,8 @@ class TestTokenModule(TestCase):
 
         # token module must be imported at last
         try:
-            from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.common import resources_home
-            from ansible_collections.fgiorgetti.skupperv2.plugins.modules import token
+            from ansible_collections.skupper.v2.plugins.module_utils.common import resources_home
+            from ansible_collections.skupper.v2.plugins.modules import token
             self.module = token
             self.module.TokenModule.retry_delay = 0
             self.resources_home = resources_home

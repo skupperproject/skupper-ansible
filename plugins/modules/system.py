@@ -12,21 +12,21 @@ import copy
 
 import yaml
 
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.args import (
+from ansible_collections.skupper.v2.plugins.module_utils.args import (
     common_args,
     is_valid_name
 )
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.common import (
+from ansible_collections.skupper.v2.plugins.module_utils.common import (
     is_non_kube,
     data_home,
     namespace_home,
     resources_home
 )
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.resource import (
+from ansible_collections.skupper.v2.plugins.module_utils.resource import (
     load,
     version_kind
 )
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.system import (
+from ansible_collections.skupper.v2.plugins.module_utils.system import (
     mounts,
     env,
     runas,
@@ -36,7 +36,7 @@ from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.system import
     start_service,
     stop_service
 )
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.command import (
+from ansible_collections.skupper.v2.plugins.module_utils.command import (
     run_command
 )
 from ansible.module_utils.basic import AnsibleModule
@@ -87,7 +87,7 @@ options:
         default: podman
         choices: ["podman", "docker"]
 extends_documentation_fragment:
-  - fgiorgetti.skupperv2.common_options
+  - skupper.v2.common_options
 
 requirements:
   - "python >= 3.9"
@@ -122,47 +122,47 @@ links:
 EXAMPLES = r'''
 # Initializes the default namespace based on existing resources
 - name: Initialize the default namespace using podman
-  fgiorgetti.skupperv2.system:
+  skupper.v2.system:
 
 # Initializes the west namespace using docker
 - name: Initialize the west namespace using docker
-  fgiorgetti.skupperv2.system:
+  skupper.v2.system:
     platform: docker
     namespace: west
 
 # Reloads the definitions for the west namespace
 - name: Initialize the west namespace
-  fgiorgetti.skupperv2.system:
+  skupper.v2.system:
     state: reload
     namespace: west
 
 # Removes a site definition from the west namespace
 - name: Removes the west namespace
-  fgiorgetti.skupperv2.system:
+  skupper.v2.system:
     state: teardown
     namespace: west
 
 # Stops the skupper components on a given namespace
 - name: Stops the components on the east namespace
-  fgiorgetti.skupperv2.system:
+  skupper.v2.system:
     state: stop
     namespace: east
 
 # Starts the skupper components on a given namespace
 - name: Starts the components on the east namespace
-  fgiorgetti.skupperv2.system:
+  skupper.v2.system:
     state: start
     namespace: east
 
 # Produces a self-extracting site bundle based on the default namespace definitions
 - name: Generate a self-extracting site bundle
-  fgiorgetti.skupperv2.system:
+  skupper.v2.system:
     state: bundle
     register: result
 
 # Produces a tarball bundle based on the west namespace definitions
 - name: Generate a tarball bundle based on west namespace definitions
-  fgiorgetti.skupperv2.system:
+  skupper.v2.system:
     state: tarball
     namespace: west
     register: result

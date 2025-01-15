@@ -4,7 +4,7 @@ import yaml
 from unittest import TestCase
 from unittest.mock import patch
 
-from ansible_collections.fgiorgetti.skupperv2.tests.unit.utils.ansible_module_mock import (
+from ansible_collections.skupper.v2.tests.unit.utils.ansible_module_mock import (
     action_module_run,
     execute_module,
 )
@@ -43,7 +43,7 @@ class TestResourceActionModule(TestCase):
         self.temphome = tempfile.mkdtemp()
 
         try:
-            from ansible_collections.fgiorgetti.skupperv2.plugins.action.resource import ActionModule
+            from ansible_collections.skupper.v2.plugins.action.resource import ActionModule
             self.module_class = ActionModule
         except:
             pass

@@ -7,11 +7,11 @@ from unittest.mock import MagicMock, patch, call
 from kubernetes import client, config, dynamic
 from kubernetes.dynamic.exceptions import ApiException
 from ansible.module_utils import basic
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.k8s import K8sClient
-from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.resource import (
+from ansible_collections.skupper.v2.plugins.module_utils.k8s import K8sClient
+from ansible_collections.skupper.v2.plugins.module_utils.resource import (
     version_kind
 )
-from ansible_collections.fgiorgetti.skupperv2.tests.unit.utils.ansible_module_mock import (
+from ansible_collections.skupper.v2.tests.unit.utils.ansible_module_mock import (
     set_module_args,
     AnsibleExitJson,
     AnsibleFailJson,
@@ -110,14 +110,14 @@ class TestResourceModule(TestCase):
         # do not use real namespace path
         self.temphome = tempfile.mkdtemp()
         resources_home_mock = lambda ns: os.path.join(self.temphome, ns, "input", "resources")
-        self.mock_resources_home = patch('ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.common.resources_home', new=resources_home_mock)
+        self.mock_resources_home = patch('ansible_collections.skupper.v2.plugins.module_utils.common.resources_home', new=resources_home_mock)
         self.mock_resources_home.start()
         self.addCleanup(self.mock_resources_home.stop)
 
         # resource module must be imported at last, otherwise fetch_url won't be patched
         try:
-            from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.common import resources_home
-            from ansible_collections.fgiorgetti.skupperv2.plugins.modules import resource
+            from ansible_collections.skupper.v2.plugins.module_utils.common import resources_home
+            from ansible_collections.skupper.v2.plugins.modules import resource
             self.module = resource
             self.resources_home = resources_home
         except:

@@ -5,7 +5,7 @@ import tempfile
 from unittest import TestCase
 from unittest.mock import patch
 from ansible.module_utils import basic
-from ansible_collections.fgiorgetti.skupperv2.tests.unit.utils.ansible_module_mock import (
+from ansible_collections.skupper.v2.tests.unit.utils.ansible_module_mock import (
     set_module_args,
     AnsibleExitJson,
     AnsibleFailJson,
@@ -62,21 +62,21 @@ class TestSystemModule(TestCase):
         self.temphome = tempfile.mkdtemp()
         def data_home_mock(): return self.temphome
         self.mock_data_home = patch(
-            'ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.common.data_home', new=data_home_mock)
+            'ansible_collections.skupper.v2.plugins.module_utils.common.data_home', new=data_home_mock)
         self.mock_run_command = patch(
-            'ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.command.run_command', new=self.run_command)
+            'ansible_collections.skupper.v2.plugins.module_utils.command.run_command', new=self.run_command)
         self.mock_create_service = patch(
-            'ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.system.create_service', new=self.create_service)
+            'ansible_collections.skupper.v2.plugins.module_utils.system.create_service', new=self.create_service)
         self.mock_delete_service = patch(
-            'ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.system.delete_service', new=self.delete_service)
+            'ansible_collections.skupper.v2.plugins.module_utils.system.delete_service', new=self.delete_service)
         self.mock_start_service = patch(
-            'ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.system.start_service', new=self.start_service)
+            'ansible_collections.skupper.v2.plugins.module_utils.system.start_service', new=self.start_service)
         self.mock_stop_service = patch(
-            'ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.system.stop_service', new=self.stop_service)
+            'ansible_collections.skupper.v2.plugins.module_utils.system.stop_service', new=self.stop_service)
         self.mock_runas = patch(
-            'ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.system.runas', new=self.runas)
+            'ansible_collections.skupper.v2.plugins.module_utils.system.runas', new=self.runas)
         self.mock_userns = patch(
-            'ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.system.userns', new=self.userns)
+            'ansible_collections.skupper.v2.plugins.module_utils.system.userns', new=self.userns)
         self.mock_data_home.start()
         self.mock_run_command.start()
         self.mock_create_service.start()
@@ -94,7 +94,7 @@ class TestSystemModule(TestCase):
         self.addCleanup(self.mock_runas.stop)
         self.addCleanup(self.mock_userns.stop)
         try:
-            from ansible_collections.fgiorgetti.skupperv2.plugins.modules import system
+            from ansible_collections.skupper.v2.plugins.modules import system
             self.module = system
         except:
             pass
@@ -171,7 +171,7 @@ class TestSystemModule(TestCase):
             return "host"
 
     def create_resources(self, namespace: str):
-        from ansible_collections.fgiorgetti.skupperv2.plugins.module_utils.common import resources_home
+        from ansible_collections.skupper.v2.plugins.module_utils.common import resources_home
         ns_home = resources_home(namespace)
         os.makedirs(ns_home, exist_ok=True)
         with open(os.path.join(ns_home, "resources.yaml"), "w", encoding="utf-8") as f:

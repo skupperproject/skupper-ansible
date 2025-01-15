@@ -1,7 +1,7 @@
 TARBALL := $(shell echo "skupper-v2-`grep -E '^version:' galaxy.yml | awk '{print $$NF}'`.tar.gz")
 
 IMAGES = default fedora40 ubuntu2404
-PYTHON = 3.12
+PYTHON = 3.13
 
 all: clean unit coverage
 
@@ -23,9 +23,10 @@ build-docs: build install
 #    (cd docs && pip install --user -U -r requirements.txt && ./build.sh) && \
 #    rm -rf ./docs && mv ./docs/build/html/ ./docs && touch ./docs/.nojekyll
 #    rm -rf ./skupper/skupper/docs/*
+	@echo nothing
 
 build: clean
-    ansible-galaxy collection build
+	ansible-galaxy collection build
 
 clean:
 	@[[ -f "$(TARBALL)" ]] && rm $(TARBALL) || true

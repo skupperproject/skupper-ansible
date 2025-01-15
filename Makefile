@@ -7,8 +7,8 @@ all: clean unit coverage
 
 dep:
 	pip install -r ./requirements.txt
-	pip install -r ./skupper/skupper/tests/unit/requirements.txt
-	pip install -r ./skupper/skupper/docs/requirements.txt
+	pip install -r ./tests/unit/requirements.txt
+	pip install -r ./docs/requirements.txt
 
 ansible-lint:
 	ansible-lint -v

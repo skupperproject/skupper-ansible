@@ -1,0 +1,8 @@
+ancestor: null
+releases:
+  2.0.0:
+    changes:
+      major_changes:
+        - https://github.com/skupperproject/skupper-ansible/issues/35
+      release_summary: New collection skupper.v2
+    release_date: '2025-01-17'

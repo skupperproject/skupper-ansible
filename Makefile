@@ -1,4 +1,4 @@
-VERSION := 2.0.0
+VERSION := 2.0.0-preview-1
 TARBALL := skupper-v2-$(VERSION).tar.gz
 
 IMAGES = default fedora40 ubuntu2404
@@ -53,7 +53,7 @@ unit-docker-%: clean
 	ansible-test units --coverage --docker "$*" --python $(PYTHON_DOCKER) -v
 
 integration:
-	@echo ansible-test integration --docker default -v
+	ansible-test integration -v
 
 coverage:
 	ansible-test coverage html

@@ -1,0 +1,15 @@
+---
+- name: Skupper V2 controller
+  kubernetes.core.k8s:
+    state: present
+    src: https://github.com/skupperproject/skupper/releases/download/2.0.0-preview-2/skupper-setup-cluster-scope.yaml
+- name: Waiting on controller to be ready
+  kubernetes.core.k8s_info:
+    api_version: apps/v1
+    kind: Deployment
+    name: skupper-controller
+    namespace: skupper
+    wait: true
+    wait_condition:
+      type: Available
+      status: true

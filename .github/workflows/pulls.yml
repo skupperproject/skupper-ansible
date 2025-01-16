@@ -1,7 +1,9 @@
 name:
 on:
   pull_request:
-    branches: [main]
+    branches: [main, v2-dev]
+  pulls:
+    branches: [main, v2-dev]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,12 +18,11 @@ jobs:
       - name: Install ansible, ansible-lint, yamllint
         run: pip3 install yamllint ansible ansible-lint virtualenv
       - name: Run ansible-lint
-        run: cd ansible_collections && make ansible-lint
+        run: cd ansible_collections/skupper/v2 && make ansible-lint
       - name: Run sanity tests
-        run: cd ansible_collections && make sanity-tests
+        run: cd ansible_collections/skupper/v2 && make sanity-tests
       - name: Run unit tests
-        run: |
-          cd ansible_collections
-          pip3 install -r ./skupper/skupper/tests/unit/requirements.txt
-          make unit-tests
+        run: cd ansible_collections/skupper/v2 && make unit
+      - name: Run integration tests
+        run: cd ansible_collections/skupper/v2 && make integration
 

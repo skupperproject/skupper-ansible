@@ -4,3 +4,4 @@ coverage==7.6.1
 pytest
 pytest-xdist
 ansible-lint
+argcomplete

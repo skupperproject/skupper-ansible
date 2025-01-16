@@ -1,4 +1,8 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Copyright (c) 2025, Red Hat
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
@@ -36,7 +40,8 @@ options:
     remote:
         description:
         - Determines if the resources are located at the inventory host instead of the control node.
-        type: str
+        default: false
+        type: bool
     state:
         description:
         - V(present) means that if the resource does not exist, it will be created. If it exists, no change is made.
@@ -104,7 +109,6 @@ EXAMPLES = r'''
 '''
 
 
-import os
 import copy
 
 from ansible_collections.skupper.v2.plugins.module_utils.k8s import (

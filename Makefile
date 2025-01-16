@@ -1,7 +1,7 @@
 TARBALL := $(shell echo "skupper-v2-`grep -E '^version:' galaxy.yml | awk '{print $$NF}'`.tar.gz")
 
 IMAGES = default fedora40 ubuntu2404
-PYTHON = 3.13
+PYTHON = 3.12
 
 all: clean lint sanity unit coverage
 

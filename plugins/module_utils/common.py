@@ -26,7 +26,7 @@ def runtime_dir() -> str:
     uid = os.getuid()
     if uid == 0:
         return "/run"
-    return os.environ.get("XDG_RUNTIME_DIR", "/run/user/%d" %(uid))
+    return os.environ.get("XDG_RUNTIME_DIR", "/run/user/%d" % (uid))
 
 
 def config_dir() -> str:

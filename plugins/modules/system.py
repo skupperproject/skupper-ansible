@@ -1,4 +1,8 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Copyright (c) 2025, Red Hat
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
@@ -127,31 +131,9 @@ EXAMPLES = r'''
 '''
 
 
-import glob
-import time
-import os
-import shutil
-import base64
-import copy
-try:
-    import yaml
-except ImportError:
-    pass
-
-
-from ansible_collections.skupper.v2.plugins.module_utils.args import (
-    common_args,
-    is_valid_name
-)
-from ansible_collections.skupper.v2.plugins.module_utils.common import (
-    is_non_kube,
-    data_home,
-    namespace_home,
-    resources_home
-)
-from ansible_collections.skupper.v2.plugins.module_utils.resource import (
-    load,
-    version_kind
+from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.skupper.v2.plugins.module_utils.command import (
+    run_command
 )
 from ansible_collections.skupper.v2.plugins.module_utils.system import (
     mounts,
@@ -163,17 +145,37 @@ from ansible_collections.skupper.v2.plugins.module_utils.system import (
     start_service,
     stop_service
 )
-from ansible_collections.skupper.v2.plugins.module_utils.command import (
-    run_command
+from ansible_collections.skupper.v2.plugins.module_utils.resource import (
+    load,
+    version_kind
 )
-from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.skupper.v2.plugins.module_utils.common import (
+    is_non_kube,
+    data_home,
+    namespace_home,
+    resources_home
+)
+from ansible_collections.skupper.v2.plugins.module_utils.args import (
+    common_args,
+    is_valid_name
+)
+import copy
+import base64
+import shutil
+import os
+import time
+import glob
+try:
+    import yaml
+except ImportError:
+    pass
 
 
 def argspec():
     spec = copy.deepcopy(common_args())
     spec["action"] = dict(type="str", default="setup",
-                         choices=["setup", "reload", "teardown",
-                                  "stop", "start", "bundle", "tarball"])
+                          choices=["setup", "reload", "teardown",
+                                   "stop", "start", "bundle", "tarball"])
     spec["image"] = dict(type="str",
                          default="quay.io/skupper/cli:v2-latest")
     spec["engine"] = dict(type="str", default="podman",
@@ -194,7 +196,8 @@ class SystemModule:
         if not is_non_kube(self.platform):
             self.platform = "podman"
         if self.namespace and not is_valid_name(self.namespace):
-            self.module.fail_json("invalid namespace (rfc1123): {}".format(self.namespace))
+            self.module.fail_json(
+                "invalid namespace (rfc1123): {}".format(self.namespace))
 
     def run(self):
         result = dict(
@@ -250,11 +253,13 @@ class SystemModule:
         self.module.debug("namespace: %s" % (self.namespace))
         runtime_dir = os.path.join(namespace_home(self.namespace), "runtime")
         if not strategy and os.path.isdir(runtime_dir) and not force:
-            self.module.warn("namespace '%s' already exists" % (self.namespace))
+            self.module.warn("namespace '%s' already exists" %
+                             (self.namespace))
             return False
         resources_home_dir = resources_home(self.namespace)
         if not os.path.isdir(resources_home_dir):
-            self.module.fail_json("no resources found at: {}".format(resources_home_dir))
+            self.module.fail_json(
+                "no resources found at: {}".format(resources_home_dir))
 
         command = [
             self._engine, "run", "--rm", "--name",
@@ -298,7 +303,7 @@ class SystemModule:
             if platform in ("podman", "docker"):
                 container = "%s-skupper-router" % (namespace)
                 remove_cmd = [platform, "rm", "-f", container]
-                code, _, err = run_command(self.module, remove_cmd)
+                code, out, err = run_command(self.module, remove_cmd)
                 if code == 0:
                     changed = True
                 else:
@@ -338,7 +343,7 @@ class SystemModule:
         for res in yaml.safe_load_all(resources_str):
             if not res or not isinstance(res, dict):
                 continue
-            _, kind = version_kind(res)
+            kind = version_kind(res)[1]
             if kind != "Site":
                 continue
             site_name = res.get("metadata", {}).get("name", "")

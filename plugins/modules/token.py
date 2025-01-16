@@ -1,4 +1,8 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Copyright (c) 2025, Red Hat
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
@@ -27,15 +31,18 @@ options:
     redemptions_allowed:
         description:
             - The number of claims the generated AccessGrant is valid for
+        default: 1
         type: int
     expiration_window:
         description:
             - Duration of the generated AccessGrant
             - Sample values V(10m), V(2h)
+        default: 15m
         type: str
     host:
         description:
             - Static link hostname (podman, docker or systemd platforms)
+        type: str
 
 extends_documentation_fragment:
     - skupper.v2.common_options
@@ -80,30 +87,32 @@ EXAMPLES = r'''
 '''
 
 
-import time
-import os
-import glob
-import copy
-import yaml
-
-from ansible_collections.skupper.v2.plugins.module_utils.k8s import (
-    K8sClient,
-    has_condition
+from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.skupper.v2.plugins.module_utils.exceptions import (
+    K8sException,
+    RuntimeException
+)
+from ansible_collections.skupper.v2.plugins.module_utils.common import (
+    is_non_kube,
+    namespace_home,
 )
 from ansible_collections.skupper.v2.plugins.module_utils.args import (
     common_args,
     is_valid_name,
     is_valid_host_ip
 )
-from ansible_collections.skupper.v2.plugins.module_utils.common import (
-    is_non_kube,
-    namespace_home,
+from ansible_collections.skupper.v2.plugins.module_utils.k8s import (
+    K8sClient,
+    has_condition
 )
-from ansible_collections.skupper.v2.plugins.module_utils.exceptions import (
-    K8sException,
-    RuntimeException
-)
-from ansible.module_utils.basic import AnsibleModule
+import copy
+import glob
+import os
+import time
+try:
+    import yaml
+except ImportError:
+    pass
 
 
 def argspec():
@@ -133,9 +142,11 @@ class TokenModule:
         self.context = self.params.get("context")
         self.namespace = self.params.get("namespace")
         if self.name and not is_valid_name(self.name):
-            self.module.fail_json("invalid name (rfc1123): {}".format(self.name))
+            self.module.fail_json(
+                "invalid name (rfc1123): {}".format(self.name))
         if self.namespace and not is_valid_name(self.namespace):
-            self.module.fail_json("invalid namespace (rfc1123): {}".format(self.namespace))
+            self.module.fail_json(
+                "invalid namespace (rfc1123): {}".format(self.namespace))
         if self.host and not is_valid_host_ip(self.host):
             self.module.fail_json("invalid host: {}".format(self.host))
 
@@ -209,10 +220,11 @@ class TokenModule:
         found_not_ready = False
         for attempt in range(self.max_attempts):
             self.module.debug("retrieving accessgrants attempt %d/%d"
-                                % (attempt, self.max_attempts))
+                              % (attempt, self.max_attempts))
             access_grants = None
             try:
-                access_grants = k8s.get(self.namespace, "skupper.io/v2alpha1", "AccessGrant", name)
+                access_grants = k8s.get(
+                    self.namespace, "skupper.io/v2alpha1", "AccessGrant", name)
             except K8sException as ex:
                 if ex.status != 404:
                     raise ex
@@ -240,7 +252,7 @@ class TokenModule:
 
         if name:
             if not has_condition(access_grant, "Ready") or \
-                not self.can_be_redeemed(access_grant):
+                    not self.can_be_redeemed(access_grant):
                 raise RuntimeException(
                     msg="accessgrant '%s' cannot be redeemed" % (name))
 
@@ -267,21 +279,24 @@ class TokenModule:
         site_ready = False
         for attempt in range(self.max_attempts):
             try:
-                sites = k8s.get(self.namespace, "skupper.io/v2alpha1", "Site", "")
+                sites = k8s.get(
+                    self.namespace, "skupper.io/v2alpha1", "Site", "")
                 if not sites:
-                    raise RuntimeException('no sites found on namespace "{}"'.format(self.namespace or "default"))
+                    raise RuntimeException(
+                        'no sites found on namespace "{}"'.format(self.namespace or "default"))
                 for site in sites:
                     if has_condition(site, "Ready"):
                         site_ready = True
                         break
             except K8sException as ex:
-                    if ex.status != 404:
-                        raise ex
+                if ex.status != 404:
+                    raise ex
             if site_ready:
                 break
             time.sleep(self.retry_delay)
         if not site_ready:
-            raise RuntimeException('no ready sites found on namespace "{}"'.format(self.namespace or "default"))
+            raise RuntimeException(
+                'no ready sites found on namespace "{}"'.format(self.namespace or "default"))
 
     def _load_from_list(self, access_grants) -> tuple[dict, bool]:
         all_ready = True

@@ -1,6 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
 import os
-import yaml
+try:
+    import yaml
+except ImportError:
+    pass
 from .args import is_valid_name
 from .exceptions import ResourceException
 
@@ -11,7 +14,7 @@ __metaclass__ = type
 def load(path: str, platform: str, maxdepth=3) -> str:
     yamls = []
     if os.path.isdir(path):
-        for (dirpath, _, filenames) in os.walk(path):
+        for (dirpath, dirnames, filenames) in os.walk(path):
             if dirpath == path:
                 depth = 0
             else:
@@ -55,7 +58,7 @@ def dump(definitions: str, namespace: str, overwrite: bool) -> bool:
     for obj in yaml.safe_load_all(definitions):
         if not isinstance(obj, dict):
             continue
-        _, kind = version_kind(obj)
+        kind = version_kind(obj)[1]
         name = obj.get("metadata", {}).get("name")
         if not name or not allowed(obj):
             continue
@@ -85,7 +88,7 @@ def delete(definitions: str, namespace: str) -> bool:
         raise ResourceException("%s is not a directory" % (home))
 
     for obj in yaml.safe_load_all(definitions):
-        _, kind = version_kind(obj)
+        kind = version_kind(obj)[1]
         name = obj.get("metadata", {}).get("name")
         if not name or not is_valid_name(name):
             continue

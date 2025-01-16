@@ -186,14 +186,14 @@ class TestSystemModule(TestCase):
                 set_module_args(input)
                 self.module.main()
 
-    def test_state_setup_no_resources(self):
+    def test_action_setup_no_resources(self):
         with self.assertRaises(AnsibleFailJson) as ex:
             set_module_args({})
             self.module.main()
         self.assertTrue(str(ex.exception.__str__()).__contains__(
             "no resources found"), ex.exception.msg)
 
-    def test_state_setup_already_exists(self):
+    def test_action_setup_already_exists(self):
         for ns in ["default", "west"]:
             os.makedirs(os.path.join(self.temphome,
                         "namespaces", ns, "runtime"))
@@ -202,7 +202,7 @@ class TestSystemModule(TestCase):
                 self.module.main()
         self.assertFalse(exit.exception.changed)
 
-    def test_state_setup(self):
+    def test_action_setup(self):
         test_cases = [
             {
                 "name": "setup-minimal",
@@ -278,7 +278,7 @@ class TestSystemModule(TestCase):
             self.assertNotIn("-b", first_command)
             self.assertEqual(namespace, self._create_service_ns)
 
-    def test_state_reload(self):
+    def test_action_reload(self):
         for existing in [False, True]:
             self._run_commands = []
             if existing:
@@ -286,7 +286,7 @@ class TestSystemModule(TestCase):
                             "default", "runtime"), exist_ok=True)
             self.create_resources("default")
             with self.assertRaises(AnsibleExitJson) as exit:
-                set_module_args({"state": "reload"})
+                set_module_args({"action": "reload"})
                 self.module.main()
             self.assertTrue(exit.exception.changed)
             self.assertEqual(exit.exception.path, os.path.join(
@@ -309,12 +309,12 @@ class TestSystemModule(TestCase):
             self.assertNotIn("-b", first_command)
             self.assertEqual("default", self._create_service_ns)
 
-    def test_state_bundle_tarball(self):
+    def test_action_bundle_tarball(self):
         for strategy in ["bundle", "tarball"]:
             self._run_commands = []
             self.create_resources("default")
             with self.assertRaises(AnsibleExitJson) as exit:
-                set_module_args({"state": strategy})
+                set_module_args({"action": strategy})
                 self.module.main()
             self.assertTrue(exit.exception.changed)
             expectedEngine = "podman"
@@ -338,7 +338,7 @@ class TestSystemModule(TestCase):
             self.assertEqual(exit.exception.bundle.encode(),
                              base64.b64encode(expectedBundleContent.encode()))
 
-    def test_state_teardown(self):
+    def test_action_teardown(self):
         test_cases = [{
             "name": "not_found",
         }, {
@@ -366,7 +366,7 @@ class TestSystemModule(TestCase):
                     f.write("platform: {}".format(platform))
             with self.assertRaises(AnsibleExitJson) as exit:
                 input = {
-                    "state": "teardown",
+                    "action": "teardown",
                     "namespace": namespace,
                     "platform": platform,
                 }
@@ -383,7 +383,7 @@ class TestSystemModule(TestCase):
                 self.assertEqual(expected_command,
                                  first_command, first_command)
 
-    def test_state_start(self):
+    def test_action_start(self):
         test_cases = [{
             "namespace": "default",
             "expectChanged": True,
@@ -402,14 +402,14 @@ class TestSystemModule(TestCase):
             expect_changed = tc.get("expectChanged", False)
             with self.assertRaises(AnsibleExitJson) as exit:
                 input = {
-                    "state": "start",
+                    "action": "start",
                     "namespace": namespace,
                 }
                 set_module_args(input)
                 self.module.main()
             self.assertEqual(expect_changed, exit.exception.changed)
 
-    def test_state_stop(self):
+    def test_action_stop(self):
         test_cases = [{
             "namespace": "default",
             "expectChanged": True,
@@ -428,7 +428,7 @@ class TestSystemModule(TestCase):
             expect_changed = tc.get("expectChanged", False)
             with self.assertRaises(AnsibleExitJson) as exit:
                 input = {
-                    "state": "stop",
+                    "action": "stop",
                     "namespace": namespace,
                 }
                 set_module_args(input)

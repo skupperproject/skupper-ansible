@@ -69,12 +69,13 @@ def env(platform: str, engine: str = "podman") -> dict:
             container_env["CONTAINER_ENDPOINT"] = endpoint
     return container_env
 
+
 def systemd_available(module: AnsibleModule) -> bool:
     base_command = ["systemctl"]
     if os.getuid() != 0:
         base_command.append("--user")
     list_units_command = base_command + ["list-units"]
-    code, _, err = run_command(module, list_units_command)
+    code, out, err = run_command(module, list_units_command)
     if code != 0:
         module.warn("unable to detect systemd: %s" % (err))
     return code == 0
@@ -99,13 +100,13 @@ def systemd_create(module: AnsibleModule, service_name: str, service_file: str) 
         base_command.append("--user")
     enable_command = base_command + ["enable", "--now", service_name]
     reload_command = base_command + ["daemon-reload"]
-    code, _, err = run_command(module, enable_command)
+    code, out, err = run_command(module, enable_command)
     if code != 0:
         module.warn(
             "error enabling service '%s': %s" % (service_name, err))
     else:
         changed = True
-    code, _, err = run_command(module, reload_command)
+    code, out, err = run_command(module, reload_command)
     if code != 0:
         module.warn("error reloading systemd daemon: %s" % (err))
     else:
@@ -127,13 +128,13 @@ def _systemd_command(module: AnsibleModule, namespace: str, command: str) -> boo
     if os.getuid() != 0:
         base_command.append("--user")
     system_status = base_command + ["status", name]
-    pre_status, _, _ = run_command(module, system_status)
+    pre_status, out, err = run_command(module, system_status)
     system_command = base_command + [command, name]
-    code, _, err = run_command(module, system_command)
+    code, out, err = run_command(module, system_command)
     if code != 0:
         module.warn(
             "error executing %s command for service '%s': %s" % (command, name, err))
-    post_status, _, _ = run_command(module, system_status)
+    post_status, out, err = run_command(module, system_status)
     changed = code == 0 and pre_status != post_status
     return changed
 
@@ -171,7 +172,7 @@ def systemd_delete(module: AnsibleModule, service_name: str) -> bool:
     reset_command = base_command + ["reset-failed"]
 
     # stopping service
-    code, _, err = run_command(module, disable_command)
+    code, out, err = run_command(module, disable_command)
     if code != 0:
         module.warn(
             "error stopping service '%s': %s" % (service_name, err))
@@ -187,7 +188,7 @@ def systemd_delete(module: AnsibleModule, service_name: str) -> bool:
 
     # reloading systemd
     for command in [reload_command, reset_command]:
-        code, _, err = run_command(module, command)
+        code, out, err = run_command(module, command)
         if code != 0:
             module.warn("error running systemd command '%s': %s" % (command, err))
         else:

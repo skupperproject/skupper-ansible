@@ -3,95 +3,53 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import glob
-import time
-import os
-import shutil
-import base64
-import copy
-
-import yaml
-
-from ansible_collections.skupper.v2.plugins.module_utils.args import (
-    common_args,
-    is_valid_name
-)
-from ansible_collections.skupper.v2.plugins.module_utils.common import (
-    is_non_kube,
-    data_home,
-    namespace_home,
-    resources_home
-)
-from ansible_collections.skupper.v2.plugins.module_utils.resource import (
-    load,
-    version_kind
-)
-from ansible_collections.skupper.v2.plugins.module_utils.system import (
-    mounts,
-    env,
-    runas,
-    userns,
-    create_service,
-    delete_service,
-    start_service,
-    stop_service
-)
-from ansible_collections.skupper.v2.plugins.module_utils.command import (
-    run_command
-)
-from ansible.module_utils.basic import AnsibleModule
-
 
 DOCUMENTATION = r'''
 ---
 module: system
-
 short_description: Manages the lifecycle of non-kube namespaces
-
 version_added: "2.0.0"
-
-description: |
-    Manages the lifecycle of non-kube namespaces.
-
-    * Controls the state of a non-kube site running on a given namespace
-    * It can be used to setup, reload, start, stop and teardown a namespace definition
-    * It has the ability to produce a self-extracting or a tarball bundle
-    * Runs with podman (default) or docker binaries
-    * Only valid for platforms: podman, docker and systemd
+description:
+    - Manages the lifecycle of non-kube namespaces.
+    - Controls the state of a non-kube site definition on a given namespace
+    - It can be used to setup, reload, start, stop and teardown a namespace definition
+    - It has the ability to produce a self-extracting or a tarball bundle
+    - Runs with podman (default) or docker binaries
+    - Only valid for platforms "podman", "docker" and "systemd"
 
 options:
-    state:
+    action:
         description:
-        - The state of a given namespace
-        - setup: a new site is initialized and started (no-op if namespace is already initialized)
-        - reload: a site is created or re-initialized (Certificate Authorities are preserved)
-        - start: components are started
-        - stop: components are stopped
-        - teardown: stops and removes a site definition
-        - bundle: generates a self-extracting bundle
-        - tarball: generates a tarball bundle
+            - The state of a given namespace
+            - V(setup) - a new site is initialized and started (no-op if namespace is already initialized)
+            - V(reload) - a site is created or re-initialized (Certificate Authorities are preserved)
+            - V(start) - components are started
+            - V(stop) - components are stopped
+            - V(teardown) - stops and removes a site definition
+            - V(bundle) - generates a self-extracting bundle
+            - V(tarball) - generates a tarball bundle
         type: str
         choices: ["setup", "reload", "start", "stop", "teardown", "bundle", "tarball"]
         default: setup
     image:
         description:
-        - The image used to initialize your site or bundle
+            - The image used to initialize your site or bundle
         type: str
         default: quay.io/skupper/cli:v2-latest
     engine:
         description:
-        - The container engine used to manage a namespace or produce a bundle
-        - The default value is podman, but if platform is set to docker, it will use docker as the engine as well
-        - It is also used when the platform is set to systemd or when state is bundle or tarball (otherwise the platform value is used)
+            - The container engine used to manage a namespace or produce a bundle
+            - The default value is podman, but if platform is set to docker, it will use docker as the engine as well
+            - It is also used when the platform is set to systemd or when state is bundle or tarball (otherwise the platform value is used)
         type: str
         default: podman
         choices: ["podman", "docker"]
 extends_documentation_fragment:
-  - skupper.v2.common_options
+    - skupper.v2.common_options
 
 requirements:
-  - "python >= 3.9"
-  - "PyYAML >= 3.11"
+    - "python >= 3.9"
+    - "PyYAML >= 3.11"
 
 author:
     - Fernando Giorgetti (@fgiorgetti)
@@ -99,24 +57,24 @@ author:
 
 RETURN = r"""
 path:
-  description:
-  - Path to the generated namespace or to a produced site bundle
-  returned: success
-  type: str
+    description:
+        - Path to the generated namespace or to a produced site bundle
+    returned: success
+    type: str
 bundle:
-  description:
-  - Base 64 encoded content of the generated bundle or tarball
-  - Only populated when state is bundle or tarball
-  returned: success
-  type: str
+    description:
+        - Base 64 encoded content of the generated bundle or tarball
+        - Only populated when state is bundle or tarball
+    returned: success
+    type: str
 links:
-  description:
-  - Static links generated for non-kube sites with a RouterAccess
-  - Dictionary keys are the target hostname or ip of the link
-  - Each value has a valid link that can be applied to another site
-  returned: when platform in ('podman', 'docker', 'systemd') and a RouterAccess is defined
-  type: dict
-  sample: {'my.host': '---\napiVersion: skupper.io/v2alpha1...'}
+    description:
+        - Static links generated for non-kube sites with a RouterAccess
+        - Dictionary keys are the target hostname or ip of the link
+        - Each value has a valid link that can be applied to another site
+    returned: when platform in ('podman', 'docker', 'systemd') and a RouterAccess is defined
+    type: dict
+    sample: {'my.host': '---\napiVersion: skupper.io/v2alpha1...'}
 """
 
 EXAMPLES = r'''
@@ -167,6 +125,49 @@ EXAMPLES = r'''
     namespace: west
     register: result
 '''
+
+
+import glob
+import time
+import os
+import shutil
+import base64
+import copy
+
+try:
+    import yaml
+    HAS_YAML = True
+except:
+    HAS_YAML = False
+
+from ansible_collections.skupper.v2.plugins.module_utils.args import (
+    common_args,
+    is_valid_name
+)
+from ansible_collections.skupper.v2.plugins.module_utils.common import (
+    is_non_kube,
+    data_home,
+    namespace_home,
+    resources_home
+)
+from ansible_collections.skupper.v2.plugins.module_utils.resource import (
+    load,
+    version_kind
+)
+from ansible_collections.skupper.v2.plugins.module_utils.system import (
+    mounts,
+    env,
+    runas,
+    userns,
+    create_service,
+    delete_service,
+    start_service,
+    stop_service
+)
+from ansible_collections.skupper.v2.plugins.module_utils.command import (
+    run_command
+)
+from ansible.module_utils.basic import AnsibleModule
 
 
 def argspec():

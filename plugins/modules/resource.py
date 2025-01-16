@@ -3,30 +3,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import os
-import copy
-
-from ansible_collections.skupper.v2.plugins.module_utils.k8s import (
-    K8sClient
-)
-from ansible_collections.skupper.v2.plugins.module_utils.resource import (
-    load,
-    dump,
-    delete as resource_delete
-)
-from ansible_collections.skupper.v2.plugins.module_utils.common import (
-    is_non_kube
-)
-from ansible_collections.skupper.v2.plugins.module_utils.exceptions import (
-    RuntimeException
-)
-from ansible_collections.skupper.v2.plugins.module_utils.args import (
-    common_args,
-    is_valid_name
-)
-from ansible.module_utils.urls import fetch_url
-from ansible.module_utils.basic import AnsibleModule
-
 
 DOCUMENTATION = r'''
 ---
@@ -36,7 +12,7 @@ short_description: Place skupper resources (yaml) in the provided namespace
 
 version_added: "2.0.0"
 
-description: >-
+description:
     Place skupper resources (yaml) in the provided namespace. If platform is
     kubernetes (default) the resources are applied to the respective namespace.
     In case a different platform is used, the resources will be placed into the
@@ -45,11 +21,11 @@ description: >-
 options:
     path:
         description:
-        - Path where resources are located (yaml and yml files).
-        - Path can be a directory, a file or an http URL.
-        - If remote is true (default: false), the resources will not be copied from the control node.
-        - URLs are always fetch from the inventory host.
-        - Mutually exclusive with def
+            - Path where resources are located (yaml and yml files).
+            - Path can be a directory, a file or an http URL.
+            - If remote is true (default is V(false)), the resources will not be copied from the control node.
+            - URLs are always fetch from the inventory host.
+            - Mutually exclusive with def
         type: str
     def:
         description:
@@ -126,6 +102,31 @@ EXAMPLES = r'''
         port: 8080
         routingKey: backend
 '''
+
+
+import os
+import copy
+
+from ansible_collections.skupper.v2.plugins.module_utils.k8s import (
+    K8sClient
+)
+from ansible_collections.skupper.v2.plugins.module_utils.resource import (
+    load,
+    dump,
+    delete as resource_delete
+)
+from ansible_collections.skupper.v2.plugins.module_utils.common import (
+    is_non_kube
+)
+from ansible_collections.skupper.v2.plugins.module_utils.exceptions import (
+    RuntimeException
+)
+from ansible_collections.skupper.v2.plugins.module_utils.args import (
+    common_args,
+    is_valid_name
+)
+from ansible.module_utils.urls import fetch_url
+from ansible.module_utils.basic import AnsibleModule
 
 
 def argspec():

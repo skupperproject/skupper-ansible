@@ -3,31 +3,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import time
-import os
-import glob
-import copy
-import yaml
-
-from ansible_collections.skupper.v2.plugins.module_utils.k8s import (
-    K8sClient,
-    has_condition
-)
-from ansible_collections.skupper.v2.plugins.module_utils.args import (
-    common_args,
-    is_valid_name,
-    is_valid_host_ip
-)
-from ansible_collections.skupper.v2.plugins.module_utils.common import (
-    is_non_kube,
-    namespace_home,
-)
-from ansible_collections.skupper.v2.plugins.module_utils.exceptions import (
-    K8sException,
-    RuntimeException
-)
-from ansible.module_utils.basic import AnsibleModule
-
 
 DOCUMENTATION = r'''
 ---
@@ -37,31 +12,30 @@ short_description: Issue or retrieve access tokens and static links
 
 version_added: "2.0.0"
 
-description: |
-    Manage Skupper Access Tokens and static links.
-
-    * Generate and AccessGrant and return a corresponding AccessToken (kubernetes platform only)
-    * Returns an AccessToken for an existing AccessGrant (kubernetes platform only)
-    * Retrieves a static Link based on provided subject alternative name or host (podman, docker and systemd platforms)
+description:
+    - Manages Skupper Access Tokens and static links
+    - Generates an AccessGrant and return a corresponding AccessToken (kubernetes platform only)
+    - Returns an AccessToken for an existing AccessGrant (kubernetes platform only)
+    - Retrieves a static Link based on provided subject alternative name or host (podman, docker and linux platforms)
 
 options:
     name:
         description:
-        - Name of the AccessGrant (to be generated or consumed) and AccessToken (kubernetes platform only)
-        - Name of a RouterAccess (podman, docker or systemd platforms)
+            - Name of the AccessGrant (to be generated or consumed) and AccessToken (kubernetes platform only)
+            - Name of a RouterAccess (podman, docker or systemd platforms)
         type: str
     redemptions_allowed:
         description:
-        - The number of claims the generated AccessGrant is valid for
+            - The number of claims the generated AccessGrant is valid for
         type: int
     expiration_window:
         description:
-        - Duration of the generated AccessGrant
-        - Sample values: 10m, 2h
+            - Duration of the generated AccessGrant
+            - Sample values V(10m), V(2h)
         type: str
     host:
         description:
-        - Static link hostname (podman, docker or systemd platforms)
+            - Static link hostname (podman, docker or systemd platforms)
 
 extends_documentation_fragment:
     - skupper.v2.common_options
@@ -104,6 +78,32 @@ EXAMPLES = r'''
     host: my.nonkube.host
     platform: podman
 '''
+
+
+import time
+import os
+import glob
+import copy
+import yaml
+
+from ansible_collections.skupper.v2.plugins.module_utils.k8s import (
+    K8sClient,
+    has_condition
+)
+from ansible_collections.skupper.v2.plugins.module_utils.args import (
+    common_args,
+    is_valid_name,
+    is_valid_host_ip
+)
+from ansible_collections.skupper.v2.plugins.module_utils.common import (
+    is_non_kube,
+    namespace_home,
+)
+from ansible_collections.skupper.v2.plugins.module_utils.exceptions import (
+    K8sException,
+    RuntimeException
+)
+from ansible.module_utils.basic import AnsibleModule
 
 
 def argspec():

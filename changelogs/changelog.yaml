@@ -3,16 +3,16 @@ releases:
   2.0.0:
     changes:
       major_changes:
-      - https://github.com/skupperproject/skupper-ansible/issues/35
+        - https://github.com/skupperproject/skupper-ansible/issues/35
       release_summary: New collection skupper.v2
     modules:
-    - description: Place skupper resources (yaml) in the provided namespace
-      name: resource
-      namespace: ''
-    - description: Manages the lifecycle of non-kube namespaces
-      name: system
-      namespace: ''
-    - description: Issue or retrieve access tokens and static links
-      name: token
-      namespace: ''
+      - description: Place skupper resources (yaml) in the provided namespace
+        name: resource
+        namespace: ''
+      - description: Manages the lifecycle of non-kube namespaces
+        name: system
+        namespace: ''
+      - description: Issue or retrieve access tokens and static links
+        name: token
+        namespace: ''
     release_date: '2025-01-17'

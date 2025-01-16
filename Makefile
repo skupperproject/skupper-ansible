@@ -3,12 +3,12 @@ TARBALL := $(shell echo "skupper-v2-`grep -E '^version:' galaxy.yml | awk '{prin
 IMAGES = default fedora40 ubuntu2404
 PYTHON = 3.13
 
-all: clean unit coverage
+all: clean lint sanity unit coverage
 
 dep:
 	pip install -r ./tests/unit/requirements.txt -U
 
-ansible-lint:
+lint:
 	ansible-lint -v
 
 release-changelog:
@@ -16,12 +16,14 @@ release-changelog:
 	antsibull-changelog release
 
 build-docs: build install
-#    rm -rf docs/*
-#    antsibull-docs sphinx-init --use-current --dest-dir ./docs/docsite skupper.v2
-#    (cd docs && pip install --user -U -r requirements.txt && ./build.sh) && \
-#    rm -rf ./docs && mv ./docs/build/html/ ./docs && touch ./docs/.nojekyll
-#    rm -rf ./skupper/skupper/docs/*
-	@echo nothing
+	pip install --user -U virtualenv
+	rm -rf docs/* && mkdir docs/docsite
+	antsibull-docs sphinx-init --use-current --dest-dir ./docs/docsite skupper.v2
+	pip install -U -r docs/docsite/requirements.txt
+	./docs/docsite/build.sh
+	mv ./docs/docsite/build/html ./docs
+	touch ./docs/.nojekyll
+	rm -rf ./docs/docsite
 
 build: clean
 	ansible-galaxy collection build
@@ -34,8 +36,8 @@ install:
 	@[[ -f "$(TARBALL)" ]] && true || (echo "Collection has not been built" && false)
 	@ansible-galaxy collection install -f "$(TARBALL)"
 
-sanity-tests:
-	ansible-test sanity -v --color
+sanity:
+	ansible-test sanity --color --docker -v --python $(PYTHON) --requirements plugins/
 
 .PHONY: unit
 unit:

@@ -18,9 +18,9 @@ jobs:
       - name: Install ansible, ansible-lint, yamllint
         run: pip3 install yamllint ansible ansible-lint virtualenv
       - name: Run ansible-lint
-        run: cd ansible_collections/skupper/v2 && make ansible-lint
+        run: cd ansible_collections/skupper/v2 && make lint
       - name: Run sanity tests
-        run: cd ansible_collections/skupper/v2 && make sanity-tests
+        run: cd ansible_collections/skupper/v2 && make sanity
       - name: Run unit tests
         run: cd ansible_collections/skupper/v2 && make unit
       - name: Run integration tests

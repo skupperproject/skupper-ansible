@@ -11,7 +11,7 @@ short_description: Manages the lifecycle of non-kube namespaces
 version_added: "2.0.0"
 description:
     - Manages the lifecycle of non-kube namespaces.
-    - Controls the state of a non-kube site definition on a given namespace
+    - Executes the provided action for a non-kube site definition on a given namespace
     - It can be used to setup, reload, start, stop and teardown a namespace definition
     - It has the ability to produce a self-extracting or a tarball bundle
     - Runs with podman (default) or docker binaries
@@ -20,7 +20,7 @@ description:
 options:
     action:
         description:
-            - The state of a given namespace
+            - The action to perform against a given namespace definition
             - V(setup) - a new site is initialized and started (no-op if namespace is already initialized)
             - V(reload) - a site is created or re-initialized (Certificate Authorities are preserved)
             - V(start) - components are started
@@ -40,7 +40,7 @@ options:
         description:
             - The container engine used to manage a namespace or produce a bundle
             - The default value is podman, but if platform is set to docker, it will use docker as the engine as well
-            - It is also used when the platform is set to systemd or when state is bundle or tarball (otherwise the platform value is used)
+            - It is also used when the platform is set to systemd or when action is bundle or tarball (otherwise the platform value is used)
         type: str
         default: podman
         choices: ["podman", "docker"]
@@ -64,7 +64,7 @@ path:
 bundle:
     description:
         - Base 64 encoded content of the generated bundle or tarball
-        - Only populated when state is bundle or tarball
+        - Only populated when action is bundle or tarball
     returned: success
     type: str
 links:
@@ -91,37 +91,37 @@ EXAMPLES = r'''
 # Reloads the definitions for the west namespace
 - name: Initialize the west namespace
   skupper.v2.system:
-    state: reload
+    action: reload
     namespace: west
 
 # Removes a site definition from the west namespace
 - name: Removes the west namespace
   skupper.v2.system:
-    state: teardown
+    action: teardown
     namespace: west
 
 # Stops the skupper components on a given namespace
 - name: Stops the components on the east namespace
   skupper.v2.system:
-    state: stop
+    action: stop
     namespace: east
 
 # Starts the skupper components on a given namespace
 - name: Starts the components on the east namespace
   skupper.v2.system:
-    state: start
+    action: start
     namespace: east
 
 # Produces a self-extracting site bundle based on the default namespace definitions
 - name: Generate a self-extracting site bundle
   skupper.v2.system:
-    state: bundle
+    action: bundle
     register: result
 
 # Produces a tarball bundle based on the west namespace definitions
 - name: Generate a tarball bundle based on west namespace definitions
   skupper.v2.system:
-    state: tarball
+    action: tarball
     namespace: west
     register: result
 '''
@@ -133,12 +133,11 @@ import os
 import shutil
 import base64
 import copy
-
 try:
     import yaml
-    HAS_YAML = True
-except:
-    HAS_YAML = False
+except ImportError:
+    pass
+
 
 from ansible_collections.skupper.v2.plugins.module_utils.args import (
     common_args,
@@ -172,7 +171,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 def argspec():
     spec = copy.deepcopy(common_args())
-    spec["state"] = dict(type="str", default="setup",
+    spec["action"] = dict(type="str", default="setup",
                          choices=["setup", "reload", "teardown",
                                   "stop", "start", "bundle", "tarball"])
     spec["image"] = dict(type="str",
@@ -185,7 +184,7 @@ def argspec():
 class SystemModule:
     def __init__(self, module: AnsibleModule):
         self.module = module
-        self._state = self.params.get("state")
+        self._action = self.params.get("action")
         self._image = self.params.get("image")
         self._engine = self.params.get("engine")
         self.platform = self.params.get("platform") or "podman"
@@ -208,7 +207,7 @@ class SystemModule:
 
         changed = False
         path = namespace_home(self.namespace)
-        match self._state:
+        match self._action:
             case "setup":
                 changed = self.setup()
             case "reload":
@@ -225,17 +224,17 @@ class SystemModule:
                 changed = self.setup(strategy="tarball")
 
         # handling bundle return
-        if changed and self._state in ("bundle", "tarball"):
+        if changed and self._action in ("bundle", "tarball"):
             site_name = self._read_site_name()
             path = ""
             if site_name:
-                ext = "sh" if self._state == "bundle" else "tar.gz"
+                ext = "sh" if self._action == "bundle" else "tar.gz"
                 file_name = "skupper-install-%s.%s" % (site_name, ext)
                 path = os.path.join(data_home(), "bundles", file_name)
                 with open(path, 'rb') as bundle:
                     bundle_encoded = base64.b64encode(bundle.read())
                     result['bundle'] = bundle_encoded.decode('utf-8')
-        if self._state in ("setup", "reload"):
+        if self._action in ("setup", "reload"):
             result["links"] = self.load_static_links()
 
         # preparing response

@@ -1,6 +1,6 @@
-========================
-skupper.v2 Release Notes
-========================
+===================================
+Skupper V2 collection Release Notes
+===================================
 
 .. contents:: Topics
 
@@ -10,12 +10,12 @@ v2.0.0
 Release Summary
 ---------------
 
-New collection skupper.v2
+Initial release of the skupper.v2 collection bla
 
 Major Changes
 -------------
 
-- https://github.com/skupperproject/skupper-ansible/issues/35
+- Introducing new modules resource, token and system (https://github.com/skupperproject/skupper-ansible/issues/35)
 
 New Modules
 -----------

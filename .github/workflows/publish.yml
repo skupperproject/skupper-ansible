@@ -1,0 +1,32 @@
+name:
+on:
+  push:
+    # Sequence of patterns matched against tags
+    # Right now, we run this job automatically when a semantically versioned
+    # tag is pushed (with an optional suffix).
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+*'
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: ./ansible_collections/skupper/v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+      - name: Install ansible, ansible-lint, yamllint
+        run: pip3 install yamllint ansible ansible-lint
+      - name: Run ansible-lint
+        run: cd ./ansible_collections/skupper/v2 && make lint
+      - name: Run ansible sanity tests
+        run: cd ./ansible_collections/skupper/v2 && make sanity
+      - name: Run ansible unit tests
+        run: cd ./ansible_collections/skupper/v2 && make unit
+      - name: Run ansible integration tests
+        run: cd ./ansible_collections/skupper/v2 && make integration
+      - name: Ansible Publish
+        uses: ansible/ansible-publish-action@v1.0.0
+        with:
+          api_key: ${{ secrets.ANSIBLE_API_KEY }}
+          src_path: /github/workspace/ansible_collections/skupper/v2

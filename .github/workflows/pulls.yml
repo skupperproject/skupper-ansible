@@ -1,0 +1,27 @@
+name:
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: ./ansible_collections/skupper/v2
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          cache: 'pip'
+      - name: Install ansible, ansible-lint, yamllint
+        run: pip3 install yamllint ansible ansible-lint virtualenv
+      - name: Run ansible-lint
+        run: cd ansible_collections && make ansible-lint
+      - name: Run sanity tests
+        run: cd ansible_collections && make sanity-tests
+      - name: Run unit tests
+        run: |
+          cd ansible_collections
+          pip3 install -r ./skupper/skupper/tests/unit/requirements.txt
+          make unit-tests
+

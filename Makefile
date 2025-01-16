@@ -1,7 +1,8 @@
 TARBALL := $(shell echo "skupper-v2-`grep -E '^version:' galaxy.yml | awk '{print $$NF}'`.tar.gz")
 
 IMAGES = default fedora40 ubuntu2404
-PYTHON = 3.12
+PYTHON ?= `python -c 'import platform; print(".".join(platform.python_version_tuple()[0:2]))'`
+PYTHON_DOCKER = 3.12
 
 all: clean lint sanity unit coverage
 
@@ -9,11 +10,11 @@ dep:
 	pip install -r ./tests/unit/requirements.txt -U
 
 lint:
-	ansible-lint -v
+	ansible-lint -v --exclude changelogs
 
 release-changelog:
 	pip install --user -U antsibull-changelog
-	antsibull-changelog release
+	antsibull-changelog release -v
 
 build-docs: build install
 	pip install --user -U virtualenv
@@ -46,7 +47,7 @@ unit:
 .PHONY: unit-docker
 unit-docker: $(foreach img,$(IMAGES),unit-docker-$(img))
 unit-docker-%: clean
-	ansible-test units --coverage --docker "$*" --python $(PYTHON) -v
+	ansible-test units --coverage --docker "$*" --python $(PYTHON_DOCKER) -v
 
 integration:
 	@echo ansible-test integration --docker default -v

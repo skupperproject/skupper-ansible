@@ -204,6 +204,7 @@ class SystemModule:
             changed=False,
         )
         if self.module.check_mode:
+            result['changed'] = True
             self.module.exit_json(**result)
 
         # self.module._debug = True

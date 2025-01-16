@@ -6,9 +6,6 @@ PYTHON_DOCKER = 3.12
 
 all: clean lint sanity unit coverage
 
-dep:
-	pip install -r ./tests/unit/requirements.txt -U
-
 lint:
 	ansible-lint -v --exclude changelogs
 
@@ -42,6 +39,7 @@ sanity:
 
 .PHONY: unit
 unit:
+	pip install -r ./tests/unit/requirements.txt -U
 	ansible-test units --color --coverage --python $(PYTHON) -v
 
 .PHONY: unit-docker

@@ -2,7 +2,7 @@ name:
 on:
   pull_request:
     branches: [main, v2-dev]
-  pulls:
+  push:
     branches: [main, v2-dev]
 jobs:
   build:

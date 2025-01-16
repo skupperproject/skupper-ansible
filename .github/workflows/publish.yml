@@ -23,6 +23,8 @@ jobs:
         run: cd ./ansible_collections/skupper/v2 && make sanity
       - name: Run ansible unit tests
         run: cd ./ansible_collections/skupper/v2 && make unit
+      - name: Build and install the collection
+        run: cd ./ansible_collections/skupper/v2 && make build install
       - name: Run ansible integration tests
         run: cd ./ansible_collections/skupper/v2 && make integration
       - name: Ansible Publish

@@ -1,4 +1,5 @@
-TARBALL := $(shell echo "skupper-v2-`grep -E '^version:' galaxy.yml | awk '{print $$NF}'`.tar.gz")
+VERSION := 2.0.0
+TARBALL := skupper-v2-$(VERSION).tar.gz
 
 IMAGES = default fedora40 ubuntu2404
 PYTHON ?= `python -c 'import platform; print(".".join(platform.python_version_tuple()[0:2]))'`
@@ -33,6 +34,10 @@ clean:
 install:
 	@[[ -f "$(TARBALL)" ]] && true || (echo "Collection has not been built" && false)
 	@ansible-galaxy collection install -f "$(TARBALL)"
+
+publish: build
+	@[[ -f "$(TARBALL)" ]] && true || (echo "Collection has not been built" && false)
+	@ansible-galaxy collection publish -f "$(TARBALL)"
 
 sanity:
 	ansible-test sanity --color --docker -v --python $(PYTHON) --requirements plugins/

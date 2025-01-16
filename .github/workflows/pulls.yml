@@ -25,4 +25,3 @@ jobs:
         run: cd ansible_collections/skupper/v2 && make unit
       - name: Run integration tests
         run: cd ansible_collections/skupper/v2 && make integration
-

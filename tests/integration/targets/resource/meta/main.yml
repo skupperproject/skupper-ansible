@@ -1,0 +1,4 @@
+---
+dependencies:
+  - delete_namespace
+  - create_namespace

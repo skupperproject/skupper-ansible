@@ -1,0 +1,12 @@
+---
+- name: Create the namespace {{ namespace }}
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: Namespace
+    name: "{{ namespace }}"
+    state: present
+  register: _result
+- name: Assert that namespace has been created
+  ansible.builtin.assert:
+    that:
+      - _result is changed

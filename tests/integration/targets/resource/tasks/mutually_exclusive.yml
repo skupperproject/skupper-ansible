@@ -1,0 +1,14 @@
+---
+- name: Path and Def are mutually exclusive
+  skupper.v2.resource:
+    def: |
+      some fake resource
+    path: /some/fake/remote/path.yaml
+    remote: true
+  ignore_errors: true
+  register: _result
+- name: Check the task fails and its error message
+  ansible.builtin.assert:
+    that:
+      - _result is failed
+      - "'parameters are mutually exclusive: ' in _result.msg"

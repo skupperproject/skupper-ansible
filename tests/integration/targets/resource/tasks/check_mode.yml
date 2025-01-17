@@ -1,0 +1,11 @@
+---
+- name: Resource module check_mode
+  skupper.v2.resource:
+    def: |
+      some fake resource
+  check_mode: true
+  register: _result
+- name: Assert that resource has been applied (check_mode)
+  ansible.builtin.assert:
+    that:
+      - _result.changed

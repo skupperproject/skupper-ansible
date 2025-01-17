@@ -1,0 +1,4 @@
+---
+- name: Delete the namespace
+  include_role:
+    name: delete_namespace

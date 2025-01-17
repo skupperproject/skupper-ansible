@@ -1,0 +1,20 @@
+---
+- name: Create Site A resources based on definition
+  skupper.v2.resource:
+    def: "{{ lookup('ansible.builtin.file', 'site_a.yml') }}"
+    namespace: "{{ namespace }}"
+  register: _result
+- name: Assert that resources have been created
+  ansible.builtin.assert:
+    that:
+      - _result is changed
+
+- name: Create Site A resources based on definition (no changes expected)
+  skupper.v2.resource:
+    def: "{{ lookup('ansible.builtin.file', 'site_a.yml') }}"
+    namespace: "{{ namespace }}"
+  register: _result
+- name: Assert that resources have not been changed
+  ansible.builtin.assert:
+    that:
+      - _result is not changed

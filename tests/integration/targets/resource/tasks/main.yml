@@ -1,14 +1,14 @@
 ---
-- name: Resource module check_mode 
+- name: Resource module check_mode
   skupper.v2.resource:
     def: |
       some fake resource
   check_mode: true
   register: _result
 - name: Assert that resource has been applied (check_mode)
-  assert:
+  ansible.builtin.assert:
     that:
-    - _result.changed
+      - _result.changed
 
 - name: Path and Def are mutually exclusive
   skupper.v2.resource:
@@ -19,35 +19,34 @@
   ignore_errors: true
   register: _result
 - name: Check the task fails and its error message
-  assert:
+  ansible.builtin.assert:
     that:
       - _result is failed
       - "'parameters are mutually exclusive: ' in _result.msg"
 
-- block:
-  - name: Create the namespace {{ namespace }}
-    kubernetes.core.k8s:
-      api_version: v1
-      kind: Namespace
-      name: "{{ namespace }}"
-      state: present
-    register: _result
-  - name: Assert that namespace has been created
-    assert:
-      that:
-        - _result is changed
-  - name: Delete the namespace {{ namespace }}
-    kubernetes.core.k8s:
-      api_version: v1
-      kind: Namespace
-      name: "{{ namespace }}"
-      state: absent
-  - name: Wait until namespace is removed
-    register: _result
-    until: _result.resources | length == 0
-    retries: 10
-    delay: 6
-    kubernetes.core.k8s_info:
-      api_version: v1
-      kind: Namespace
-      name: "{{ namespace }}"
+- name: Create the namespace {{ namespace }}
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: Namespace
+    name: "{{ namespace }}"
+    state: present
+  register: _result
+- name: Assert that namespace has been created
+  ansible.builtin.assert:
+    that:
+      - _result is changed
+- name: Delete the namespace {{ namespace }}
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: Namespace
+    name: "{{ namespace }}"
+    state: absent
+- name: Wait until namespace is removed
+  register: _result
+  until: _result.resources | length == 0
+  retries: 10
+  delay: 6
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Namespace
+    name: "{{ namespace }}"

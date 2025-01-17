@@ -82,7 +82,7 @@ class TestResourceActionModule(TestCase):
         result = module.run()
         self._validate_local_definition(result)
 
-    def test_local_path_multiple_files(self):
+    def test_local_path_directory(self):
         files = {"site.yaml": site, "listener.yaml": listener}
         for file in files:
             res_file = os.path.join(self.temphome, file)

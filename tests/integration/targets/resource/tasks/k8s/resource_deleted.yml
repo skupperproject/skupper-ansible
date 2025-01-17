@@ -1,0 +1,11 @@
+---
+- name: Wait till resource is removed
+  kubernetes.core.k8s_info:
+    api_version: skupper.io/v2alpha1
+    kind: "{{ item.kind }}"
+    name: "{{ item.name }}"
+    namespace: "{{ namespace }}"
+  register: _resource
+  until: _resource.resources | length == 0
+  retries: 10
+  delay: 6

@@ -1,0 +1,14 @@
+---
+- name: Validating check_mode
+  include_tasks: check_mode.yml
+
+- name: Validating mutually exclusive options
+  include_tasks: mutually_exclusive.yml
+
+- name: Run resource tests on kubernetes
+  block:
+    - name: Validate resource module
+      include_tasks: resource.yml
+  always:
+    - name: Teardown
+      include_tasks: teardown.yml

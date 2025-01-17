@@ -1,11 +1,3 @@
 ---
-- name: Validating check_mode
-  include_tasks: check_mode.yml
-
-- name: Validating mutually exclusive options
-  include_tasks: mutually_exclusive.yml
-
-- name: Validate resource module
-  include_tasks: resource.yml
-- name: Teardown
-  include_tasks: teardown.yml
+- name: Validate resource module on kubernetes
+  include_tasks: k8s/main.yml

@@ -1,0 +1,14 @@
+---
+- name: Retrieve expected resource
+  kubernetes.core.k8s_info:
+    api_version: skupper.io/v2alpha1
+    kind: "{{ item.kind }}"
+    name: "{{ item.name }}"
+    namespace: "{{ namespace }}"
+  register: my_resource
+- name: Assert that the resource was successfully retrieved
+  ansible.builtin.assert:
+    that:
+      - my_resource.resources is defined
+      - my_resource.resources | length == 1
+      - my_resource.resources[0].metadata.name == item.name

@@ -2,7 +2,7 @@
 apiVersion: skupper.io/v2alpha1
 kind: Site
 metadata:
-  name: west
+  name: my-site
 spec:
   linkAccess: none
 ---

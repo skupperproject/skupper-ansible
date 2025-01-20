@@ -129,8 +129,8 @@ def mutualexc():
 
 
 class TokenModule:
-    max_attempts = 6
-    retry_delay = 5
+    max_attempts = 10
+    retry_delay = 6
 
     def __init__(self, module: AnsibleModule):
         self.module = module

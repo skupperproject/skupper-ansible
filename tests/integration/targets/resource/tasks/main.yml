@@ -1,3 +1,6 @@
 ---
 - name: Validate resource module on kubernetes
-  include_tasks: k8s/main.yml
+  include_tasks: kube/main.yml
+
+- name: Validate resource module on nonkube
+  include_tasks: nonkube/main.yml

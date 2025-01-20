@@ -1,0 +1,81 @@
+---
+- name: Create Site A resources based on definition
+  skupper.v2.resource:
+    def: "{{ lookup('ansible.builtin.file', 'site_a.yml') }}"
+    namespace: "{{ namespace }}"
+    platform: podman
+  register: _result
+- name: Assert that resources have been created
+  ansible.builtin.assert:
+    that:
+      - _result is changed
+
+- name: Validate resources exist
+  include_tasks: resource_created.yml
+  with_items:
+    - { "file": "Site-my-site.yaml", "name": "my-site" }
+    - { "file": "Listener-backend.yaml", "name": "backend" }
+
+- name: Create Site A resources based on definition (no changes expected)
+  skupper.v2.resource:
+    def: "{{ lookup('ansible.builtin.file', 'site_a.yml') }}"
+    namespace: "{{ namespace }}"
+    platform: podman
+  register: _result
+- name: Assert that resources have not been changed
+  ansible.builtin.assert:
+    that:
+      - _result is not changed
+
+- name: Create Site A resources based on local path (no changes expected)
+  skupper.v2.resource:
+    path: "{{ role_path }}/files/site_a.yml"
+    namespace: "{{ namespace }}"
+    platform: podman
+  register: _result
+- name: Assert that resources have not been changed
+  ansible.builtin.assert:
+    that:
+      - _result is not changed
+
+- name: Create Site A resources based on remote path (no changes expected)
+  skupper.v2.resource:
+    path: "{{ role_path }}/files/site_a.yml"
+    namespace: "{{ namespace }}"
+    remote: true
+    platform: podman
+  register: _result
+- name: Assert that resources have not been changed
+  ansible.builtin.assert:
+    that:
+      - _result is not changed
+
+- name: Override Site A resources based on local path
+  skupper.v2.resource:
+    path: "{{ role_path }}/files/site_a.yml"
+    namespace: "{{ namespace }}"
+    state: latest
+    platform: podman
+  register: _result
+- name: Assert that resources have been updated
+  ansible.builtin.assert:
+    that:
+      - _result is changed
+
+- name: Delete Site A resources based on remote path
+  skupper.v2.resource:
+    path: "{{ role_path }}/files/site_a.yml"
+    namespace: "{{ namespace }}"
+    state: absent
+    platform: podman
+  register: _result
+- name: Assert that resources have been deleted
+  ansible.builtin.assert:
+    that:
+      - _result is changed
+
+- name: Validate resources deleted
+  include_tasks: resource_deleted.yml
+  with_items:
+    - { "file": "Site-my-site.yaml", "name": "my-site" }
+    - { "file": "Listener-backend.yaml", "name": "backend" }

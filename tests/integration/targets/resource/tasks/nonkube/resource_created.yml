@@ -1,0 +1,8 @@
+---
+- name: Retrieve expected resource from the filesystem
+  ansible.builtin.set_fact:
+    _content: "{{ lookup('file', lookup('env', 'HOME') + '/.local/share/skupper/namespaces/' + namespace + '/input/resources/' + item.file) | from_yaml }}"
+- name: Assert that the resource was successfully retrieved
+  ansible.builtin.assert:
+    that:
+      - _content.metadata.name == item.name

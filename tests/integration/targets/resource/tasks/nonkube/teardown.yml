@@ -1,0 +1,5 @@
+---
+- name: Removing namespace directory
+  ansible.builtin.file:
+    path: "{{ lookup('env', 'HOME') + '/.local/share/skupper/namespaces/' + namespace + '/' }}"
+    state: absent

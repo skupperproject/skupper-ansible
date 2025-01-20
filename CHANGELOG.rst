@@ -10,7 +10,7 @@ v2.0.0
 Release Summary
 ---------------
 
-Initial release of the skupper.v2 collection bla
+Initial release of the skupper.v2 collection
 
 Major Changes
 -------------

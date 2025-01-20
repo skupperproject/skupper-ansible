@@ -1,0 +1,8 @@
+---
+- name: Run resource tests on nonkube
+  block:
+    - name: Validate resource module
+      include_tasks: resource.yml
+  always:
+    - name: Teardown
+      include_tasks: teardown.yml

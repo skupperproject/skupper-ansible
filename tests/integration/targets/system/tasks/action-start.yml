@@ -1,0 +1,8 @@
+---
+- name: Run the start action
+  skupper.v2.system:
+    action: start
+    namespace: "{{ namespace }}"
+  register: _system
+- name: Validate namespace started
+  include_tasks: validate-namespace-running.yml

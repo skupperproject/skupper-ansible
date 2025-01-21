@@ -1,0 +1,31 @@
+---
+- name: Set facts for system module tests (rootless)
+  ansible.builtin.set_fact:
+    namespace_home: "{{ lookup('env', 'HOME') + '/.local/share/skupper/namespaces/' + namespace }}"
+  when: ansible_user_id != 0
+- name: Set facts for system module tests (rootful)
+  ansible.builtin.set_fact:
+    namespace_home: "{{ '/var/lib/skupper/namespaces/' + namespace }}"
+  when: ansible_user_id == 0
+
+- name: Run system module tests
+  block:
+    - name: Validate system setup action
+      include_tasks: action-setup.yml
+    - name: Validate system reload action
+      include_tasks: action-reload.yml
+    - name: Validate system stop action
+      include_tasks: action-stop.yml
+    - name: Validate system start action
+      include_tasks: action-start.yml
+    - name: Validate system teardown action
+      include_tasks: action-teardown.yml
+  always:
+    - name: Run the teardown action
+      skupper.v2.system:
+        action: teardown
+        namespace: "{{ namespace }}"
+      ignore_errors: true
+    - name: Remove namespace files
+      ansible.builtin.include_role:
+        name: delete_nonkube_namespace

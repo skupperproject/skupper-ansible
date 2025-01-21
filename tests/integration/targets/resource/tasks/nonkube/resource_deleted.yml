@@ -1,7 +1,13 @@
 ---
-- name: Retrieve expected resource from the filesystem
+- name: Retrieve expected resource from the filesystem (rootless)
   ansible.builtin.stat:
     path: "{{ lookup('env', 'HOME') + '/.local/share/skupper/namespaces/' + namespace + '/input/resources/' + item.file }}"
+  when: ansible_user_id != "0"
+  register: _stat
+- name: Retrieve expected resource from the filesystem (rootful)
+  ansible.builtin.stat:
+    path: "{{ '/var/lib/skupper/namespaces/' + namespace + '/input/resources/' + item.file }}"
+  when: ansible_user_id == "0"
   register: _stat
 - name: Assert that the resource does not exist
   ansible.builtin.assert:

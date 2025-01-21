@@ -1,5 +1,3 @@
 ---
 dependencies:
   - delete_nonkube_namespace
-  - delete_namespace
-  - create_namespace

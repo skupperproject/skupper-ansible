@@ -1,0 +1,33 @@
+---
+- name: Create Site A resources
+  skupper.v2.resource:
+    path: "{{ role_path }}/files/site_a.yml"
+    namespace: "{{ namespace }}"
+    platform: podman
+- name: Get skupper-site-ca key file hash
+  ansible.builtin.set_fact:
+    ca_key_hash: "{{ lookup('file', namespace_home + '/runtime/issuers/skupper-site-ca/tls.key') | hash('md5') }}"
+    site_server_key_hash: "{{ lookup('file', namespace_home + '/runtime/certs/skupper-local-server/tls.key') | hash('md5') }}"
+- name: Run the reload action
+  skupper.v2.system:
+    action: reload
+    namespace: "{{ namespace }}"
+  register: _system
+- name: Assert reload action performed successfully
+  ansible.builtin.assert:
+    that:
+      - _system.changed
+- name: Get skupper-site-ca key file hash after no-op setup
+  ansible.builtin.set_fact:
+    ca_key_hash_after: "{{ lookup('file', namespace_home + '/runtime/issuers/skupper-site-ca/tls.key') | hash('md5') }}"
+    site_server_key_hash_after: "{{ lookup('file', namespace_home + '/runtime/certs/skupper-local-server/tls.key') | hash('md5') }}"
+- name: Assert that skupper-site-ca key has not changed
+  ansible.builtin.assert:
+    that:
+      - ca_key_hash == ca_key_hash_after
+- name: Assert that skupper-site-server key has changed
+  ansible.builtin.assert:
+    that:
+      - site_server_key_hash != site_server_key_hash_after
+- name: Validate namespace is running
+  include_tasks: validate-namespace-running.yml

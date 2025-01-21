@@ -1,0 +1,12 @@
+---
+- name: Run the teardown action
+  skupper.v2.system:
+    action: teardown
+    namespace: "{{ namespace }}"
+  register: _system
+- name: Assert teardown action performed successfully
+  ansible.builtin.assert:
+    that:
+      - _system.changed
+- name: Validate namespace is deleted
+  include_tasks: validate-namespace-deleted.yml

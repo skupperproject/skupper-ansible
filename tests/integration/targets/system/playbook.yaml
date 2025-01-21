@@ -1,0 +1,5 @@
+---
+- connection: local
+  hosts: localhost
+  roles:
+    - system

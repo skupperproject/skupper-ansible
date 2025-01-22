@@ -8,6 +8,7 @@
   skupper.v2.system:
     action: bundle
     namespace: "{{ namespace }}"
+    image: "{{ system_image }}"
   register: _system
 - name: Assert bundle action performed successfully
   ansible.builtin.assert:

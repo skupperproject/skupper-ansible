@@ -1,10 +1,11 @@
 ---
-- name: Delete the namespace {{ namespace }}
+- name: Delete the namespace {{ delete_namespace_namespace }}
   kubernetes.core.k8s:
     api_version: v1
     kind: Namespace
-    name: "{{ namespace }}"
+    name: "{{ delete_namespace_namespace }}"
     state: absent
+  when: delete_namespace_namespace != ''
 - name: Wait until namespace is removed
   register: _result
   until: _result.resources | length == 0
@@ -13,4 +14,5 @@
   kubernetes.core.k8s_info:
     api_version: v1
     kind: Namespace
-    name: "{{ namespace }}"
+    name: "{{ delete_namespace_namespace }}"
+  when: delete_namespace_namespace != ''

@@ -12,6 +12,7 @@
   skupper.v2.system:
     action: reload
     namespace: "{{ namespace }}"
+    image: "{{ system_image }}"
   register: _system
 - name: Assert reload action performed successfully
   ansible.builtin.assert:

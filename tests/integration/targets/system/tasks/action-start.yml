@@ -3,6 +3,7 @@
   skupper.v2.system:
     action: start
     namespace: "{{ namespace }}"
+    image: "{{ system_image }}"
   register: _system
 - name: Validate namespace started
   include_tasks: validate-namespace-running.yml

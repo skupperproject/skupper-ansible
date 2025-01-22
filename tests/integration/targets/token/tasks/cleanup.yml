@@ -1,0 +1,21 @@
+---
+- name: Removing kubernetes namespaces
+  ansible.builtin.include_role:
+    name: delete_namespace
+  vars:
+    delete_namespace_namespace: "{{ ns }}"
+  loop:
+    - "{{ namespace_west }}"
+    - "{{ namespace_east }}"
+  loop_control:
+    loop_var: ns
+- name: Removing nonkube namespaces
+  skupper.v2.system:
+    action: teardown
+    platform: podman
+    namespace: "{{ ns }}"
+  loop:
+    - "{{ namespace_west }}"
+    - "{{ namespace_east }}"
+  loop_control:
+    loop_var: ns

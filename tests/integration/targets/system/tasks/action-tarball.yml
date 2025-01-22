@@ -8,6 +8,7 @@
   skupper.v2.system:
     action: tarball
     namespace: "{{ namespace }}"
+    image: "{{ system_image }}"
   register: _system
 - name: Assert tarball action performed successfully
   ansible.builtin.assert:

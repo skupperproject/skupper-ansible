@@ -1,0 +1,38 @@
+---
+apiVersion: skupper.io/v2alpha1
+kind: Site
+metadata:
+  name: token-west
+spec:
+  linkAccess: default
+---
+apiVersion: skupper.io/v2alpha1
+kind: Listener
+metadata:
+  name: backend
+spec:
+  host: backend
+  port: 8080
+  routingKey: backend-8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: quay.io/skupper/hello-world-frontend
+          ports:
+            - containerPort: 8080

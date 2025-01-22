@@ -8,6 +8,7 @@
   skupper.v2.system:
     action: setup
     namespace: "{{ namespace }}"
+    image: "{{ system_image }}"
   register: _system
 - name: Assert setup action performed successfully
   ansible.builtin.assert:
@@ -35,6 +36,7 @@
   skupper.v2.system:
     action: setup
     namespace: "{{ namespace }}"
+    image: "{{ system_image }}"
   register: _system
 - name: Assert setup action performed successfully
   ansible.builtin.assert:

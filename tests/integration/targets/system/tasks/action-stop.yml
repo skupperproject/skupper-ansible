@@ -3,6 +3,7 @@
   skupper.v2.system:
     action: stop
     namespace: "{{ namespace }}"
+    image: "{{ system_image }}"
   register: _system
 - name: Validate namespace stopped
   include_tasks: validate-namespace-stopped.yml

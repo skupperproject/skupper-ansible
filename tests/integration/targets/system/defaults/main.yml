@@ -1,3 +1,4 @@
 ---
 namespace: system-testing
 site_name: my-site
+system_image: quay.io/fgiorgetti/cli:v2-dev

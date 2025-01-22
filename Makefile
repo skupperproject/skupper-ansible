@@ -55,10 +55,10 @@ unit-docker-%: clean
 	ansible-test units --coverage --docker "$*" --python $(PYTHON_DOCKER) -v
 
 integration:
-	ansible-test integration -v
+	ansible-test integration --allow-destructive -v
 
 integration-ssh:
-	ansible-test integration --target "ssh:`id -un`@localhost,python=$(PYTHON)" -v
+	ansible-test integration --allow-destructive --target "ssh:`id -un`@localhost,python=$(PYTHON)" -v
 
 .PHONY: integration-direct
 integration-direct: $(foreach target,$(INTEGRATION_TARGETS),integration-direct-$(target))

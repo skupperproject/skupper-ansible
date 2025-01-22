@@ -1,0 +1,52 @@
+---
+- name: Token module using {{ item.scenario }}
+  environment:
+    DBUS_SESSION_BUS_ADDRESS: "{{ 'unix:path=/run/user/' + ansible_real_user_id | string + '/bus' }}"
+  block:
+    - name: Testing token scenario {{ item.scenario }}
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+    - name: Cleanup namespaces that might have been left behind
+      ansible.builtin.include_tasks: cleanup.yml
+    - name: Creating namespaces
+      ansible.builtin.include_tasks: create_namespaces.yml
+    - name: Create west site resources
+      skupper.v2.resource:
+        namespace: "{{ namespace_west }}"
+        path: "{{ role_path }}/files/{{ item.west.path }}"
+        platform: "{{ item.west.platform }}"
+    - name: Create east site resources
+      skupper.v2.resource:
+        namespace: "{{ namespace_east }}"
+        path: "{{ role_path }}/files/{{ item.east.path }}"
+        platform: "{{ item.east.platform }}"
+    - name: Start the west namespace if using nonkube
+      skupper.v2.system:
+        namespace: "{{ namespace_west }}"
+        platform: "{{ item.west.platform }}"
+        image: "{{ token_image }}"
+      when: item.west.platform != "kubernetes"
+    - name: Retrieve or create west token
+      skupper.v2.token:
+        namespace: "{{ namespace_west }}"
+        platform: "{{ item.west.platform }}"
+      register: token
+    - name: Save token into east site
+      skupper.v2.resource:
+        namespace: "{{ namespace_east }}"
+        def: "{{ token.token }}"
+        platform: "{{ item.east.platform }}"
+    - name: Start the east namespace if using nonkube
+      skupper.v2.system:
+        image: "{{ token_image }}"
+        namespace: "{{ namespace_east }}"
+        platform: "{{ item.east.platform }}"
+      when: item.east.platform != "kubernetes"
+    - name: Call backend service
+      ansible.builtin.command: "{{ (item.west.platform == 'kubernetes') | ternary(kube_verify_command, nonkube_verify_command) }}"
+      retries: 10
+      delay: 6
+      changed_when: false
+  always:
+    - name: Cleanup namespaces
+      ansible.builtin.include_tasks: cleanup.yml

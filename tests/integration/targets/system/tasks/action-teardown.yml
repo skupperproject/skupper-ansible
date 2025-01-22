@@ -3,6 +3,7 @@
   skupper.v2.system:
     action: teardown
     namespace: "{{ namespace }}"
+    image: "{{ system_image }}"
   register: _system
 - name: Assert teardown action performed successfully
   ansible.builtin.assert:

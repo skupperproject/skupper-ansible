@@ -1,0 +1,11 @@
+---
+- name: Creating kubernetes namespaces
+  ansible.builtin.include_role:
+    name: create_namespace
+  vars:
+    create_namespace_namespace: "{{ ns }}"
+  loop:
+    - "{{ namespace_west }}"
+    - "{{ namespace_east }}"
+  loop_control:
+    loop_var: ns

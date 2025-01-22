@@ -358,11 +358,11 @@ class TestSystemModule(TestCase):
             expect_changed = tc.get("expectChanged", False)
             namespace = tc.get("namespace", "default")
             platform = tc.get("platform", "podman")
-            runtime_dir = os.path.join(
-                self.temphome, "namespaces", namespace, "runtime")
+            internal_dir = os.path.join(
+                self.temphome, "namespaces", namespace, "internal")
             if expect_changed:
-                os.makedirs(runtime_dir)
-                with open(os.path.join(runtime_dir, "platform.yaml"), "w", encoding="utf-8") as f:
+                os.makedirs(internal_dir)
+                with open(os.path.join(internal_dir, "platform.yaml"), "w", encoding="utf-8") as f:
                     f.write("platform: {}".format(platform))
             with self.assertRaises(AnsibleExitJson) as exit:
                 input = {
@@ -375,7 +375,7 @@ class TestSystemModule(TestCase):
             self.assertEqual(exit.exception.changed, expect_changed)
             if not expect_changed:
                 continue
-            self.assertFalse(os.path.isdir(runtime_dir))
+            self.assertFalse(os.path.isdir(internal_dir))
             if platform in ["podman", "docker"]:
                 expected_command = [platform, "rm", "-f",
                                     "{}-skupper-router".format(namespace)]

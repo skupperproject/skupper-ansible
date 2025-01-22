@@ -292,12 +292,12 @@ class SystemModule:
         return True
 
     def teardown(self, namespace: str = "default") -> bool:
-        runtime_dir = os.path.join(namespace_home(namespace), "runtime")
+        internal_dir = os.path.join(namespace_home(namespace), "internal")
         changed = False
-        if not os.path.isdir(runtime_dir):
+        if not os.path.isdir(internal_dir):
             return changed
         changed = delete_service(self.module, namespace)
-        platform_file_name = os.path.join(runtime_dir, "platform.yaml")
+        platform_file_name = os.path.join(internal_dir, "platform.yaml")
         with open(platform_file_name, "r", encoding='utf-8') as platform_file:
             platform_obj = yaml.safe_load(platform_file)
             platform = platform_obj.get("platform", "")

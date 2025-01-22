@@ -1,0 +1,17 @@
+---
+- name: Run backend as a podman container bound to 19090
+  containers.podman.podman_container:
+    name: token_testing_backend
+    image: quay.io/skupper/hello-world-backend
+    state: started
+    ports:
+      - 19090:8080
+    remove: true
+- name: "Run token module tests for all scenarios"
+  with_items:
+    - "{{ matrix }}"
+  ansible.builtin.include_tasks: workflow.yml
+- name: Delete the backend podman container
+  containers.podman.podman_container:
+    name: token_testing_backend
+    state: absent

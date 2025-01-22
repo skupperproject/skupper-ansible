@@ -2,7 +2,7 @@
 apiVersion: skupper.io/v2alpha1
 kind: Site
 metadata:
-  name: my-site
+  name: token-west
 ---
 apiVersion: skupper.io/v2alpha1
 kind: Listener
@@ -10,7 +10,7 @@ metadata:
   name: backend
 spec:
   host: 0.0.0.0
-  port: 9898
+  port: 18080
   routingKey: backend-8080
 ---
 apiVersion: skupper.io/v2alpha1
@@ -19,10 +19,8 @@ metadata:
   name: my-site-ra
 spec:
   roles:
-    - port: 55679
+    - port: 55681
       name: inter-router
-    - port: 45679
+    - port: 45681
       name: edge
   bindHost: 0.0.0.0
-  subjectAlternativeNames:
-    - my.site.ra

@@ -1,0 +1,8 @@
+---
+- name: Set the DBUS_SESSION_BUS_ADDRESS environment variable if not set
+  ansible.builtin.set_fact:
+    ansible_env:
+      DBUS_SESSION_BUS_ADDRESS: "{{ 'unix:path=/run/user/' + ansible_real_user_id | string + '/bus' }}"
+  when:
+    - ansible_env.DBUS_SESSION_BUS_ADDRESS is not defined
+    - ansible_real_user_id != 0

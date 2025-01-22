@@ -63,9 +63,6 @@ integration-ssh:
 .PHONY: integration-direct
 integration-direct: $(foreach target,$(INTEGRATION_TARGETS),integration-direct-$(target))
 integration-direct-%:
-	## system test ran through ansible-test integration is unable to use systemctl
-	## error: Failed to connect to user scope bus via local transport
-	## the workaround is to run the runme.sh script directly
 	( cd tests/integration/targets/$* && ./runme.sh )
 
 coverage:

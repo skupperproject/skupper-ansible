@@ -2,18 +2,17 @@
 - name: Set expected values for rootless execution
   ansible.builtin.set_fact:
     systemctl_cmd: "{{ 'systemctl --user is-active skupper-' + namespace }}"
-  when: ansible_user_id != "0"
+  when: ansible_real_user_id != 0
 - name: Set expected values for rootful execution
   ansible.builtin.set_fact:
     systemctl_cmd: "{{ 'systemctl is-active skupper-' + namespace }}"
-  when: ansible_user_id == "0"
+  when: ansible_real_user_id == 0
 - name: Assert that the systemd service exists
   ansible.builtin.command: "{{ systemctl_cmd }}"
   changed_when: false
   register: _systemctl
   failed_when:
     - _systemctl.rc != 3
-    - "{{ 'Failed to connect to user scope bus via local transport' not in _systemctl.stderr }}"
     - "{{ 'inactive' not in _systemctl.stdout }}"
 - name: Assert that the skupper-router container exists
   containers.podman.podman_container_info:

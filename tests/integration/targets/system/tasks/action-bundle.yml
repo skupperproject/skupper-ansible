@@ -1,0 +1,37 @@
+---
+- name: Create Site A resources
+  skupper.v2.resource:
+    path: "{{ role_path }}/files/site_a.yml"
+    namespace: "{{ namespace }}"
+    platform: podman
+- name: Run the bundle action
+  skupper.v2.system:
+    action: bundle
+    namespace: "{{ namespace }}"
+  register: _system
+- name: Assert bundle action performed successfully
+  ansible.builtin.assert:
+    that:
+      - _system.changed
+      - _system.path is defined
+      - _system.path == bundle_path
+      - _system.bundle is defined
+      - _system.bundle | length > 0
+- name: Validate namespace has not been created
+  include_tasks: validate-namespace-deleted.yml
+- name: Saving the bundle as a temporary file
+  ansible.builtin.copy:
+    dest: "{{ '/tmp/' + site_name + '-bundle.sh' }}"
+    content: "{{ _system.bundle | b64decode }}"
+    mode: '0755'
+- name: Remove namespace files
+  ansible.builtin.include_role:
+    name: delete_nonkube_namespace
+- name: Installing the generated bundle
+  ansible.builtin.command: "{{ '/tmp/' + site_name + '-bundle.sh -n ' + namespace }}"
+- name: Validate namespace is running
+  include_tasks: validate-namespace-running.yml
+- name: Deleting namespace using the bundle
+  ansible.builtin.command: "{{ '/tmp/' + site_name + '-bundle.sh -x -n ' + namespace }}"
+- name: Validate namespace has not been created
+  include_tasks: validate-namespace-deleted.yml

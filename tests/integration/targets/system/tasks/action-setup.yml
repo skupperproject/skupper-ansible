@@ -13,6 +13,17 @@
   ansible.builtin.assert:
     that:
       - _system.changed
+      - _system.path is defined
+      - _system.path == namespace_home
+      - _system.links is defined
+      - _system.links | length == 2
+- name: Assert the expected links have been created
+  ansible.builtin.assert:
+    that:
+      - _system.links["0.0.0.0"] is defined
+      - _system.links["0.0.0.0"] | length > 0
+      - _system.links["my.site.ra"] is defined
+      - _system.links["my.site.ra"] | length > 0
 - name: Validate namespace is running
   include_tasks: validate-namespace-running.yml
 

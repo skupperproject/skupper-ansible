@@ -17,6 +17,8 @@
   ansible.builtin.assert:
     that:
       - _system.changed
+      - _system.path is defined
+      - _system.path == namespace_home
 - name: Get skupper-site-ca key file hash after no-op setup
   ansible.builtin.set_fact:
     ca_key_hash_after: "{{ lookup('file', namespace_home + '/runtime/issuers/skupper-site-ca/tls.key') | hash('md5') }}"

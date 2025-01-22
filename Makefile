@@ -5,6 +5,8 @@ IMAGES = default fedora40 ubuntu2404
 PYTHON ?= `python -c 'import platform; print(".".join(platform.python_version_tuple()[0:2]))'`
 PYTHON_DOCKER = 3.12
 
+INTEGRATION_TARGETS = resource system
+
 all: clean lint sanity unit coverage
 
 lint:
@@ -54,6 +56,17 @@ unit-docker-%: clean
 
 integration:
 	ansible-test integration -v
+
+integration-ssh:
+	ansible-test integration --target "ssh:`id -un`@localhost,python=$(PYTHON)" -v
+
+.PHONY: integration-direct
+integration-direct: $(foreach target,$(INTEGRATION_TARGETS),integration-direct-$(target))
+integration-direct-%:
+	## system test ran through ansible-test integration is unable to use systemctl
+	## error: Failed to connect to user scope bus via local transport
+	## the workaround is to run the runme.sh script directly
+	( cd tests/integration/targets/$* && ./runme.sh )
 
 coverage:
 	ansible-test coverage html

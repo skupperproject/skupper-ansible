@@ -4,35 +4,44 @@
     path: "{{ role_path }}/files/site_a.yml"
     namespace: "{{ namespace }}"
     platform: podman
-- name: Run the bundle action
+- name: Run the tarball action
   skupper.v2.system:
-    action: bundle
+    action: tarball
     namespace: "{{ namespace }}"
   register: _system
-- name: Assert bundle action performed successfully
+- name: Assert tarball action performed successfully
   ansible.builtin.assert:
     that:
       - _system.changed
       - _system.path is defined
-      - _system.path == bundle_path
+      - _system.path == tarball_path
       - _system.bundle is defined
       - _system.bundle | length > 0
 - name: Validate namespace has not been created
   include_tasks: validate-namespace-deleted.yml
-- name: Saving the bundle as a temporary file
+- name: Saving the tarball as a temporary file
   ansible.builtin.copy:
-    dest: "{{ '/tmp/' + site_name + '-bundle.sh' }}"
+    dest: "{{ '/tmp/' + site_name + '-bundle.tar.gz' }}"
     content: "{{ _system.bundle | b64decode }}"
-    mode: '0755'
+    mode: '0644'
 - name: Remove namespace files
   ansible.builtin.include_role:
     name: delete_nonkube_namespace
-- name: Installing the generated bundle
-  ansible.builtin.command: "{{ '/tmp/' + site_name + '-bundle.sh -n ' + namespace }}"
+- name: Extract the bundle tarball file
+  ansible.builtin.unarchive:
+    src: "{{ '/tmp/' + site_name + '-bundle.tar.gz' }}"
+    dest: "{{ '/tmp/' + site_name + '-bundle' }}"
+    remote_src: true
+- name: Installing the tarball bundle
+  ansible.builtin.command:
+    cmd: "{{ './install.sh -n ' + namespace }}"
+    chdir: "{{ '/tmp/' + site_name + '-bundle' }}"
 - name: Validate namespace is running
   include_tasks: validate-namespace-running.yml
-- name: Deleting namespace using the bundle
-  ansible.builtin.command: "{{ '/tmp/' + site_name + '-bundle.sh -x -n ' + namespace }}"
+- name: Deleting namespace using the bundle script
+  ansible.builtin.command:
+    cmd: "{{ './install.sh -x -n ' + namespace }}"
+    chdir: "{{ '/tmp/' + site_name + '-bundle' }}"
 - name: Validate namespace has been deleted
   include_tasks: validate-namespace-deleted.yml
 - name: Removing bundle files
@@ -41,4 +50,5 @@
     path: "{{ item }}"
   with_items:
     - "{{ bundle_path }}"
-    - "{{ '/tmp/' + site_name + '-bundle.sh' }}"
+    - "{{ '/tmp/' + site_name + '-bundle.tar.gz' }}"
+    - "{{ '/tmp/' + site_name + '-bundle/' }}"

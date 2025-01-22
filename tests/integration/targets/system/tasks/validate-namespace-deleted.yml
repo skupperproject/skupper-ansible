@@ -18,7 +18,7 @@
     that:
       - _dir.stat.exists is defined
       - not _dir.stat.exists
-- name: Assert that the systemd service exists
+- name: Assert that the systemd service does not exist
   ansible.builtin.command: "{{ systemctl_cmd }}"
   changed_when: false
   register: _systemctl

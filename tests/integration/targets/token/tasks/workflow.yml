@@ -30,6 +30,8 @@
       skupper.v2.token:
         namespace: "{{ namespace_west }}"
         platform: "{{ item.west.platform }}"
+        redemptions_allowed: 2
+        expiration_window: 1h
       register: token
     - name: Save token into east site
       skupper.v2.resource:

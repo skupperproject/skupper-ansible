@@ -1,8 +1,15 @@
 ---
+- name: Check if the skupper namespace exists
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Namespace
+    name: skupper
+  register: skupper_namespace
 - name: Skupper V2 controller
   kubernetes.core.k8s:
     state: present
     src: "{{ skupper_v2_url }}"
+  when: skupper_namespace.resources | length == 0
 - name: Waiting on controller to be ready
   kubernetes.core.k8s_info:
     api_version: apps/v1
@@ -13,3 +20,4 @@
     wait_condition:
       type: Available
       status: true
+  when: skupper_namespace.resources | length == 0

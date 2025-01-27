@@ -11,11 +11,10 @@ def container_endpoint(engine: str = "podman") -> str:
     if env_endpoint:
         return env_endpoint
     base_path = os.path.join("unix://", runtime_dir())
-    match engine:
-        case "docker":
-            return os.path.join(base_path, "docker.sock")
-        case "podman":
-            return os.path.join(base_path, "podman", "podman.sock")
+    if engine == "docker":
+        return os.path.join(base_path, "docker.sock")
+    elif engine == "podman":
+        return os.path.join(base_path, "podman", "podman.sock")
     return ""
 
 
@@ -24,13 +23,12 @@ def is_sock_endpoint(endpoint: str) -> bool:
 
 
 def userns(engine: str = "podman") -> str:
-    match engine:
-        case "docker":
-            return "host"
-        case "podman":
-            if os.getuid() == 0:
-                return ""
-            return "keep-id"
+    if engine == "docker":
+        return "host"
+    elif engine == "podman":
+        if os.getuid() == 0:
+            return ""
+        return "keep-id"
 
 
 def runas(engine: str = "podman") -> str:

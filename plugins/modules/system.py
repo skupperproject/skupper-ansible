@@ -211,21 +211,15 @@ class SystemModule:
 
         changed = False
         path = namespace_home(self.namespace)
-        match self._action:
-            case "setup":
-                changed = self.setup()
-            case "reload":
-                changed = self.setup(force=True)
-            case "teardown":
-                changed = self.teardown(self.namespace)
-            case "start":
-                changed = start_service(self.module, self.namespace)
-            case "stop":
-                changed = stop_service(self.module, self.namespace)
-            case "bundle":
-                changed = self.setup(strategy="bundle")
-            case "tarball":
-                changed = self.setup(strategy="tarball")
+        changed = {
+            'setup': lambda: self.setup(),
+            'reload': lambda: self.setup(force=True),
+            'teardown': lambda: self.teardown(self.namespace),
+            'start': lambda: start_service(self.module, self.namespace),
+            'stop': lambda: stop_service(self.module, self.namespace),
+            'bundle': lambda: self.setup(strategy="bundle"),
+            'tarball': lambda: self.setup(strategy="tarball")
+        }[self._action]()
 
         # handling bundle return
         if changed and self._action in ("bundle", "tarball"):

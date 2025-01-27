@@ -52,6 +52,8 @@
       ansible.builtin.command: "{{ (item.west.platform == 'kubernetes') | ternary(kube_verify_command, nonkube_verify_command) }}"
       retries: 10
       delay: 6
+      register: _call_backend
+      until: _call_backend.rc == 0
       changed_when: false
       environment:
         KUBECONFIG: "{{ kubeconfig }}"

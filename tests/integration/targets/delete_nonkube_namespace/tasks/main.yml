@@ -1,5 +1,13 @@
 ---
+- name: Setting namespace home directory (rootless)
+  ansible.builtin.set_fact:
+    _namespace_home: "{{ lookup('env', 'HOME') + '/.local/share/skupper/namespaces/' + namespace + '/' }}"
+  when: ansible_real_user_id != 0
+- name: Setting namespace home directory (rootful)
+  ansible.builtin.set_fact:
+    _namespace_home: "{{ '/var/lib/skupper/namespaces/' + namespace + '/' }}"
+  when: ansible_real_user_id == 0
 - name: Removing namespace directory
   ansible.builtin.file:
-    path: "{{ lookup('env', 'HOME') + '/.local/share/skupper/namespaces/' + namespace + '/' }}"
+    path: "{{ _namespace_home }}"
     state: absent

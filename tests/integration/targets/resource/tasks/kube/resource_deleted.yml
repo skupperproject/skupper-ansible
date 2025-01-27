@@ -5,6 +5,7 @@
     kind: "{{ item.kind }}"
     name: "{{ item.name }}"
     namespace: "{{ namespace }}"
+    kubeconfig: "{{ kubeconfig }}"
   register: _resource
   until: _resource.resources | length == 0
   retries: 10

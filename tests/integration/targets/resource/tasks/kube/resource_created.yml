@@ -5,6 +5,7 @@
     kind: "{{ item.kind }}"
     name: "{{ item.name }}"
     namespace: "{{ namespace }}"
+    kubeconfig: "{{ kubeconfig }}"
   register: my_resource
 - name: Assert that the resource was successfully retrieved
   ansible.builtin.assert:

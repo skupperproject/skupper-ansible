@@ -2,4 +2,4 @@
 set -eux
 export ANSIBLE_CALLBACKS_ENABLED=profile_tasks
 export ANSIBLE_ROLES_PATH=../
-ansible-playbook playbook.yaml "$@"
+ansible-playbook playbook.yaml --extra-vars @../../integration_config.yml "$@"

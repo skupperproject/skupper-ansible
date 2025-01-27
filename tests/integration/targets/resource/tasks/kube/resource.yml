@@ -3,6 +3,7 @@
   skupper.v2.resource:
     def: "{{ lookup('ansible.builtin.file', 'site_a.yml') }}"
     namespace: "{{ namespace }}"
+    kubeconfig: "{{ kubeconfig }}"
   register: _result
 - name: Assert that resources have been created
   ansible.builtin.assert:
@@ -19,6 +20,7 @@
   skupper.v2.resource:
     def: "{{ lookup('ansible.builtin.file', 'site_a.yml') }}"
     namespace: "{{ namespace }}"
+    kubeconfig: "{{ kubeconfig }}"
   register: _result
 - name: Assert that resources have not been changed
   ansible.builtin.assert:
@@ -29,6 +31,7 @@
   skupper.v2.resource:
     path: "{{ role_path }}/files/site_a.yml"
     namespace: "{{ namespace }}"
+    kubeconfig: "{{ kubeconfig }}"
   register: _result
 - name: Assert that resources have not been changed
   ansible.builtin.assert:
@@ -40,6 +43,7 @@
     path: "{{ role_path }}/files/site_a.yml"
     namespace: "{{ namespace }}"
     remote: true
+    kubeconfig: "{{ kubeconfig }}"
   register: _result
 - name: Assert that resources have not been changed
   ansible.builtin.assert:
@@ -51,6 +55,7 @@
     path: "{{ role_path }}/files/site_a.yml"
     namespace: "{{ namespace }}"
     state: latest
+    kubeconfig: "{{ kubeconfig }}"
   register: _result
 - name: Assert that resources have been updated
   ansible.builtin.assert:
@@ -62,6 +67,7 @@
     path: "{{ role_path }}/files/site_a.yml"
     namespace: "{{ namespace }}"
     state: absent
+    kubeconfig: "{{ kubeconfig }}"
   register: _result
 - name: Assert that resources have been deleted
   ansible.builtin.assert:

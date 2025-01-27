@@ -5,6 +5,7 @@
     kind: Namespace
     name: "{{ delete_namespace_namespace }}"
     state: absent
+    kubeconfig: "{{ kubeconfig }}"
   when: delete_namespace_namespace != ''
 - name: Wait until namespace is removed
   register: _result
@@ -15,4 +16,5 @@
     api_version: v1
     kind: Namespace
     name: "{{ delete_namespace_namespace }}"
+    kubeconfig: "{{ kubeconfig }}"
   when: delete_namespace_namespace != ''

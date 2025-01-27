@@ -5,6 +5,7 @@
     kind: Namespace
     name: "{{ create_namespace_namespace }}"
     state: present
+    kubeconfig: "{{ kubeconfig }}"
   register: _result
   when: "{{ create_namespace_namespace != '' }}"
 - name: Assert that namespace has been created

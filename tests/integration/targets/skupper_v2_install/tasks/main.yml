@@ -1,14 +1,19 @@
 ---
+- name: Show host vars
+  ansible.builtin.debug:
+    msg: "{{ lookup('vars', 'kubeconfig') }}"
 - name: Check if the skupper namespace exists
   kubernetes.core.k8s_info:
     api_version: v1
     kind: Namespace
     name: skupper
+    kubeconfig: "{{ kubeconfig }}"
   register: skupper_namespace
 - name: Skupper V2 controller
   kubernetes.core.k8s:
     state: present
     src: "{{ skupper_v2_url }}"
+    kubeconfig: "{{ kubeconfig }}"
   when: skupper_namespace.resources | length == 0
 - name: Waiting on controller to be ready
   kubernetes.core.k8s_info:
@@ -16,6 +21,7 @@
     kind: Deployment
     name: skupper-controller
     namespace: skupper
+    kubeconfig: "{{ kubeconfig }}"
     wait: true
     wait_condition:
       type: Available

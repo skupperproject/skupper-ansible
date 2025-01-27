@@ -1,0 +1,35 @@
+---
+- name: Create Site A resources based on definition
+  skupper.v2.resource:
+    def: "{{ lookup('ansible.builtin.file', 'site_a.yml') }}"
+    namespace: "{{ namespace }}"
+    platform: podman
+  register: _result
+- name: Assert that resources have been created
+  ansible.builtin.assert:
+    that:
+      - _result is changed
+
+- name: Validate resources exist
+  include_tasks: resource_created.yml
+  with_items:
+    - { "file": "Site-my-site.yaml", "name": "my-site" }
+    - { "file": "Listener-backend.yaml", "name": "backend" }
+
+- name: Delete Site A resources based on remote path with invalid resources
+  skupper.v2.resource:
+    path: "{{ role_path }}/files/site_invalid.yml"
+    namespace: "{{ namespace }}"
+    state: absent
+    platform: podman
+  register: _result
+- name: Assert that no change was made
+  ansible.builtin.assert:
+    that:
+      - _result is not changed
+
+- name: Validate resources not deleted
+  include_tasks: resource_created.yml
+  with_items:
+    - { "file": "Site-my-site.yaml", "name": "my-site" }
+    - { "file": "Listener-backend.yaml", "name": "backend" }

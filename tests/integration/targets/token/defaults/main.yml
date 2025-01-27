@@ -1,5 +1,5 @@
 ---
-token_image: quay.io/fgiorgetti/cli:v2-dev
+token_image: quay.io/skupper/cli:v2-dev
 namespace: ""
 namespace_west: token-west-testing
 namespace_east: token-east-testing

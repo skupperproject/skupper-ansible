@@ -319,6 +319,7 @@ class SystemModule:
         links_path = os.path.join(home, "runtime", "links")
         links_search = os.path.join(links_path, "*.yaml")
         links_found = glob.glob(links_search)
+        links_found.sort()
         for link in links_found:
             with open(link, 'r', encoding='utf-8') as f:
                 link_content = f.read()

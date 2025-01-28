@@ -6,14 +6,41 @@ namespace_east: token-east-testing
 kube_verify_command: kubectl -n token-west-testing exec deploy/skupper-router -c router -- curl -s http://backend:8080/api/hello
 nonkube_verify_command: curl -s http://0.0.0.0:18080/api/hello
 matrix:
-  - scenario: 'nonkube-nonkube'
+  - scenario: 'podman-podman'
+    tags:
+      - nonkube
+      - podman
     west:
       path: 'site_west_nonkube.yml'
       platform: 'podman'
     east:
       path: 'site_east_nonkube.yml'
       platform: 'podman'
-  - scenario: 'kube-nonkube'
+  - scenario: 'docker-docker'
+    tags:
+      - nonkube
+      - docker
+    west:
+      path: 'site_west_nonkube.yml'
+      platform: 'docker'
+    east:
+      path: 'site_east_nonkube.yml'
+      platform: 'docker'
+  - scenario: 'linux-linux'
+    tags:
+      - nonkube
+      - linux
+    west:
+      path: 'site_west_nonkube.yml'
+      platform: 'linux'
+    east:
+      path: 'site_east_nonkube.yml'
+      platform: 'linux'
+  - scenario: 'kube-podman'
+    tags:
+      - kube
+      - nonkube
+      - podman
     west:
       path: 'site_west_kube.yml'
       platform: 'kubernetes'
@@ -21,6 +48,8 @@ matrix:
       path: 'site_east_nonkube.yml'
       platform: 'podman'
   - scenario: 'kube-kube'
+    tags:
+      - kube
     west:
       path: 'site_west_kube.yml'
       platform: 'kubernetes'

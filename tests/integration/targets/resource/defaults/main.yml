@@ -1,2 +1,2 @@
 ---
-namespace: resource-testing
+namespace: resource-testing # noqa: var-naming

@@ -203,6 +203,7 @@ class TokenModule:
         links_search = os.path.join(
             links_path, "link-%s-%s.yaml" % (self.name or "*", self.host or "*"))
         links_found = glob.glob(links_search)
+        links_found.sort()
         for link in links_found:
             with open(link, "r", encoding='utf-8') as f:
                 link_content = f.read()

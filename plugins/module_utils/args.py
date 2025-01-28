@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 def common_args() -> dict:
     return dict(
         platform=dict(type='str', required=False, default="kubernetes", choices=[
-                      "kubernetes", "podman", "docker", "systemd"]),
+                      "kubernetes", "podman", "docker", "linux"]),
         kubeconfig=dict(type='str', required=False),
         context=dict(type='str', required=False),
         namespace=dict(type='str', required=False),

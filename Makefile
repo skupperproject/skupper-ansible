@@ -10,7 +10,7 @@ INTEGRATION_TARGETS = resource system
 all: clean lint sanity unit coverage
 
 lint:
-	ansible-lint -v --exclude changelogs
+	ANSIBLE_ROLES_PATH=./tests/integration/targets ANSIBLE_LIBRARY=./plugins/modules ANSIBLE_MODULE_UTILS=./plugins/module_utils ansible-lint -v --offline
 
 release-changelog:
 	pip install --user -U antsibull-changelog

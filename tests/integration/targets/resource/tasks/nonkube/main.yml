@@ -2,9 +2,9 @@
 - name: Run resource tests on nonkube
   block:
     - name: Validate resource module
-      include_tasks: resource.yml
+      ansible.builtin.include_tasks: resource.yml
     - name: Validate resource module using invalid resources
-      include_tasks: invalid_resource.yml
+      ansible.builtin.include_tasks: invalid_resource.yml
   always:
     - name: Teardown
       ansible.builtin.include_role:

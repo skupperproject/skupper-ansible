@@ -60,7 +60,9 @@ class TestSystemModule(TestCase):
 
         # do not use real namespace path
         self.temphome = tempfile.mkdtemp()
-        def data_home_mock(): return self.temphome
+
+        def data_home_mock():
+            return self.temphome
         self.mock_data_home = patch(
             'ansible_collections.skupper.v2.plugins.module_utils.common.data_home', new=data_home_mock)
         self.mock_run_command = patch(
@@ -96,7 +98,7 @@ class TestSystemModule(TestCase):
         try:
             from ansible_collections.skupper.v2.plugins.modules import system
             self.module = system
-        except:
+        except ImportError:
             pass
 
     def clean_temp_home(self):
@@ -125,7 +127,7 @@ class TestSystemModule(TestCase):
             namespace = "default"
             for i, arg in enumerate(args):
                 if arg == "-n":
-                    namespace = args[i+1]
+                    namespace = args[i + 1]
                     break
             links_home = os.path.join(
                 self.temphome, "namespaces", namespace, "runtime", "links")
@@ -224,10 +226,10 @@ class TestSystemModule(TestCase):
                     "engine": "podman",
                 },
             }, {
-                "name": "setup-west-systemd",
+                "name": "setup-west-linux",
                 "input": {
                     "namespace": "west",
-                    "platform": "systemd",
+                    "platform": "linux",
                 },
             }, {
                 "name": "setup-east-docker",
@@ -246,7 +248,7 @@ class TestSystemModule(TestCase):
             input = tc.get("input", {})
             namespace = input.get("namespace", "default")
             platform = input.get("platform", "podman")
-            image = input.get("image", "quay.io/skupper/cli:v2-latest")
+            image = input.get("image", "quay.io/skupper/cli:v2-dev")
             self.create_resources(namespace)
             with self.assertRaises(AnsibleExitJson) as exit:
                 set_module_args(input)
@@ -264,7 +266,7 @@ class TestSystemModule(TestCase):
             self.assertEqual(expectedEngine, first_command[0])
             self.assertIn(image, first_command)
             self.assertEqual(["-n", namespace, "system", "setup"],
-                             first_command[len(first_command)-4:])
+                             first_command[len(first_command) - 4:])
             self.assertIn("SKUPPER_PLATFORM={}".format(
                 platform), first_command)
             expectedRunAs = "1000:1000" if expectedEngine != "docker" else "1000:1001"
@@ -297,9 +299,9 @@ class TestSystemModule(TestCase):
             self.assertEqual(1, len(self._run_commands), self._run_commands)
             first_command = self._run_commands[0]
             self.assertEqual(expectedEngine, first_command[0])
-            self.assertIn("quay.io/skupper/cli:v2-latest", first_command)
+            self.assertIn("quay.io/skupper/cli:v2-dev", first_command)
             self.assertEqual(["-n", "default", "system", "setup",
-                             "-f"], first_command[len(first_command)-5:])
+                             "-f"], first_command[len(first_command) - 5:])
             self.assertIn("SKUPPER_PLATFORM=podman", first_command)
             self.assertIn("1000:1000", first_command)
             self.assertIn("--userns=keep-id", first_command)
@@ -321,9 +323,9 @@ class TestSystemModule(TestCase):
             self.assertEqual(1, len(self._run_commands), self._run_commands)
             first_command = self._run_commands[0]
             self.assertEqual(expectedEngine, first_command[0])
-            self.assertIn("quay.io/skupper/cli:v2-latest", first_command)
+            self.assertIn("quay.io/skupper/cli:v2-dev", first_command)
             self.assertEqual(["-n", "default", "system", "setup",
-                             "-b", strategy], first_command[len(first_command)-6:])
+                             "-b", strategy], first_command[len(first_command) - 6:])
             self.assertIn("SKUPPER_PLATFORM=podman", first_command)
             self.assertIn("1000:1000", first_command)
             self.assertIn("--userns=keep-id", first_command)
@@ -351,7 +353,7 @@ class TestSystemModule(TestCase):
         }, {
             "name": "removed_default_systemd",
             "expectChanged": True,
-            "platform": "systemd",
+            "platform": "linux",
         }]
         for tc in test_cases:
             self._run_commands = []

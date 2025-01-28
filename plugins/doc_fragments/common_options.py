@@ -15,7 +15,7 @@ options:
     - The platform to use when manipulating resources
     type: str
     default: kubernetes
-    choices: [ kubernetes, podman, docker, systemd ]
+    choices: [ kubernetes, podman, docker, linux ]
   namespace:
     description:
     - Use to specify an object namespace.

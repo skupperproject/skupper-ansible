@@ -17,23 +17,23 @@
     DBUS_SESSION_BUS_ADDRESS: "{{ 'unix:path=/run/user/' + ansible_real_user_id | string + '/bus' }}"
   block:
     - name: Validate system setup action
-      include_tasks: action-setup.yml
+      ansible.builtin.include_tasks: action-setup.yml
     - name: Validate system reload action
-      include_tasks: action-reload.yml
+      ansible.builtin.include_tasks: action-reload.yml
     - name: Validate system stop action
-      include_tasks: action-stop.yml
+      ansible.builtin.include_tasks: action-stop.yml
     - name: Validate system start action
-      include_tasks: action-start.yml
+      ansible.builtin.include_tasks: action-start.yml
     - name: Validate system teardown action
-      include_tasks: action-teardown.yml
+      ansible.builtin.include_tasks: action-teardown.yml
     - name: Validate system bundle action
-      include_tasks: action-bundle.yml
+      ansible.builtin.include_tasks: action-bundle.yml
   always:
     - name: Run the teardown action
       skupper.v2.system:
         action: teardown
         namespace: "{{ namespace }}"
-      ignore_errors: true
+      failed_when: false
     - name: Remove namespace files
       ansible.builtin.include_role:
         name: delete_nonkube_namespace

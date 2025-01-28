@@ -6,4 +6,4 @@
     image: "{{ system_image }}"
   register: _system
 - name: Validate namespace started
-  include_tasks: validate-namespace-running.yml
+  ansible.builtin.include_tasks: validate-namespace-running.yml

@@ -26,7 +26,7 @@
       - _system.links["my.site.ra"] is defined
       - _system.links["my.site.ra"] | length > 0
 - name: Validate namespace is running
-  include_tasks: validate-namespace-running.yml
+  ansible.builtin.include_tasks: validate-namespace-running.yml
 
 - name: Get skupper-site-ca key file hash
   ansible.builtin.set_fact:

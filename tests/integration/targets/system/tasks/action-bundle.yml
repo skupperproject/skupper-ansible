@@ -19,7 +19,7 @@
       - _system.bundle is defined
       - _system.bundle | length > 0
 - name: Validate namespace has not been created
-  include_tasks: validate-namespace-deleted.yml
+  ansible.builtin.include_tasks: validate-namespace-deleted.yml
 - name: Saving the bundle as a temporary file
   ansible.builtin.copy:
     dest: "{{ '/tmp/' + site_name + '-bundle.sh' }}"
@@ -30,12 +30,16 @@
     name: delete_nonkube_namespace
 - name: Installing the generated bundle
   ansible.builtin.command: "{{ '/tmp/' + site_name + '-bundle.sh -n ' + namespace }}"
+  register: _bundle
+  changed_when: _bundle.rc == 0
 - name: Validate namespace is running
-  include_tasks: validate-namespace-running.yml
+  ansible.builtin.include_tasks: validate-namespace-running.yml
 - name: Deleting namespace using the bundle
   ansible.builtin.command: "{{ '/tmp/' + site_name + '-bundle.sh -x -n ' + namespace }}"
+  register: _bundle
+  changed_when: _bundle.rc == 0
 - name: Validate namespace has been deleted
-  include_tasks: validate-namespace-deleted.yml
+  ansible.builtin.include_tasks: validate-namespace-deleted.yml
 - name: Removing bundle files
   ansible.builtin.file:
     state: absent

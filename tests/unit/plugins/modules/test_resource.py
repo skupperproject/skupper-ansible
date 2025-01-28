@@ -1,10 +1,9 @@
 import io
 import os
 import tempfile
-import yaml
 from unittest import TestCase
-from unittest.mock import MagicMock, patch, call
-from kubernetes import client, config, dynamic
+from unittest.mock import patch
+from kubernetes import config
 from kubernetes.dynamic.exceptions import ApiException
 from ansible.module_utils import basic
 from ansible_collections.skupper.v2.plugins.module_utils.k8s import K8sClient
@@ -93,7 +92,8 @@ class TestResourceModule(TestCase):
             config, load_kube_config=self.k8s.load_kube_config)
         self.mock_k8s_client = patch.multiple(K8sClient, __init__=self.k8s.__init__,
                                               api=self.k8s.client_resources_get, create=True)
-        self.mock_fetch_url = patch('ansible.module_utils.urls.fetch_url', new=self.fetch_url)
+        self.mock_fetch_url = patch(
+            'ansible.module_utils.urls.fetch_url', new=self.fetch_url)
         self.mock_module.start()
         self.mock_k8s_config.start()
         self.mock_k8s_client.start()
@@ -110,7 +110,8 @@ class TestResourceModule(TestCase):
         # do not use real namespace path
         self.temphome = tempfile.mkdtemp()
         resources_home_mock = lambda ns: os.path.join(self.temphome, ns, "input", "resources")
-        self.mock_resources_home = patch('ansible_collections.skupper.v2.plugins.module_utils.common.resources_home', new=resources_home_mock)
+        self.mock_resources_home = patch(
+            'ansible_collections.skupper.v2.plugins.module_utils.common.resources_home', new=resources_home_mock)
         self.mock_resources_home.start()
         self.addCleanup(self.mock_resources_home.stop)
 
@@ -120,7 +121,7 @@ class TestResourceModule(TestCase):
             from ansible_collections.skupper.v2.plugins.modules import resource
             self.module = resource
             self.resources_home = resources_home
-        except:
+        except ImportError:
             pass
 
     def test_mutually_exclusive_args(self):
@@ -192,16 +193,18 @@ class TestResourceModule(TestCase):
                 with self.assertRaises(AnsibleExitJson) as result:
                     self.module.main()
                 self.assertTrue(
-                    result.exception.args[0]['changed'] == test_case.get("expectChanged", False),
+                    result.exception.args[0]['changed'] == test_case.get(
+                        "expectChanged", False),
                     "{} - {}".format(test_case.get("name"), result.exception)
                 )
                 storedObjects = 0
                 for file in ["Site-my-site", "RouterAccess-access-my-site", "Listener-backend"]:
-                    filename = os.path.join(self.temphome, "default/input/resources/{}.yaml".format(file))
+                    filename = os.path.join(
+                        self.temphome, "default/input/resources/{}.yaml".format(file))
                     if os.path.isfile(filename):
                         storedObjects += 1
                 self.assertEqual(test_case.get("storedObjects"), storedObjects,
-                                "{} - {}".format(test_case.get("name"), result.exception))
+                                 "{} - {}".format(test_case.get("name"), result.exception))
 
     def test_kube_path_local_file(self):
 
@@ -245,11 +248,12 @@ class TestResourceModule(TestCase):
             with self.assertRaises(AnsibleExitJson) as result:
                 self.module.main()
             self.assertTrue(
-                result.exception.args[0]['changed'] == test_case.get("expectChanged", False),
+                result.exception.args[0]['changed'] == test_case.get(
+                    "expectChanged", False),
                 "{} - {}".format(test_case.get("name"), result.exception)
             )
-            self.assertEqual(test_case.get("storedObjects"), len(self.store), "incorrect amount of objects stored")
-
+            self.assertEqual(test_case.get("storedObjects"), len(
+                self.store), "incorrect amount of objects stored")
 
     def test_kube_path_http_file(self):
 
@@ -307,13 +311,14 @@ class TestResourceModule(TestCase):
                     self.module.main()
             changed = 'changed' in result.exception.args[0] and result.exception.args[0]['changed']
             self.assertTrue(changed == test_case.get("expectChanged", False),
-                "{} - {}".format(test_case.get("name"), result.exception)
-            )
+                            "{} - {}".format(test_case.get("name"),
+                                             result.exception)
+                            )
             failed = 'failed' in result.exception.args[0] and result.exception.args[0]['failed']
-            self.assertTrue(failed == expectFailed, 
+            self.assertTrue(failed == expectFailed,
                             "{} - {}".format(test_case.get("name"), result.exception))
-            self.assertEqual(test_case.get("storedObjects"), len(self.store), "incorrect amount of objects stored")
-
+            self.assertEqual(test_case.get("storedObjects"), len(
+                self.store), "incorrect amount of objects stored")
 
     def test_kube_def(self):
 
@@ -354,16 +359,18 @@ class TestResourceModule(TestCase):
             with self.assertRaises(AnsibleExitJson) as result:
                 self.module.main()
             self.assertTrue(
-                result.exception.args[0]['changed'] == test_case.get("expectChanged", False),
+                result.exception.args[0]['changed'] == test_case.get(
+                    "expectChanged", False),
                 "{} - {}".format(test_case.get("name"), result.exception)
             )
-            self.assertEqual(test_case.get("storedObjects"), len(self.store), "incorrect amount of objects stored")
+            self.assertEqual(test_case.get("storedObjects"), len(
+                self.store), "incorrect amount of objects stored")
 
     def k8s_create(self, **kwargs):
         if "body" not in kwargs:
             return
         obj = kwargs.get("body", {})
-        _, kind = version_kind(obj)
+        version, kind = version_kind(obj)
         name = obj.get("metadata", {}).get("name")
         if not name:
             self.fail("bad name")

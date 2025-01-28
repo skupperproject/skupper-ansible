@@ -30,7 +30,9 @@ spec:
   routingKey: backend
 """
 
+
 combined = "{}---\n{}".format(site, listener)
+
 
 class TestResourceActionModule(TestCase):
     def setUp(self):
@@ -45,9 +47,9 @@ class TestResourceActionModule(TestCase):
         try:
             from ansible_collections.skupper.v2.plugins.action.resource import ActionModule
             self.module_class = ActionModule
-        except:
+        except ImportError:
             pass
-    
+
     def test_no_args(self):
         module = init_action_module(self.module_class, {})
         result = module.run()
@@ -93,7 +95,7 @@ class TestResourceActionModule(TestCase):
         })
         result = module.run()
         self._validate_local_definition(result)
-        
+
     def _validate_local_definition(self, result):
         self.assertEqual(len(result['module_args']), 1, result['module_args'])
         self.assertTrue('def' in result['module_args'], result['module_args'])
@@ -109,6 +111,7 @@ class TestResourceActionModule(TestCase):
                 self.assertEqual('8080', str(res['spec']['port']))
                 self.assertEqual('backend', res['spec']['host'])
                 self.assertEqual('backend', res['spec']['routingKey'])
+
 
 class Task:
     def __init__(self, args: dict):

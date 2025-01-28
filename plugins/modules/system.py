@@ -19,7 +19,7 @@ description:
     - It can be used to setup, reload, start, stop and teardown a namespace definition
     - It has the ability to produce a self-extracting or a tarball bundle
     - Runs with podman (default) or docker binaries
-    - Only valid for platforms "podman", "docker" and "systemd"
+    - Only valid for platforms "podman", "docker" and "linux"
 
 options:
     action:
@@ -39,7 +39,7 @@ options:
         description:
             - The image used to initialize your site or bundle
         type: str
-        default: quay.io/skupper/cli:v2-latest
+        default: quay.io/skupper/cli:v2-dev
     engine:
         description:
             - The container engine used to manage a namespace or produce a bundle
@@ -177,7 +177,7 @@ def argspec():
                           choices=["setup", "reload", "teardown",
                                    "stop", "start", "bundle", "tarball"])
     spec["image"] = dict(type="str",
-                         default="quay.io/skupper/cli:v2-latest")
+                         default="quay.io/skupper/cli:v2-dev")
     spec["engine"] = dict(type="str", default="podman",
                           choices=["podman", "docker"])
     return spec
@@ -211,6 +211,7 @@ class SystemModule:
 
         changed = False
         path = namespace_home(self.namespace)
+        # pylint: disable=unnecessary-lambda
         changed = {
             'setup': lambda: self.setup(),
             'reload': lambda: self.setup(force=True),

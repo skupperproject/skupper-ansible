@@ -11,7 +11,7 @@
       - _result is changed
 
 - name: Validate resources exist
-  include_tasks: resource_created.yml
+  ansible.builtin.include_tasks: resource_created.yml
   with_items:
     - { "file": "Site-my-site.yaml", "name": "my-site" }
     - { "file": "Listener-backend.yaml", "name": "backend" }
@@ -75,7 +75,7 @@
       - _result is changed
 
 - name: Validate resources deleted
-  include_tasks: resource_deleted.yml
+  ansible.builtin.include_tasks: resource_deleted.yml
   with_items:
     - { "file": "Site-my-site.yaml", "name": "my-site" }
     - { "file": "Listener-backend.yaml", "name": "backend" }

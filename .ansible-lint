@@ -2,4 +2,5 @@
 profile: production
 
 exclude_paths:
-  - tests/integration
+  - changelogs
+  - tests/integration/targets/system/tasks/main.yml

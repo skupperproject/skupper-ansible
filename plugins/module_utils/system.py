@@ -10,10 +10,10 @@ def container_endpoint(engine: str = "podman") -> str:
     env_endpoint = os.environ.get("CONTAINER_ENDPOINT")
     if env_endpoint:
         return env_endpoint
-    base_path = os.path.join("unix://", runtime_dir())
     if engine == "docker":
-        return os.path.join(base_path, "docker.sock")
+        return os.path.join("unix://", "/run/docker.sock")
     elif engine == "podman":
+        base_path = os.path.join("unix://", runtime_dir())
         return os.path.join(base_path, "podman", "podman.sock")
     return ""
 
@@ -49,7 +49,7 @@ def mounts(namespace: str, platform: str, engine: str = "podman") -> dict:
         os.path.join(namespace_home(namespace), "input", "resources"): "/input",
     }
     endpoint = container_endpoint(engine)
-    if platform != "systemd" and is_sock_endpoint(endpoint):
+    if platform != "linux" and is_sock_endpoint(endpoint):
         mount_points[endpoint] = "/%s.sock" % (engine)
     return mount_points
 
@@ -60,7 +60,7 @@ def env(platform: str, engine: str = "podman") -> dict:
         "SKUPPER_PLATFORM": platform,
     }
     endpoint = container_endpoint(engine)
-    if platform != "systemd":
+    if platform != "linux":
         if is_sock_endpoint(endpoint):
             container_env["CONTAINER_ENDPOINT"] = "/%s.sock" % (engine)
         else:

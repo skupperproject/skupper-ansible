@@ -32,5 +32,5 @@
 - name: Assert that no containers returned
   ansible.builtin.assert:
     that:
-      - _container.containers is defined 
+      - _container.containers is defined
       - _container.containers | length == 0

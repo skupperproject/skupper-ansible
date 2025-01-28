@@ -33,4 +33,4 @@
     that:
       - site_server_key_hash != site_server_key_hash_after
 - name: Validate namespace is running
-  include_tasks: validate-namespace-running.yml
+  ansible.builtin.include_tasks: validate-namespace-running.yml

@@ -1,5 +1,6 @@
 ---
-- block:
+- name: Token module tests
+  block:
     - name: Run backend as a podman container bound to 19090
       containers.podman.podman_container:
         name: token_testing_backend
@@ -13,7 +14,10 @@
         - "{{ matrix }}"
       ansible.builtin.include_tasks: workflow.yml
   always:
+    - name: Cleanup namespaces
+      ansible.builtin.include_tasks: cleanup.yml
     - name: Delete the backend podman container
       containers.podman.podman_container:
         name: token_testing_backend
         state: absent
+        force_delete: true

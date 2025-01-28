@@ -2,6 +2,7 @@
 - name: Token module using {{ item.scenario }}
   environment:
     DBUS_SESSION_BUS_ADDRESS: "{{ 'unix:path=/run/user/' + ansible_real_user_id | string + '/bus' }}"
+  tags: "{{ item.tags }}"
   block:
     - name: Testing token scenario {{ item.scenario }}
       ansible.builtin.debug:
@@ -57,6 +58,3 @@
       changed_when: false
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
-  always:
-    - name: Cleanup namespaces
-      ansible.builtin.include_tasks: cleanup.yml

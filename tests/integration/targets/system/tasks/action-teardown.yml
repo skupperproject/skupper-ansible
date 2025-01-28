@@ -10,4 +10,4 @@
     that:
       - _system.changed
 - name: Validate namespace is deleted
-  include_tasks: validate-namespace-deleted.yml
+  ansible.builtin.include_tasks: validate-namespace-deleted.yml

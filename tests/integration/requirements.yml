@@ -1,4 +1,4 @@
 ---
 collections:
-- kubernetes.core
-- containers.podman
+  - kubernetes.core
+  - containers.podman

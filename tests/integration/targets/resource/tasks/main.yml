@@ -1,6 +1,6 @@
 ---
 - name: Validate resource module on kubernetes
-  include_tasks: kube/main.yml
+  ansible.builtin.include_tasks: kube/main.yml
 
 - name: Validate resource module on nonkube
-  include_tasks: nonkube/main.yml
+  ansible.builtin.include_tasks: nonkube/main.yml

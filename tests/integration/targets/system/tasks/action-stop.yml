@@ -6,4 +6,4 @@
     image: "{{ system_image }}"
   register: _system
 - name: Validate namespace stopped
-  include_tasks: validate-namespace-stopped.yml
+  ansible.builtin.include_tasks: validate-namespace-stopped.yml

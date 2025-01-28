@@ -57,6 +57,7 @@ def get_bin_path(self, arg, required=False):
         if required:
             fail_json(msg='%r not found !' % arg)
 
+
 def self_client(*args, **kwargs):
     print("self.client called")
     pass

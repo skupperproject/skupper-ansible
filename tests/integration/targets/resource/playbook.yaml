@@ -1,5 +1,6 @@
 ---
-- connection: local
+- name: Integration test
+  connection: local
   hosts: localhost
   roles:
     - resource

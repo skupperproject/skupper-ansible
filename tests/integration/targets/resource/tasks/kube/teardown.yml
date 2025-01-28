@@ -1,4 +1,4 @@
 ---
 - name: Delete the namespace
-  include_role:
+  ansible.builtin.include_role:
     name: delete_namespace

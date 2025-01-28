@@ -21,7 +21,7 @@
 - name: Assert that one container has been found and it is not running
   ansible.builtin.assert:
     that:
-      - _container.containers is defined 
+      - _container.containers is defined
       - _container.containers | length == 1
       - _container.containers[0].State is defined
       - _container.containers[0].State.Running is defined

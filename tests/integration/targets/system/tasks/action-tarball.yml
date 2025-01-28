@@ -19,7 +19,7 @@
       - _system.bundle is defined
       - _system.bundle | length > 0
 - name: Validate namespace has not been created
-  include_tasks: validate-namespace-deleted.yml
+  ansible.builtin.include_tasks: validate-namespace-deleted.yml
 - name: Saving the tarball as a temporary file
   ansible.builtin.copy:
     dest: "{{ '/tmp/' + site_name + '-bundle.tar.gz' }}"
@@ -37,14 +37,18 @@
   ansible.builtin.command:
     cmd: "{{ './install.sh -n ' + namespace }}"
     chdir: "{{ '/tmp/' + site_name + '-bundle' }}"
+  register: _bundle
+  changed_when: _bundle.rc == 0
 - name: Validate namespace is running
-  include_tasks: validate-namespace-running.yml
+  ansible.builtin.include_tasks: validate-namespace-running.yml
 - name: Deleting namespace using the bundle script
   ansible.builtin.command:
     cmd: "{{ './install.sh -x -n ' + namespace }}"
     chdir: "{{ '/tmp/' + site_name + '-bundle' }}"
+  register: _bundle
+  changed_when: _bundle.rc == 0
 - name: Validate namespace has been deleted
-  include_tasks: validate-namespace-deleted.yml
+  ansible.builtin.include_tasks: validate-namespace-deleted.yml
 - name: Removing bundle files
   ansible.builtin.file:
     state: absent

@@ -1,5 +1,4 @@
 import datetime
-import io
 import os
 import tempfile
 import yaml
@@ -8,9 +7,6 @@ from unittest.mock import patch
 from ansible.module_utils import basic
 from ansible_collections.skupper.v2.plugins.module_utils.k8s import K8sClient
 from ansible_collections.skupper.v2.plugins.module_utils.exceptions import K8sException
-from ansible_collections.skupper.v2.plugins.module_utils.resource import (
-    version_kind
-)
 from ansible_collections.skupper.v2.tests.unit.utils.ansible_module_mock import (
     set_module_args,
     AnsibleExitJson,
@@ -96,7 +92,7 @@ class K8sClientMock:
                     continue
                 if ex_res['apiVersion'] == group_version and \
                         ex_res['kind'] == kind:
-                    if name or None == ex_res['metadata']['name']:
+                    if (name or None) == ex_res['metadata']['name']:
                         raise K8sException(status=500, msg="forced exception")
             resources = cls.get(namespace, group_version,
                                 kind, name, ignore_not_found=True)
@@ -135,8 +131,9 @@ class TestTokenModule(TestCase):
 
         # do not use real namespace path
         self.temphome = tempfile.mkdtemp()
-        def namespace_home_mock(ns): return os.path.join(
-            self.temphome, ns or "default")
+
+        def namespace_home_mock(ns):
+            return os.path.join(self.temphome, ns or "default")
         self.mock_namespace_home = patch(
             'ansible_collections.skupper.v2.plugins.module_utils.common.namespace_home', new=namespace_home_mock)
         self.mock_namespace_home.start()
@@ -157,7 +154,7 @@ class TestTokenModule(TestCase):
             self.module = token
             self.module.TokenModule.retry_delay = 0
             self.resources_home = resources_home
-        except:
+        except ImportError:
             pass
 
     def test_module_accepts_no_args(self):

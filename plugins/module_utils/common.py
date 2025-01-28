@@ -19,7 +19,7 @@ def resources_home(namespace: str) -> str:
 
 
 def is_non_kube(platform: str) -> bool:
-    return platform in ("podman", "docker", "systemd")
+    return platform in ("podman", "docker", "linux")
 
 
 def runtime_dir() -> str:

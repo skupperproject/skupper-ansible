@@ -1,6 +1,6 @@
 ---
 token_image: quay.io/skupper/cli:v2-dev
-namespace: ""
+namespace: "" # noqa: var-naming
 namespace_west: token-west-testing
 namespace_east: token-east-testing
 kube_verify_command: kubectl -n token-west-testing exec deploy/skupper-router -c router -- curl -s http://backend:8080/api/hello

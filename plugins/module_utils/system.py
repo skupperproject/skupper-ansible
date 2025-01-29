@@ -1,3 +1,7 @@
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
+
 import grp
 import os
 from ansible.module_utils.basic import AnsibleModule

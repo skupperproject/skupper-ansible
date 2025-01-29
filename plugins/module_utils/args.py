@@ -1,3 +1,7 @@
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
+
 import ipaddress
 import re
 from urllib.parse import urlparse

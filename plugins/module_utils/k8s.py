@@ -1,3 +1,7 @@
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
+
 from .resource import version_kind
 from .exceptions import K8sException
 try:

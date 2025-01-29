@@ -1,5 +1,6 @@
 ---
 - name: Removing kubernetes namespaces
+  tags: always
   ansible.builtin.include_role:
     name: delete_namespace
   vars:
@@ -10,6 +11,7 @@
   loop_control:
     loop_var: ns
 - name: Removing nonkube namespaces
+  tags: always
   skupper.v2.system:
     action: teardown
     platform: podman

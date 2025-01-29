@@ -1,6 +1,0 @@
----
-- name: Integration test
-  connection: local
-  hosts: localhost
-  roles:
-    - token

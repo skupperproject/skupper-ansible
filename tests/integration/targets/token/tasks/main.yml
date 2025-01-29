@@ -1,7 +1,12 @@
 ---
 - name: Token module tests
+  environment:
+    DBUS_SESSION_BUS_ADDRESS: "{{ 'unix:path=/run/user/' + ansible_real_user_id | string + '/bus' }}"
   block:
+    - name: Gathering facts
+      ansible.builtin.gather_facts:
     - name: Run backend as a podman container bound to 19090
+      tags: always
       containers.podman.podman_container:
         name: token_testing_backend
         image: quay.io/skupper/hello-world-backend
@@ -10,13 +15,16 @@
           - 19090:8080
         remove: true
     - name: "Run token module tests for all scenarios"
+      tags: always
       with_items:
         - "{{ matrix }}"
       ansible.builtin.include_tasks: workflow.yml
   always:
     - name: Cleanup namespaces
+      tags: always
       ansible.builtin.include_tasks: cleanup.yml
     - name: Delete the backend podman container
+      tags: always
       containers.podman.podman_container:
         name: token_testing_backend
         state: absent

@@ -1,5 +1,6 @@
 ---
 - name: Delete the namespace {{ delete_namespace_namespace }}
+  tags: always
   kubernetes.core.k8s:
     api_version: v1
     kind: Namespace
@@ -8,6 +9,7 @@
     kubeconfig: "{{ kubeconfig }}"
   when: delete_namespace_namespace != ''
 - name: Wait until namespace is removed
+  tags: always
   register: _result
   until: _result.resources | length == 0
   retries: 30

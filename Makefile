@@ -7,6 +7,8 @@ PYTHON_DOCKER = 3.12
 
 INTEGRATION_TARGETS = resource system
 
+OPTIONS ?=
+
 all: clean lint sanity unit coverage
 
 lint:
@@ -55,15 +57,10 @@ unit-docker-%: clean
 	ansible-test units --coverage --docker "$*" --python $(PYTHON_DOCKER) -v
 
 integration:
-	ansible-test integration --allow-destructive -v
+	ansible-test integration --allow-destructive --local -v $(OPTIONS)
 
 integration-ssh:
-	ansible-test integration --allow-destructive --target "ssh:`id -un`@localhost,python=$(PYTHON)" -v
-
-.PHONY: integration-direct
-integration-direct: $(foreach target,$(INTEGRATION_TARGETS),integration-direct-$(target))
-integration-direct-%:
-	( cd tests/integration/targets/$* && ./runme.sh )
+	ansible-test integration --allow-destructive --local --target "ssh:`id -un`@localhost,python=$(PYTHON)" -v $(OPTIONS)
 
 coverage:
 	ansible-test coverage html

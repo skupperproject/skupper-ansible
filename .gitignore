@@ -1,4 +1,5 @@
 venv/
 docs/
 tests/output
+*.pyc
 *.tar.gz

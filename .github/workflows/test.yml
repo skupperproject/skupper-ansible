@@ -47,6 +47,9 @@ jobs:
         uses: actions/setup-python@v4
         with:
           cache: 'pip'
+      - name: Installing python requirements
+        working-directory: ./ansible_collections/skupper/v2
+        run: pip install -r requirements.txt
       - name: Minikube
         uses: ./ansible_collections/skupper/v2/.github/actions/minikube
       - name: Docker
@@ -54,4 +57,5 @@ jobs:
       - name: Podman
         uses: ./ansible_collections/skupper/v2/.github/actions/podman
       - name: Run integration tests
-        run: cd ansible_collections/skupper/v2 && make integration
+        working-directory: ./ansible_collections/skupper/v2
+        run: make integration

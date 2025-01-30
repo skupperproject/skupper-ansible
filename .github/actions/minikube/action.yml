@@ -1,0 +1,14 @@
+name: "Start minikube"
+description: "Run a minikube cluster with loadbalancer support"
+author: "skupper@googlegroups.com"
+runs:
+  using: "composite"
+  steps:
+    - id: minikube
+      name: Start minikube
+      uses: medyagh/setup-minikube@latest
+    - id: tunnel
+      name: Run minikube tunnel
+      shell: bash
+      run: |
+        minikube tunnel &

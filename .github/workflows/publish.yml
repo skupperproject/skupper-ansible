@@ -1,12 +1,50 @@
-name:
+name: Publish the collection
 on:
   push:
     # Sequence of patterns matched against tags
     # Right now, we run this job automatically when a semantically versioned
     # tag is pushed (with an optional suffix).
     tags:
-      - '[0-9]+.[0-9]+.[0-9]+*'
+      - '2.[0-9]+.[0-9]+*'
 jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ./ansible_collections/skupper/v2
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          cache: 'pip'
+      - name: Install ansible, ansible-lint, yamllint
+        run: pip3 install yamllint ansible ansible-lint virtualenv
+      - name: Run ansible-lint
+        run: cd ansible_collections/skupper/v2 && make lint
+      - name: Run sanity tests
+        run: cd ansible_collections/skupper/v2 && make sanity
+      - name: Run unit tests
+        run: cd ansible_collections/skupper/v2 && make unit
+  e2e-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ./ansible_collections/skupper/v2
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          cache: 'pip'
+      - name: Build skupper-router
+        uses: ./.github/actions/build-router
+      - name: Minikube
+        uses: ./.github/actions/minikube
+      - name: Docker
+        uses: ./.github/actions/docker
+      - name: Podman
+        uses: ./.github/actions/podman
+      - name: Run integration tests
+        run: cd ansible_collections/skupper/v2 && make integration
   publish:
     runs-on: ubuntu-latest
     steps:
@@ -17,16 +55,6 @@ jobs:
         uses: actions/setup-python@v2
       - name: Install ansible, ansible-lint, yamllint
         run: pip3 install yamllint ansible ansible-lint
-      - name: Run ansible-lint
-        run: cd ./ansible_collections/skupper/v2 && make lint
-      - name: Run ansible sanity tests
-        run: cd ./ansible_collections/skupper/v2 && make sanity
-      - name: Run ansible unit tests
-        run: cd ./ansible_collections/skupper/v2 && make unit
-      - name: Build and install the collection
-        run: cd ./ansible_collections/skupper/v2 && make build install
-      - name: Run ansible integration tests
-        run: cd ./ansible_collections/skupper/v2 && make integration
       - name: Ansible Publish
         uses: ansible/ansible-publish-action@v1.0.0
         with:

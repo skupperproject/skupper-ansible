@@ -1,0 +1,14 @@
+name: "Build skupper-router"
+description: "Builds lws, libundind, proton and skupper-router installing it to the local runner"
+author: "skupper@googlegroups.com"
+runs:
+  using: "composite"
+  steps:
+    - id: dependencies
+      shell: bash
+      run: |
+        ./.github/scripts/deps.sh
+    - id: build-and-install
+      shell: bash
+      run: |
+        ./.github/scripts/compile.sh

@@ -1,14 +1,14 @@
-name:
+name: Test the collection
 on:
   pull_request:
-    branches: [main, v2-dev]
+    branches: [v2-dev]
   push:
-    branches: [main, v2-dev]
+    branches: [v2-dev]
 jobs:
-  build:
+  unit-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: ./ansible_collections/skupper/v2
       - name: Set up Python
@@ -23,5 +23,23 @@ jobs:
         run: cd ansible_collections/skupper/v2 && make sanity
       - name: Run unit tests
         run: cd ansible_collections/skupper/v2 && make unit
+  e2e-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ./ansible_collections/skupper/v2
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          cache: 'pip'
+      - name: Build skupper-router
+        uses: ./.github/actions/build-router
+      - name: Minikube
+        uses: ./.github/actions/minikube
+      - name: Docker
+        uses: ./.github/actions/docker
+      - name: Podman
+        uses: ./.github/actions/podman
       - name: Run integration tests
         run: cd ansible_collections/skupper/v2 && make integration

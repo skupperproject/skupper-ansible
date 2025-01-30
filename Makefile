@@ -12,6 +12,7 @@ OPTIONS ?=
 all: clean lint sanity unit coverage
 
 lint:
+	ansible-galaxy collection install -r tests/integration/requirements.yml
 	ANSIBLE_ROLES_PATH=./tests/integration/targets ANSIBLE_LIBRARY=./plugins/modules ANSIBLE_MODULE_UTILS=./plugins/module_utils ansible-lint -v --offline
 
 release-changelog:
@@ -32,15 +33,15 @@ build: clean
 	ansible-galaxy collection build
 
 clean:
-	@[[ -f "$(TARBALL)" ]] && rm $(TARBALL) || true
+	@[ -f "$(TARBALL)" ] && rm $(TARBALL) || true
 	rm -rf tests/output
 
 install:
-	@[[ -f "$(TARBALL)" ]] && true || (echo "Collection has not been built" && false)
+	@[ -f "$(TARBALL)" ] && true || (echo "Collection has not been built" && false)
 	@ansible-galaxy collection install -f "$(TARBALL)"
 
 publish: build
-	@[[ -f "$(TARBALL)" ]] && true || (echo "Collection has not been built" && false)
+	@[ -f "$(TARBALL)" ] && true || (echo "Collection has not been built" && false)
 	@ansible-galaxy collection publish -f "$(TARBALL)"
 
 sanity:
@@ -63,4 +64,4 @@ integration-ssh:
 	ansible-test integration --allow-destructive --local --target "ssh:`id -un`@localhost,python=$(PYTHON)" -v $(OPTIONS)
 
 coverage:
-	ansible-test coverage html
+	ansible-test coverage html || true

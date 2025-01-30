@@ -36,3 +36,27 @@ spec:
           image: quay.io/skupper/hello-world-frontend
           ports:
             - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: curl
+  name: curl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: curl
+  template:
+    metadata:
+      labels:
+        app: curl
+    spec:
+      containers:
+      - image: quay.io/curl/curl
+        command: ['tail', '-f', '/dev/null']
+        imagePullPolicy: Always
+        name: curl
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30

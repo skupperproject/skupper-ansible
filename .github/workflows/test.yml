@@ -33,6 +33,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: ./ansible_collections/skupper/v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13' 
+          cache: 'pip'
+      - name: Installing python requirements
+        working-directory: ./ansible_collections/skupper/v2
+        run: pip install -r requirements.txt
       - name: Build router dependencies
         shell: bash
         working-directory: ./ansible_collections/skupper/v2
@@ -43,13 +51,6 @@ jobs:
         working-directory: ./ansible_collections/skupper/v2
         run: |
           ./.github/scripts/compile.sh
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          cache: 'pip'
-      - name: Installing python requirements
-        working-directory: ./ansible_collections/skupper/v2
-        run: pip install -r requirements.txt
       - name: Minikube
         uses: ./ansible_collections/skupper/v2/.github/actions/minikube
       - name: Docker

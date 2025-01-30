@@ -28,4 +28,3 @@
       containers.podman.podman_container:
         name: token_testing_backend
         state: absent
-        force_delete: true

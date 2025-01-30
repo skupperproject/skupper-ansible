@@ -26,20 +26,20 @@ jobs:
   e2e-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Build skupper-router
-        uses: ./.github/actions/build-router
       - uses: actions/checkout@v4
         with:
           path: ./ansible_collections/skupper/v2
+      - name: Build skupper-router
+        uses: ./ansible_collections/skupper/v2/.github/actions/build-router
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           cache: 'pip'
       - name: Minikube
-        uses: ./.github/actions/minikube
+        uses: ./ansible_collections/skupper/v2/.github/actions/minikube
       - name: Docker
-        uses: ./.github/actions/docker
+        uses: ./ansible_collections/skupper/v2/.github/actions/docker
       - name: Podman
-        uses: ./.github/actions/podman
+        uses: ./ansible_collections/skupper/v2/.github/actions/podman
       - name: Run integration tests
         run: cd ansible_collections/skupper/v2 && make integration

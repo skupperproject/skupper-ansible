@@ -346,9 +346,11 @@ class TestTokenModule(TestCase):
         my_grant['status']['redemptions'] = 1
         K8sClientMock.resources.append(my_grant)
         self.assertEqual(2, len(K8sClientMock.resources))
-        with self.assertRaises(AnsibleFailJson):
-            set_module_args({'name': 'my-grant'})
-            self.module.main()
+        with patch.object(basic.AnsibleModule, "warn") as mock_warn:
+            with self.assertRaises(AnsibleExitJson) as exit:
+                set_module_args({'name': 'my-grant'})
+                self.module.main()
+        mock_warn.assert_called_once_with("accessgrant 'my-grant' cannot be redeemed")
         self.assertEqual(2, len(K8sClientMock.resources))
 
     def test_kube_site_ready_grant_ready(self):

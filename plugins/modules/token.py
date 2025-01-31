@@ -253,10 +253,11 @@ class TokenModule:
             return ""
 
         if name:
-            if not has_condition(access_grant, "Ready") or \
-                    not self.can_be_redeemed(access_grant):
+            if not has_condition(access_grant, "Ready"):
                 raise RuntimeException(
                     msg="accessgrant '%s' cannot be redeemed" % (name))
+            if not self.can_be_redeemed(access_grant):
+                self.module.warn("accessgrant '{}' cannot be redeemed".format(name))
 
         access_token_name = "token-%s" % (
             access_grant.get("metadata").get("name"))
@@ -307,7 +308,7 @@ class TokenModule:
             if not has_condition(access_grant_it, "Ready"):
                 all_ready = False
                 continue
-            if not access_grant and self.can_be_redeemed(access_grant_it):
+            if not access_grant:
                 access_grant = access_grant_it
         return access_grant, all_ready
 

@@ -26,6 +26,15 @@ jobs:
       - name: Run unit tests
         run: make unit
         working-directory: ./ansible_collections/skupper/v2
+      - name: Unit tests with coverage
+        run: make coverage
+        working-directory: ./ansible_collections/skupper/v2
+      - name: Archiving coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            ./ansible_collections/skupper/v2/tests/output/reports/coverage/
   e2e-test:
     runs-on: ubuntu-latest
     needs: unit-test
@@ -60,4 +69,11 @@ jobs:
         uses: ./ansible_collections/skupper/v2/.github/actions/podman
       - name: Run integration tests
         working-directory: ./ansible_collections/skupper/v2
-        run: make integration
+        run: |
+          make integration | tee ansible-test-integration.out
+      - name: Archiving e2e-test output
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-output
+          path: |
+            ./ansible_collections/skupper/v2/ansible-test-integration.out

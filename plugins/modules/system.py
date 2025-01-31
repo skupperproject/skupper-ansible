@@ -76,7 +76,7 @@ links:
         - Static links generated for non-kube sites with a RouterAccess
         - Dictionary keys are the target hostname or ip of the link
         - Each value has a valid link that can be applied to another site
-    returned: when platform in ('podman', 'docker', 'systemd') and a RouterAccess is defined
+    returned: when platform in ('podman', 'docker', 'linux') and a RouterAccess is defined
     type: dict
     sample: {'my.host': '---\napiVersion: skupper.io/v2alpha1...'}
 """

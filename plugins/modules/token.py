@@ -26,7 +26,7 @@ options:
     name:
         description:
             - Name of the AccessGrant (to be generated or consumed) and AccessToken (kubernetes platform only)
-            - Name of a RouterAccess (podman, docker or systemd platforms)
+            - Name of a RouterAccess (podman, docker or linux platforms)
         type: str
     redemptions_allowed:
         description:
@@ -41,7 +41,7 @@ options:
         type: str
     host:
         description:
-            - Static link hostname (podman, docker or systemd platforms)
+            - Static link hostname (podman, docker or linux platforms)
         type: str
 
 extends_documentation_fragment:

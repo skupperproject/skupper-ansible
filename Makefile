@@ -25,7 +25,7 @@ build-docs: build install
 	antsibull-docs sphinx-init --use-current --dest-dir ./docs/docsite skupper.v2
 	pip install -U -r docs/docsite/requirements.txt
 	./docs/docsite/build.sh
-	mv ./docs/docsite/build/html ./docs
+	mv ./docs/docsite/build/html/* ./docs
 	touch ./docs/.nojekyll
 	rm -rf ./docs/docsite
 
@@ -61,7 +61,7 @@ integration:
 	ansible-test integration --allow-destructive --local -v $(OPTIONS)
 
 integration-ssh:
-	ansible-test integration --allow-destructive --local --target "ssh:`id -un`@localhost,python=$(PYTHON)" -v $(OPTIONS)
+	ansible-test integration --allow-destructive --target "ssh:`id -un`@localhost,python=$(PYTHON)" -v $(OPTIONS)
 
 coverage:
 	ansible-test coverage html || true

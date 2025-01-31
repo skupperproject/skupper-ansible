@@ -1,5 +1,5 @@
 venv/
-docs/
 tests/output
+tests/integration/inventory
 *.pyc
 *.tar.gz

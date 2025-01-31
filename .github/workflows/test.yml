@@ -37,6 +37,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           cache: 'pip'
+      - name: Install ansible, ansible-lint, yamllint
+        run: pip3 install yamllint ansible ansible-lint virtualenv
       - name: Installing python requirements
         working-directory: ./ansible_collections/skupper/v2
         run: pip3 install -r requirements.txt

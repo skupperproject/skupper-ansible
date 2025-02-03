@@ -39,8 +39,8 @@ class K8sClient:
                 if obj_namespace == "default":
                     obj["metadata"]["namespace"] = namespace
                 else:
-                    raise K8sException("namespace cannot be set to '%s' as resource "
-                                       "is defined with namespace '%s'" % (namespace, obj_namespace))
+                    raise K8sException("namespace cannot be set to '%s' as resource (%s/%s) "
+                                       "is defined with namespace '%s'" % (namespace, version, kind, obj_namespace))
             api = self.api(api_version=version, kind=kind)
             try:
                 api.create(body=obj, namespace=namespace)

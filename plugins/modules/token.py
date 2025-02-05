@@ -7,7 +7,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-
 DOCUMENTATION = r'''
 ---
 module: token
@@ -25,23 +24,35 @@ description:
 options:
     name:
         description:
-            - Name of the AccessGrant (to be generated or consumed) and AccessToken (kubernetes platform only)
+            - Name of the AccessGrant (to be generated or consumed) and AccessToken (kubernetes platform only) when using type V(token)
+            - Name of the Link and Certificate (to be generated or consumed) (kubernetes platform only) when using type V(link)
             - Name of a RouterAccess (podman, docker or linux platforms)
         type: str
     redemptions_allowed:
         description:
             - The number of claims the generated AccessGrant is valid for
+            - Only used when platform is V(kubernetes) and type is V(token)
         default: 1
         type: int
     expiration_window:
         description:
             - Duration of the generated AccessGrant
             - Sample values V(10m), V(2h)
+            - Only used when platform is V(kubernetes) and type is V(token)
         default: 15m
         type: str
+    type:
+        description:
+            - Type of token to produce or consume
+            - Only meaningful when platform is V(kubernetes)
+            - Always set to V(link) when platform is V(podman), V(docker), V(linux)
+        default: token
+        type: str
+        choices: ['token', 'link']
     host:
         description:
-            - Static link hostname (podman, docker or linux platforms)
+            - Static link hostname
+            - Only used when platform is V(podman), V(docker), V(linux)
         type: str
 
 extends_documentation_fragment:
@@ -66,10 +77,26 @@ token:
 """
 
 EXAMPLES = r'''
-# Retrieving or issue a token (if my-grant does not exist or can be redeemed)
-- name: Retrieve token
+# Retrieve or issue an AccessToken (if my-grant does not exist or can be redeemed)
+- name: Retrieve or issue my-grant AccessToken
   skupper.v2.token:
     name: my-grant
+    platform: kubernetes
+    namespace: west
+
+# Retrieve or issue a Link (if my-link does not exist)
+- name: Retrieve or create my-link Link
+  skupper.v2.token:
+    name: my-link
+    type: link
+    platform: kubernetes
+    namespace: west
+
+# Retrieving or generate a static Link
+- name: Retrieve token
+  skupper.v2.token:
+    name: west-link
+    type: link
     platform: kubernetes
     namespace: west
 
@@ -77,6 +104,13 @@ EXAMPLES = r'''
 - name: Retrieve token
   skupper.v2.token:
     platform: kubernetes
+    namespace: west
+
+# Retrieving a Link for any existing site client certificate
+- name: Retrieve Link
+  skupper.v2.token:
+    platform: kubernetes
+    type: link
     namespace: west
 
 # Retrieve a static Link for host my.nonkube.host
@@ -87,28 +121,28 @@ EXAMPLES = r'''
 '''
 
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.skupper.v2.plugins.module_utils.exceptions import (
-    K8sException,
-    RuntimeException
-)
-from ansible_collections.skupper.v2.plugins.module_utils.common import (
-    is_non_kube,
-    namespace_home,
+import time
+import os
+import glob
+import copy
+from ansible_collections.skupper.v2.plugins.module_utils.k8s import (
+    K8sClient,
+    has_condition
 )
 from ansible_collections.skupper.v2.plugins.module_utils.args import (
     common_args,
     is_valid_name,
     is_valid_host_ip
 )
-from ansible_collections.skupper.v2.plugins.module_utils.k8s import (
-    K8sClient,
-    has_condition
+from ansible_collections.skupper.v2.plugins.module_utils.common import (
+    is_non_kube,
+    namespace_home,
 )
-import copy
-import glob
-import os
-import time
+from ansible_collections.skupper.v2.plugins.module_utils.exceptions import (
+    K8sException,
+    RuntimeException
+)
+from ansible.module_utils.basic import AnsibleModule
 try:
     import yaml
 except ImportError:
@@ -121,6 +155,7 @@ def argspec():
     spec["host"] = dict(type="str", default=None, required=False)
     spec["redemptions_allowed"] = dict(type="int", default=1)
     spec["expiration_window"] = dict(type="str", default="15m")
+    spec["type"] = dict(type="str", default="token", choices=["token", "link"])
     return spec
 
 
@@ -165,29 +200,10 @@ class TokenModule:
         if is_non_kube(self.platform):
             token_link = self.load_static_link()
         else:
-            try:
-                token_link = self.load_from_grant(self.name)
-            except RuntimeException as runtime_ex:
-                self.module.fail_json(runtime_ex.msg)
-            except K8sException as k8s_ex:
-                self.module.fail_json(k8s_ex.msg)
-            if not token_link:
-                grant_name = self.name or "ansible-grant-%d" % (
-                    int(time.time()))
-                try:
-                    if not self.generate_grant(grant_name):
-                        self.module.fail_json(
-                            "unable to create AccessGrant: '%s'" % (grant_name))
-                except Exception as ex:
-                    self.module.fail_json(
-                        "error creating AccessGrant: '%s' - reason: %s" % (grant_name, ex))
-                changed = True
-                try:
-                    token_link = self.load_from_grant(grant_name)
-                except RuntimeException as runtime_ex:
-                    self.module.fail_json(runtime_ex.msg)
-                except K8sException as k8s_ex:
-                    self.module.fail_json(k8s_ex.msg)
+            if self.params.get("type", "token") == "token":
+                changed, token_link = self.process_token()
+            else:
+                changed, token_link = self.process_link()
 
         # adding return values
         if token_link:
@@ -196,6 +212,134 @@ class TokenModule:
         result['changed'] = changed
 
         self.module.exit_json(**result)
+
+    def process_token(self):
+        changed = False
+        try:
+            token_link = self.load_from_grant(self.name)
+        except RuntimeException as runtime_ex:
+            self.module.fail_json(runtime_ex.msg)
+        except K8sException as k8s_ex:
+            self.module.fail_json(k8s_ex.msg)
+        if not token_link:
+            grant_name = self.name or "ansible-grant-%d" % (
+                int(time.time()))
+            try:
+                if not self.generate_grant(grant_name):
+                    self.module.fail_json(
+                        "unable to create AccessGrant: '%s'" % (grant_name))
+            except Exception as ex:
+                self.module.fail_json(
+                    "error creating AccessGrant: '%s' - reason: %s" % (grant_name, ex))
+            changed = True
+            try:
+                token_link = self.load_from_grant(grant_name)
+            except RuntimeException as runtime_ex:
+                self.module.fail_json(runtime_ex.msg)
+            except K8sException as k8s_ex:
+                self.module.fail_json(k8s_ex.msg)
+        return changed, token_link
+
+    def process_link(self):
+        k8s = K8sClient(self.kubeconfig, self.context)
+        try:
+            site = self.wait_ready(k8s, "Site")
+        except RuntimeException as runtime_ex:
+            self.module.fail_json(runtime_ex.msg)
+        issuer_name = site.get("status").get("defaultIssuer")
+        try:
+            existing_client_certs = self.get_client_certificates(k8s, issuer_name)
+        except K8sException as k8s_ex:
+            self.module.fail_json(k8s_ex.msg)
+        if self.name and self.name in existing_client_certs:
+            secret = k8s.get(self.namespace, "v1", "Secret", self.name)
+            return False, self.link_from_secret(site, secret)
+        if self.name:
+            # Name conflict, client cert not ready or not emitted by the site issuer
+            if self.resource_exists(k8s, "skupper.io/v2alpha1", "Certificate", self.name):
+                self.module.fail_json("Certificate {} exists in namespace and cannot be used"
+                                      .format(self.name))
+            if self.resource_exists(k8s, "v1", "Secret", self.name):
+                self.module.fail_json("Secret {} exists in namespace and cannot be used"
+                                      .format(self.name))
+        elif existing_client_certs:
+            secret = k8s.get(self.namespace, "v1", "Secret", existing_client_certs[0])
+            return False, self.link_from_secret(site, secret)
+        cert_name = self.generate_client_certificate(k8s, issuer_name)
+        secret = k8s.get(self.namespace, "v1", "Secret", cert_name)
+        return True, self.link_from_secret(site, secret)
+
+    def resource_exists(self, k8s, version, kind, name) -> bool:
+        try:
+            resource = k8s.get(self.namespace, version, kind, name)
+            if resource:
+                return True
+        except K8sException as k8s_ex:
+            if k8s_ex.status != 404:
+                self.module.fail_json(
+                    "error retrieving {}/{} {} from namespace {}".format(kind, version, name, self.namespace))
+        return False
+
+    def link_from_secret(self, site, secret):
+        secret_name = secret.get("metadata").get("name")
+        del secret["metadata"]
+        secret["metadata"] = {
+            "name": secret_name
+        }
+        link = {
+            "apiVersion": "skupper.io/v2alpha1",
+            "kind": "Link",
+            "metadata": {
+                "name": secret_name,
+            },
+            "spec": {
+                "endpoints": site.get("status").get("endpoints"),
+                "tlsCredentials": secret_name,
+            }
+        }
+        return yaml.safe_dump_all([link, secret], indent=2)
+
+    def get_client_certificates(self, k8s, issuer_name):
+        valid_client_certs = []
+        try:
+            certificates = k8s.get(self.namespace, "skupper.io/v2alpha1", "Certificate", "")
+        except K8sException as k8s_ex:
+            if k8s_ex.status == 404:
+                return valid_client_certs
+            raise k8s_ex
+        for certificate in certificates:
+            if certificate.get("spec", {}).get("ca") == issuer_name \
+                    and certificate.get("spec", {}).get("client", False) \
+                    and has_condition(certificate, "Ready"):
+                valid_client_certs.append(certificate.get("metadata").get("name"))
+        return valid_client_certs
+
+    def generate_client_certificate(self, k8s, issuer_name):
+        name = self.name or "link-%d" % (int(time.time()))
+        certificate = {
+            "apiVersion": "skupper.io/v2alpha1",
+            "kind": "Certificate",
+            "metadata": {
+                "name": name,
+                "namespace": self.namespace,
+            },
+            "spec": {
+                "ca": issuer_name,
+                "client": True,
+                "subject": "{}-client".format(self.namespace)
+            }
+        }
+        certificate_str = yaml.safe_dump(certificate, indent=2)
+        try:
+            k8s.create_or_patch(self.namespace, certificate_str, False)
+        except K8sException as k8s_ex:
+            self.module.fail_json("error creating certificate {}/{} - {}"
+                                  .format(self.namespace, name, k8s_ex.msg))
+        try:
+            self.wait_ready(k8s, "Certificate", name)
+        except RuntimeException as runtime_ex:
+            self.module.fail_json(runtime_ex.msg)
+        return name
 
     def load_static_link(self):
         home = namespace_home(self.namespace)
@@ -217,7 +361,7 @@ class TokenModule:
 
     def load_from_grant(self, name: str) -> str:
         k8s = K8sClient(self.kubeconfig, self.context)
-        self.wait_site_ready(k8s)
+        self.wait_ready(k8s, "Site")
         access_grant = {}
         found_not_ready = False
         for attempt in range(self.max_attempts):
@@ -257,7 +401,8 @@ class TokenModule:
                 raise RuntimeException(
                     msg="accessgrant '%s' cannot be redeemed" % (name))
             if not self.can_be_redeemed(access_grant):
-                self.module.warn("accessgrant '{}' cannot be redeemed".format(name))
+                self.module.warn(
+                    "accessgrant '{}' cannot be redeemed".format(name))
 
         access_token_name = "token-%s" % (
             access_grant.get("metadata").get("name"))
@@ -278,28 +423,29 @@ class TokenModule:
         }
         return yaml.safe_dump(access_token, indent=2)
 
-    def wait_site_ready(self, k8s):
-        site_ready = False
+    def wait_ready(self, k8s, kind, name=""):
         for attempt in range(self.max_attempts):
             try:
-                sites = k8s.get(
-                    self.namespace, "skupper.io/v2alpha1", "Site", "")
-                if not sites:
+                resources = k8s.get(
+                    self.namespace, "skupper.io/v2alpha1", kind, name)
+                if not resources:
                     raise RuntimeException(
-                        'no sites found on namespace "{}"'.format(self.namespace or "default"))
-                for site in sites:
-                    if has_condition(site, "Ready"):
-                        site_ready = True
-                        break
+                        'no {} found on namespace "{}"'.
+                        format(kind + (("/" + name) if name else ""), self.namespace or "default")
+                    )
+                if isinstance(resources, dict):
+                    resources = [resources]
+                for resource in resources:
+                    if has_condition(resource, "Ready"):
+                        return resource
             except K8sException as ex:
                 if ex.status != 404:
                     raise ex
-            if site_ready:
-                break
             time.sleep(self.retry_delay)
-        if not site_ready:
-            raise RuntimeException(
-                'no ready sites found on namespace "{}"'.format(self.namespace or "default"))
+        raise RuntimeException(
+            'no ready {} found on namespace "{}"'.
+            format(kind + (("/" + name) if name else ""), self.namespace or "default")
+        )
 
     def _load_from_list(self, access_grants) -> tuple[dict, bool]:
         all_ready = True

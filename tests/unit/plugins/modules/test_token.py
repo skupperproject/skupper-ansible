@@ -26,6 +26,8 @@ class K8sClientMock:
     create_exception = []
     # resources created indirectly that are not put in ready state
     new_resources_not_ready = []
+    # hook functions called after create_or_patch adds or replaces a resource
+    new_resources_hook_fns = []
 
     def __init__(self, *args):
         pass
@@ -109,10 +111,14 @@ class K8sClientMock:
                 add_ready_condition(definition)
             if not resources:
                 cls.resources.append(definition)
+                for create_hook in cls.new_resources_hook_fns:
+                    create_hook(definition)
                 return True
             if len(resources) > 0 and overwrite:
                 cls.delete(namespace, yaml.safe_dump(definition))
                 cls.resources.append(definition)
+                for create_hook in cls.new_resources_hook_fns:
+                    create_hook(definition)
                 return True
             raise Exception(resources)
         return False
@@ -340,6 +346,19 @@ class TestTokenModule(TestCase):
             self.module.main()
         self.assertEqual(2, len(K8sClientMock.resources))
 
+    def test_kube_site_ready_generated_grant_get_exception(self):
+        K8sClientMock.resources.append(fake_site('default', 'my-site', True))
+        my_grant = fake_grant('default', 'my-grant')
+        def create_hook(definition: dict):
+            if definition['kind'] == 'AccessGrant':
+                K8sClientMock.get_exception.append(my_grant)
+        K8sClientMock.new_resources_hook_fns.append(create_hook)
+        self.assertEqual(1, len(K8sClientMock.resources))
+        with self.assertRaises(AnsibleFailJson) as fail:
+            set_module_args({'name': 'my-grant'})
+            self.module.main()
+        self.assertEqual(2, len(K8sClientMock.resources), K8sClientMock.resources)
+
     def test_kube_site_ready_grant_cannot_be_redeemed(self):
         K8sClientMock.resources.append(fake_site('default', 'my-site', True))
         my_grant = fake_grant('default', 'my-grant', ready=True)
@@ -363,6 +382,175 @@ class TestTokenModule(TestCase):
         self.assertFalse(exit.exception.changed)
         self.assertEqual(2, len(K8sClientMock.resources))
 
+    def test_kube_site_existing_links_site_not_ready(self):
+        K8sClientMock.resources.append(fake_site('default', 'my-site', False))
+        self.assertEqual(1, len(K8sClientMock.resources))
+        with self.assertRaises(AnsibleFailJson):
+            set_module_args({'type': 'link'})
+            self.module.main()
+        self.assertEqual(1, len(K8sClientMock.resources))
+
+    def test_kube_site_existing_links_cert_get_exception(self):
+        site = fake_site('default', 'my-site', True)
+        default_issuer = site['status']['defaultIssuer']
+        K8sClientMock.resources.append(site)
+        K8sClientMock.get_exception.append(fake_cert('default', 'link-1', default_issuer, True))
+        self.assertEqual(1, len(K8sClientMock.resources))
+        with self.assertRaises(AnsibleFailJson):
+            set_module_args({'type': 'link'})
+            self.module.main()
+        self.assertEqual(1, len(K8sClientMock.resources))
+
+    def test_kube_existing_links_ready(self):
+        site = fake_site('default', 'my-site', True)
+        K8sClientMock.resources.append(site)
+        K8sClientMock.resources.append(fake_cert('default', 'link-1', site['status']['defaultIssuer'], True))
+        K8sClientMock.resources.append(fake_secret('default', 'link-1'))
+        self.assertEqual(3, len(K8sClientMock.resources))
+        with self.assertRaises(AnsibleExitJson) as exit:
+            set_module_args({'type': 'link'})
+            self.module.main()
+        self.assertEqual(3, len(K8sClientMock.resources))
+        self.assertFalse(exit.exception.changed)
+        self.assertTrue(exit.exception.token)
+        self.assertEqual(2, len(list(yaml.safe_load_all(exit.exception.token))))
+
+    def test_kube_existing_links_not_ready(self):
+        site = fake_site('default', 'my-site', True)
+        K8sClientMock.resources.append(site)
+        K8sClientMock.resources.append(fake_cert('default', 'link-1', site['status']['defaultIssuer'], True, ready=False))
+        K8sClientMock.resources.append(fake_secret('default', 'link-1'))
+        K8sClientMock.new_resources_hook_fns.append(create_secret_hook)
+        self.assertEqual(3, len(K8sClientMock.resources))
+        with self.assertRaises(AnsibleExitJson) as exit:
+            set_module_args({'type': 'link'})
+            self.module.main()
+        self.assertEqual(5, len(K8sClientMock.resources))
+        self.assertTrue(exit.exception.changed)
+        self.assertTrue(exit.exception.token)
+        self.assertEqual(2, len(list(yaml.safe_load_all(exit.exception.token))))
+
+    def test_kube_generate_link(self):
+        site = fake_site('default', 'my-site', True)
+        K8sClientMock.resources.append(site)
+        K8sClientMock.new_resources_hook_fns.append(create_secret_hook)
+        self.assertEqual(1, len(K8sClientMock.resources))
+        with self.assertRaises(AnsibleExitJson) as exit:
+            set_module_args({'type': 'link'})
+            self.module.main()
+        self.assertEqual(3, len(K8sClientMock.resources))
+        self.assertTrue(exit.exception.changed)
+        self.assertTrue(exit.exception.token)
+        self.assertEqual(2, len(list(yaml.safe_load_all(exit.exception.token))))
+
+    def test_kube_generate_named_link_create_exception(self):
+        site = fake_site('default', 'my-site', True)
+        K8sClientMock.resources.append(site)
+        K8sClientMock.create_exception.append(fake_cert('default', 'my-link', site['status']['defaultIssuer'], True))
+        self.assertEqual(1, len(K8sClientMock.resources))
+        with self.assertRaises(AnsibleFailJson) as fail:
+            set_module_args({'name': 'my-link', 'type': 'link'})
+            self.module.main()
+        self.assertEqual(1, len(K8sClientMock.resources))
+        self.assertTrue(fail.exception.failed)
+        self.assertTrue(fail.exception.msg)
+
+    def test_kube_generate_named_link_create_not_ready(self):
+        site = fake_site('default', 'my-site', True)
+        K8sClientMock.resources.append(site)
+        K8sClientMock.new_resources_not_ready.append(fake_cert('default', 'my-link', site['status']['defaultIssuer'], True))
+        self.assertEqual(1, len(K8sClientMock.resources))
+        with self.assertRaises(AnsibleFailJson) as fail:
+            set_module_args({'name': 'my-link', 'type': 'link'})
+            self.module.main()
+        self.assertEqual(2, len(K8sClientMock.resources))
+        self.assertTrue(fail.exception.failed)
+        self.assertTrue(fail.exception.msg)
+
+    def test_kube_generate_named_link(self):
+        site = fake_site('default', 'my-site', True)
+        K8sClientMock.resources.append(site)
+        K8sClientMock.new_resources_hook_fns.append(create_secret_hook)
+        self.assertEqual(1, len(K8sClientMock.resources))
+        with self.assertRaises(AnsibleExitJson) as exit:
+            set_module_args({'name': 'my-link', 'type': 'link'})
+            self.module.main()
+        self.assertEqual(3, len(K8sClientMock.resources))
+        self.assertTrue(exit.exception.changed)
+        self.assertTrue(exit.exception.token)
+        token = list(yaml.safe_load_all(exit.exception.token))
+        self.assertEqual(2, len(token))
+        secret = token[0]
+        cert = token[1]
+        self.assertEqual('my-link', secret['metadata']['name'])
+        self.assertEqual('my-link', cert['metadata']['name'])
+
+    def test_kube_named_link_ready(self):
+        site = fake_site('default', 'my-site', True)
+        K8sClientMock.resources.append(site)
+        K8sClientMock.resources.append(fake_cert('default', 'my-link', site['status']['defaultIssuer'], True, ready=True))
+        K8sClientMock.resources.append(fake_secret('default', 'my-link'))
+        self.assertEqual(3, len(K8sClientMock.resources))
+        with self.assertRaises(AnsibleExitJson) as exit:
+            set_module_args({'name': 'my-link', 'type': 'link'})
+            self.module.main()
+        self.assertEqual(3, len(K8sClientMock.resources))
+        self.assertFalse(exit.exception.changed)
+        self.assertTrue(exit.exception.token)
+        token = list(yaml.safe_load_all(exit.exception.token))
+        self.assertEqual(2, len(token))
+        secret = token[0]
+        cert = token[1]
+        self.assertEqual('my-link', secret['metadata']['name'])
+        self.assertEqual('my-link', cert['metadata']['name'])
+
+    def test_kube_named_link_not_ready(self):
+        site = fake_site('default', 'my-site', True)
+        K8sClientMock.resources.append(site)
+        K8sClientMock.resources.append(fake_cert('default', 'my-link', site['status']['defaultIssuer'], True, ready=False))
+        K8sClientMock.resources.append(fake_secret('default', 'my-link'))
+        self.assertEqual(3, len(K8sClientMock.resources))
+        with self.assertRaises(AnsibleFailJson) as fail:
+            set_module_args({'name': 'my-link', 'type': 'link'})
+            self.module.main()
+        self.assertEqual(3, len(K8sClientMock.resources))
+        self.assertEqual('Certificate my-link exists in namespace and cannot be used', fail.exception.msg[1])
+
+    def test_kube_named_link_no_client_cert_conflict(self):
+        site = fake_site('default', 'my-site', True)
+        K8sClientMock.resources.append(site)
+        K8sClientMock.resources.append(fake_cert('default', 'my-server-cert', site['status']['defaultIssuer'], False, ready=True))
+        K8sClientMock.resources.append(fake_secret('default', 'my-server-cert'))
+        self.assertEqual(3, len(K8sClientMock.resources))
+        with self.assertRaises(AnsibleFailJson) as fail:
+            set_module_args({'name': 'my-server-cert', 'type': 'link'})
+            self.module.main()
+        self.assertEqual(3, len(K8sClientMock.resources))
+        self.assertEqual('Certificate my-server-cert exists in namespace and cannot be used', fail.exception.msg[1])
+
+    def test_kube_named_link_client_cert_other_issuer_conflict(self):
+        site = fake_site('default', 'my-site', True)
+        K8sClientMock.resources.append(site)
+        K8sClientMock.resources.append(fake_cert('default', 'my-server-cert', 'some-other-issuer', False, ready=True))
+        K8sClientMock.resources.append(fake_secret('default', 'my-server-cert'))
+        self.assertEqual(3, len(K8sClientMock.resources))
+        with self.assertRaises(AnsibleFailJson) as fail:
+            set_module_args({'name': 'my-server-cert', 'type': 'link'})
+            self.module.main()
+        self.assertEqual(3, len(K8sClientMock.resources))
+        self.assertEqual('Certificate my-server-cert exists in namespace and cannot be used', fail.exception.msg[1])
+
+    def test_kube_named_link_secret_conflict(self):
+        site = fake_site('default', 'my-site', True)
+        K8sClientMock.resources.append(site)
+        K8sClientMock.resources.append(fake_secret('default', 'my-link'))
+        self.assertEqual(2, len(K8sClientMock.resources))
+        with self.assertRaises(AnsibleFailJson) as fail:
+            set_module_args({'name': 'my-link', 'type': 'link'})
+            self.module.main()
+        self.assertEqual(2, len(K8sClientMock.resources))
+        self.assertEqual('Secret my-link exists in namespace and cannot be used', fail.exception.msg[1])
+
 
 def fake_site(ns, name, ready):
     site = {
@@ -375,6 +563,20 @@ def fake_site(ns, name, ready):
     }
     if ready:
         add_ready_condition(site)
+        site['status']['defaultIssuer'] = "skupper-site-ca"
+        site['status']['endpoints'] = [{
+            "group": "skupper-router",
+            "host": "10.0.0.1",
+            "name": "inter-router",
+            "port": "55671",
+        },
+            {
+            "group": "skupper-router",
+            "host": "10.0.0.1",
+            "name": "edge",
+            "port": "45671"
+        }]
+
     return site
 
 
@@ -396,6 +598,42 @@ def fake_grant(ns, name, redemptions=1, expiration="15m", ready=True):
     return grant
 
 
+def fake_cert(ns, name, issuer_name: str, client: bool, ready=True):
+    cert = {
+        "apiVersion": "skupper.io/v2alpha1",
+        "kind": "Certificate",
+        "metadata": {
+            "name": name,
+            "namespace": ns,
+        },
+        "spec": {
+            "ca": issuer_name,
+            "client": client,
+            "subject": "subject"
+        },
+    }
+    if ready:
+        add_ready_condition(cert)
+    return cert
+
+
+def fake_secret(ns, name):
+    secret = {
+        "apiVersion": "v1",
+        "kind": "Secret",
+        "metadata": {
+            "name": name,
+            "namespace": ns,
+        },
+        "data": {
+            "ca.crt": "ca",
+            "tls.crt": "crt",
+            "tls.key": "key"
+        },
+    }
+    return secret
+
+
 def add_ready_condition(resource):
     resource['status'] = {
         'conditions': [{
@@ -408,3 +646,20 @@ def add_ready_condition(resource):
         'message': 'OK',
         'status': 'Ready',
     }
+
+
+def has_ready_condition(resource: dict) -> bool:
+    conditions = resource.get('status', {}).get('conditions', [])
+    for condition in conditions:
+        if condition.get("type", "") == "Ready" and condition.get("status", False):
+            return True
+    return False
+
+
+def create_secret_hook(definition: dict):
+    if definition.get("kind") != "Certificate" or not has_ready_condition(definition):
+        return
+    ns = definition.get("metadata", {}).get("namespace")
+    name = definition.get("metadata", {}).get("name")
+    K8sClientMock.resources.append(fake_secret(ns, name))
+    return definition

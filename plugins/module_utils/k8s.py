@@ -50,8 +50,7 @@ class K8sClient:
                     if not overwrite:
                         continue
                     # try merging
-                    obj = api.patch(body=obj, namespace=namespace,
-                                    content_type="application/merge-patch+json")
+                    self._patch(api, obj, namespace)
                     changed = True
                 else:
                     body = json.loads(api_ex.body)
@@ -59,6 +58,16 @@ class K8sClient:
                         api_ex.reason, api_ex.status, body.get("message"))
                     raise K8sException(message) from api_ex
         return changed
+
+    def _patch(self, api, obj: dict, namespace):
+        try:
+            api.patch(body=obj, namespace=namespace,
+                      content_type="application/merge-patch+json")
+        except ApiException as api_ex:
+            body = json.loads(api_ex.body)
+            message = "reason: %s - status: %s - message: %s" % (
+                api_ex.reason, api_ex.status, body.get("message"))
+            raise K8sException(message) from api_ex
 
     def delete(self, namespace: str, definitions: str) -> bool:
         changed = False

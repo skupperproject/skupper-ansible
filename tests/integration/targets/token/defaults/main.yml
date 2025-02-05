@@ -36,7 +36,7 @@ matrix:
     east:
       path: 'site_east_nonkube.yml'
       platform: 'linux'
-  - scenario: 'kube-podman'
+  - scenario: 'kube-podman-accesstoken'
     tags:
       - kube
       - nonkube
@@ -47,7 +47,29 @@ matrix:
     east:
       path: 'site_east_nonkube.yml'
       platform: 'podman'
-  - scenario: 'kube-kube'
+  - scenario: 'kube-podman-link'
+    token_type: 'link'
+    tags:
+      - kube
+      - nonkube
+      - podman
+    west:
+      path: 'site_west_kube.yml'
+      platform: 'kubernetes'
+    east:
+      path: 'site_east_nonkube.yml'
+      platform: 'podman'
+  - scenario: 'kube-kube-accesstoken'
+    tags:
+      - kube
+    west:
+      path: 'site_west_kube.yml'
+      platform: 'kubernetes'
+    east:
+      path: 'site_east_kube.yml'
+      platform: 'kubernetes'
+  - scenario: 'kube-kube-link'
+    token_type: 'link'
     tags:
       - kube
     west:

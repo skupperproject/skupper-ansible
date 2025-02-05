@@ -287,7 +287,8 @@ see <a class="reference internal" href="#ansible-collections-skupper-v2-resource
 <span class="c1"># Define a single resource</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Define resources for west site</span>
 <span class="w">  </span><span class="nt">skupper.v2.resource</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">def</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">west</span>
+<span class="w">    </span><span class="nt">def</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 <span class="w">      </span><span class="no">---</span>
 <span class="w">      </span><span class="no">apiVersion: skupper.io/v2alpha1</span>
 <span class="w">      </span><span class="no">kind: Site</span>

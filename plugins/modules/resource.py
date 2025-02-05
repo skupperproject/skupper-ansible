@@ -89,7 +89,8 @@ EXAMPLES = r'''
 # Define a single resource
 - name: Define resources for west site
   skupper.v2.resource:
-    def: >-
+    namespace: west
+    def: |
       ---
       apiVersion: skupper.io/v2alpha1
       kind: Site

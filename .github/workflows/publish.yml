@@ -10,6 +10,7 @@ jobs:
   test:
     uses: ./.github/workflows/test.yml
   publish:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

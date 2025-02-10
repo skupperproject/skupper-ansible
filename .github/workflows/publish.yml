@@ -7,13 +7,14 @@ on:
     tags:
       - '2.[0-9]+.[0-9]+*'
 jobs:
+  test:
+    uses: ./.github/workflows/test.yml
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           path: ./ansible_collections/skupper/v2
-      - uses: ./ansible_collections/skupper/v2/.github/workflows/test.yml
       - name: Set up Python
         uses: actions/setup-python@v2
       - name: Install ansible, ansible-lint, yamllint

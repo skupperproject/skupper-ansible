@@ -42,7 +42,7 @@ install:
 
 publish: build
 	@[ -f "$(TARBALL)" ] && true || (echo "Collection has not been built" && false)
-	@ansible-galaxy collection publish -f "$(TARBALL)"
+	@ansible-galaxy collection publish "$(TARBALL)"
 
 sanity:
 	ansible-test sanity --color --docker -v --python $(PYTHON) --requirements plugins/

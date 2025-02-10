@@ -5,8 +5,6 @@ readme: README.md
 authors:
   - Fernando Giorgetti (@fgiorgetti)
 description: Collection to manage skupper v2 sites
-license:
-  - GPL-2.0-or-later
 license_file: 'LICENSE'
 tags:
   - skupper

@@ -1,9 +1,9 @@
 name: Test the collection
 on:
   pull_request:
-    branches: [v2-dev]
+    branches: [main]
   push:
-    branches: [v2-dev]
+    branches: [main]
   workflow_call:
 jobs:
   unit-test:

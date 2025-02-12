@@ -1,8 +1,10 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<meta content="2.7.0" name="antsibull-docs" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="2.16.3" name="antsibull-docs" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>skupper.skupper.skupper_init role – Initializes a Skupper site &mdash; Ansible collections  documentation</title>
@@ -13,15 +15,11 @@
 
   
     <link rel="shortcut icon" href="../../../_static/images/Ansible-Mark-RGB_Black.png"/>
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=7f41d439"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=7f41d439"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="skupper.skupper.skupper_link role – Maintains existing links on a site" href="skupper_link_role.html" />
@@ -133,7 +131,7 @@
 <h1>skupper.skupper.skupper_init role – Initializes a Skupper site<a class="headerlink" href="#skupper-skupper-skupper-init-role-initializes-a-skupper-site" title="Link to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This role is part of the <a class="reference external" href="https://galaxy.ansible.com/ui/repo/published/skupper/skupper/">skupper.skupper collection</a> (version 1.6.0).</p>
+<p>This role is part of the <a class="reference external" href="https://galaxy.ansible.com/ui/repo/published/skupper/skupper/">skupper.skupper collection</a> (version 1.8.3).</p>
 <p>It is not included in <code class="docutils literal notranslate"><span class="pre">ansible-core</span></code>.
 To check whether it is installed, run <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">list</span></code>.</p>
 <p>To install it use: <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">install</span> <span class="pre">skupper.skupper</span></code>.</p>
@@ -180,10 +178,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_annotations" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Annotations to add to skupper pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Annotations to add to skupper pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -191,10 +187,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_bind_port" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Ingress host binding port used for incoming links from sites using interior mode.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Ingress host binding port used for incoming links from sites using interior mode.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">55671</span></code></p>
 </div></td>
 </tr>
@@ -203,10 +197,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_bind_port_edge" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Ingress host binding port used for incoming links from sites using edge mode.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Ingress host binding port used for incoming links from sites using edge mode.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">45671</span></code></p>
 </div></td>
 </tr>
@@ -215,10 +207,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_bind_port_flow_collector" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Ingress host binding port used for flow-collector and console.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Ingress host binding port used for flow-collector and console.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">8010</span></code></p>
 </div></td>
 </tr>
@@ -227,10 +217,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_config_sync_cpu" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>CPU request for config-sync pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>CPU request for config-sync pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -239,10 +227,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_config_sync_cpu_limit" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>CPU limit for config-sync pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>CPU limit for config-sync pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -251,10 +237,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_config_sync_memory" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Memory request for config-sync pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Memory request for config-sync pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -263,10 +247,8 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_config_sync_memory_limit" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Memory limit for config-sync pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Memory limit for config-sync pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -275,11 +257,9 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_console_auth" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Authentication mode for console(s).</dt><dd><p>On Kubernetes, use one of: ‘openshift’, ‘internal’, ‘unsecured’ (default “internal”).
+<td><div class="ansible-option-cell"><p>Authentication mode for console(s).
+On Kubernetes, use one of: ‘openshift’, ‘internal’, ‘unsecured’ (default “internal”).
 On Podman, use one of: ‘internal’, ‘unsecured’ (default “internal”)</p>
-</dd>
-</dl>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;internal&quot;</span></code></p>
 </div></td>
 </tr>
@@ -288,11 +268,9 @@ On Podman, use one of: ‘internal’, ‘unsecured’ (default “internal”)<
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_console_ingress" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Determines if/how console is exposed outside cluster. If not specified uses value of –ingress.</dt><dd><p>One of: [route|loadbalancer|nodeport|nginx-ingress-v1|contour-http-proxy|ingress|none].
+<td><div class="ansible-option-cell"><p>Determines if/how console is exposed outside cluster. If not specified uses value of –ingress.
+One of: [route|loadbalancer|nodeport|nginx-ingress-v1|contour-http-proxy|ingress|none].
 This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -319,10 +297,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_container_network" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Container network name to be used.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Container network name to be used.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;skupper&quot;</span></code></p>
 </div></td>
 </tr>
@@ -331,10 +307,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_controller_cpu" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>CPU request for controller pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>CPU request for controller pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -343,10 +317,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_controller_cpu_limit" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>CPU limit for controller pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>CPU limit for controller pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -355,10 +327,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_controller_ingress_host" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Host through which node is accessible when using nodeport as ingress.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Host through which node is accessible when using nodeport as ingress.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -367,10 +337,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_controller_load_balancer_ip" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Load balancer ip that will be used for controller service, if supported by cloud provider.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Load balancer ip that will be used for controller service, if supported by cloud provider.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -379,10 +347,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_controller_memory" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Memory request for controller pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Memory request for controller pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -390,10 +356,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_controller_memory_limit" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Memory limit for controller pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Memory limit for controller pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -402,10 +366,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_controller_node_selector" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Node selector to control placement of controller pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Node selector to control placement of controller pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -414,10 +376,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_controller_pod_affinity" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Pod affinity label matches to control placement of controller pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Pod affinity label matches to control placement of controller pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -426,10 +386,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_controller_pod_antiaffinity" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Pod antiaffinity label matches to control placement of controller pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Pod antiaffinity label matches to control placement of controller pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -438,10 +396,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_controller_service_annotations" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Annotations to add to skupper controller service.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Annotations to add to skupper controller service.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -449,10 +405,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_create_network_policy" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Create network policy to restrict access to skupper services exposed through this site to current pods in namespace.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Create network policy to restrict access to skupper services exposed through this site to current pods in namespace.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
 <ul class="simple">
 <li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
@@ -465,10 +419,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_enable_cluster_permissions" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Enable cluster wide permissions in order to expose deployments.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Enable cluster wide permissions in order to expose deployments.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
 <ul class="simple">
 <li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
@@ -520,10 +472,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_enable_rest_api" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Enable REST API.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Enable REST API.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
 <ul class="simple">
 <li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
@@ -536,10 +486,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_enable_service_sync" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Participate in cross-site service synchronization.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Participate in cross-site service synchronization.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
 <ul class="simple">
 <li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
@@ -552,10 +500,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_enable_skupper_events" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Enable sending Skupper events to Kubernetes.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Enable sending Skupper events to Kubernetes.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
 <ul class="simple">
 <li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">false</span></code></p></li>
@@ -568,10 +514,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_flow_collector_cpu" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>CPU request for flow collector pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>CPU request for flow collector pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -580,10 +524,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_flow_collector_cpu_limit" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>CPU limit for flow collector pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>CPU limit for flow collector pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -592,10 +534,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_flow_collector_memory" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Memory request for flow collector pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Memory request for flow collector pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -604,10 +544,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_flow_collector_memory_limit" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Memory limit for flow collector pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Memory limit for flow collector pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -616,10 +554,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_flow_collector_record_ttl" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Time after which terminated flow records are deleted, i.e. those flow records that have an end time set.</dt><dd><p>Default is 15 minutes (duration format).</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Time after which terminated flow records are deleted, i.e. those flow records that have an end time set.
+Default is 15 minutes (duration format).</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;15m&quot;</span></code></p>
 </div></td>
 </tr>
@@ -628,15 +564,13 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_ingress" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Ingress types varies based on target platform.</dt><dd><p>On Kubernetes:
+<td><div class="ansible-option-cell"><p>Ingress types varies based on target platform.
+On Kubernetes:
 You can use one of: [route|loadbalancer|nodeport|nginx-ingress-v1|contour-http-proxy|ingress|none].
 If not specified route is used when available, otherwise loadbalancer is used.
 On Podman:
 You can use one of: [external|none].
 Default is set to external if not provided.</p>
-</dd>
-</dl>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -645,10 +579,8 @@ Default is set to external if not provided.</p>
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_ingress_annotations" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Annotations to add to skupper ingress.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Annotations to add to skupper ingress.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-cell">
@@ -656,10 +588,8 @@ Default is set to external if not provided.</p>
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_ingress_bind_ips" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>IP addresses in the host machines that will be bound to the inter-router and edge ports.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>IP addresses in the host machines that will be bound to the inter-router and edge ports.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">[]</span></code></p>
 </div></td>
 </tr>
@@ -668,10 +598,8 @@ Default is set to external if not provided.</p>
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_ingress_host" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Hostname or alias by which the ingress route or proxy can be reached.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Hostname or alias by which the ingress route or proxy can be reached.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -680,11 +608,9 @@ Default is set to external if not provided.</p>
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_ingress_hosts" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Hostname or alias by which the ingress route or proxy can be reached.</dt><dd><p>Tokens can only be generated for addresses provided through ingress-hosts.
+<td><div class="ansible-option-cell"><p>Hostname or alias by which the ingress route or proxy can be reached.
+Tokens can only be generated for addresses provided through ingress-hosts.
 This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
-</dd>
-</dl>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">[]</span></code></p>
 </div></td>
 </tr>
@@ -701,10 +627,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_podman_endpoint" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Local podman endpoint to use.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Local podman endpoint to use.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -713,10 +637,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_prometheus_cpu" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>CPU request for prometheus pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>CPU request for prometheus pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -725,10 +647,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_prometheus_cpu_limit" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>CPU limit for prometheus pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>CPU limit for prometheus pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -737,10 +657,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_prometheus_memory" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Memory request for prometheus pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Memory request for prometheus pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -749,10 +667,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_prometheus_memory_limit" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Memory limit for prometheus pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Memory limit for prometheus pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -761,10 +677,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_router_cpu" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>CPU request for router pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>CPU request for router pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -782,10 +696,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_router_ingress_host" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Host through which node is accessible when using nodeport as ingress.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Host through which node is accessible when using nodeport as ingress.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -794,10 +706,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_router_load_balancer_ip" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Load balancer ip that will be used for router service, if supported by cloud provider.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Load balancer ip that will be used for router service, if supported by cloud provider.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -815,10 +725,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_router_memory" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Memory request for router pods</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Memory request for router pods
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -845,10 +753,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_router_node_selector" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Node selector to control placement of router pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Node selector to control placement of router pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -857,10 +763,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_router_pod_affinity" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Pod affinity label matches to control placement of router pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Pod affinity label matches to control placement of router pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -869,10 +773,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_router_pod_antiaffinity" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Pod antiaffinity label matches to control placement of router pods.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Pod antiaffinity label matches to control placement of router pods.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 </div></td>
 </tr>
@@ -881,10 +783,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_router_service_annotations" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Annotations to add to skupper router service.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Annotations to add to skupper router service.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-cell">
@@ -892,10 +792,8 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_routers" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Number of router replicas to start.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-cell"><p>Number of router replicas to start.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">1</span></code></p>
 </div></td>
 </tr>
@@ -904,11 +802,9 @@ This argument is only used when <code class="docutils literal notranslate"><span
 <a class="ansibleOptionLink" href="#parameter-main--skupper_init_service_sync_site_ttl" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>Time after which stale services, i.e. those whose site has not been heard from, created through service-sync are removed.</dt><dd><p>Duration format.
+<td><div class="ansible-option-cell"><p>Time after which stale services, i.e. those whose site has not been heard from, created through service-sync are removed.
+Duration format.
 This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=kubernetes</span></code>.</p>
-</dd>
-</dl>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;0&quot;</span></code></p>
 </div></td>
 </tr>

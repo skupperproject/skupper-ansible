@@ -1,8 +1,10 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<meta content="2.7.0" name="antsibull-docs" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="2.16.3" name="antsibull-docs" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>skupper.skupper.skupper_service role – Maintains existing services on a site &mdash; Ansible collections  documentation</title>
@@ -13,15 +15,11 @@
 
   
     <link rel="shortcut icon" href="../../../_static/images/Ansible-Mark-RGB_Black.png"/>
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=7f41d439"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=7f41d439"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="skupper.skupper.skupper_setup role – Configures your entire Virtual Application Network (VAN)" href="skupper_setup_role.html" />
@@ -133,7 +131,7 @@
 <h1>skupper.skupper.skupper_service role – Maintains existing services on a site<a class="headerlink" href="#skupper-skupper-skupper-service-role-maintains-existing-services-on-a-site" title="Link to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This role is part of the <a class="reference external" href="https://galaxy.ansible.com/ui/repo/published/skupper/skupper/">skupper.skupper collection</a> (version 1.6.0).</p>
+<p>This role is part of the <a class="reference external" href="https://galaxy.ansible.com/ui/repo/published/skupper/skupper/">skupper.skupper collection</a> (version 1.8.3).</p>
 <p>It is not included in <code class="docutils literal notranslate"><span class="pre">ansible-core</span></code>.
 To check whether it is installed, run <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">list</span></code>.</p>
 <p>To install it use: <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">install</span> <span class="pre">skupper.skupper</span></code>.</p>
@@ -182,14 +180,12 @@ To check whether it is installed, run <code class="code docutils literal notrans
 <a class="ansibleOptionLink" href="#parameter-main--skupper_service_list" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-cell"><dl class="simple">
-<dt>List of all desired services to exist at a given site.</dt><dd><p>Services that are defined on the list, but does not exist, will be created.
+<td><div class="ansible-option-cell"><p>List of all desired services to exist at a given site.
+Services that are defined on the list, but does not exist, will be created.
 The services that exist on the Skupper site but are not defined through this list
 will be removed.
 Changes to existing service definition will cause the service to be deleted and created.
 Targets will be maintained similarly.</p>
-</dd>
-</dl>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
@@ -197,10 +193,8 @@ Targets will be maintained similarly.</p>
 <a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/aggregate" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">
-<dt>The aggregation strategy to use. One of ‘json’ or ‘multipart’.</dt><dd><p>If specified requests to this service will be sent to all registered implementations and the responses aggregated.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>The aggregation strategy to use. One of ‘json’ or ‘multipart’.
+If specified requests to this service will be sent to all registered implementations and the responses aggregated.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
@@ -208,10 +202,8 @@ Targets will be maintained similarly.</p>
 <a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/container_name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">
-<dt>Name of the container to create on podman sites.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Name of the container to create on podman sites.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
@@ -245,10 +237,8 @@ Targets will be maintained similarly.</p>
 <a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/host_ip" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">
-<dt>Optional host ip address used to bind to the service ports.</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Optional host ip address used to bind to the service ports.
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
@@ -256,10 +246,8 @@ Targets will be maintained similarly.</p>
 <a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/host_ports" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">
-<dt>A list that maps service ports to host ports</dt><dd><p>This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>A list that maps service ports to host ports
+This argument is only used when <code class="docutils literal notranslate"><span class="pre">skupper_option_platform=podman</span></code>.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
@@ -291,10 +279,8 @@ Targets will be maintained similarly.</p>
 <a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/protocol" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">
-<dt>The protocol to be used.</dt><dd><p>One of: tcp, http or http2.</p>
-</dd>
-</dl>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>The protocol to be used.
+One of: tcp, http or http2.</p>
 <p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;tcp&quot;</span></code></p>
 </div></td>
 </tr>
@@ -327,11 +313,9 @@ Targets will be maintained similarly.</p>
 <a class="ansibleOptionLink" href="#parameter-main--skupper_service_list/targets/type" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
 <p><em class="ansible-option-versionadded">added in skupper.skupper 1.6.0</em></p>
 </div></td>
-<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><dl class="simple">
-<dt>Type of target to bind.</dt><dd><p>On Kubernetes, one of: deployment, statefulset, service, deploymentconfig.
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Type of target to bind.
+On Kubernetes, one of: deployment, statefulset, service, deploymentconfig.
 On Podman, only: host.</p>
-</dd>
-</dl>
 </div></td>
 </tr>
 </tbody>

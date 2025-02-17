@@ -263,6 +263,11 @@ class TestTokenModule(TestCase):
     def test_kube_site_ready_grant_generated(self):
         K8sClientMock.resources.append(fake_site('default', 'my-site', True))
         self.assertEqual(1, len(K8sClientMock.resources))
+        def create_hook(definition: dict):
+            if definition['kind'] == 'AccessGrant':
+                expiration = datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=15)
+                definition['status']['expirationTime'] = expiration.isoformat()
+        K8sClientMock.new_resources_hook_fns.append(create_hook)
         with self.assertRaises(AnsibleExitJson) as exit:
             set_module_args({})
             self.module.main()
@@ -270,6 +275,26 @@ class TestTokenModule(TestCase):
         self.assertEqual(2, len(K8sClientMock.resources))
         self.assertTrue(
             str(K8sClientMock.resources[1]['metadata']['name']).startswith('ansible-grant-'))
+
+    def test_kube_site_ready_grant_expired_generated(self):
+        K8sClientMock.resources.append(fake_site('default', 'my-site', True))
+        grant = fake_grant(ns='default', name='my-grant')
+        expiration = datetime.datetime.now(datetime.UTC) - datetime.timedelta(seconds=1)
+        grant['status']['expirationTime'] = expiration.isoformat()
+        K8sClientMock.resources.append(grant)
+        self.assertEqual(2, len(K8sClientMock.resources))
+        def create_hook(definition: dict):
+            if definition['kind'] == 'AccessGrant':
+                expiration = datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=15)
+                definition['status']['expirationTime'] = expiration.isoformat()
+        K8sClientMock.new_resources_hook_fns.append(create_hook)
+        with self.assertRaises(AnsibleExitJson) as exit:
+            set_module_args({})
+            self.module.main()
+        self.assertTrue(exit.exception.changed)
+        self.assertEqual(3, len(K8sClientMock.resources))
+        self.assertTrue(
+            str(K8sClientMock.resources[2]['metadata']['name']).startswith('ansible-grant-'))
 
     def test_kube_site_ready_new_named_grant(self):
         K8sClientMock.resources.append(fake_site('default', 'my-site', True))
@@ -580,7 +605,7 @@ def fake_site(ns, name, ready):
     return site
 
 
-def fake_grant(ns, name, redemptions=1, expiration="15m", ready=True):
+def fake_grant(ns, name, redemptions=1, ready=True):
     grant = {
         "apiVersion": "skupper.io/v2alpha1",
         "kind": "AccessGrant",
@@ -590,11 +615,13 @@ def fake_grant(ns, name, redemptions=1, expiration="15m", ready=True):
         },
         "spec": {
             "redemptionsAllowed": redemptions,
-            "expirationWindow": expiration,
+            "expirationWindow": "15m",
         },
     }
     if ready:
         add_ready_condition(grant)
+        now = datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=15)
+        grant['status']['expirationTime'] = now.isoformat()
     return grant
 
 

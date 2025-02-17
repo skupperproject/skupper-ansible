@@ -121,6 +121,7 @@ EXAMPLES = r'''
 '''
 
 
+import datetime
 import time
 import os
 import glob
@@ -357,7 +358,9 @@ class TokenModule:
     def can_be_redeemed(self, access_grant: dict) -> bool:
         allowed = access_grant.get("spec", {}).get("redemptionsAllowed", 0)
         redeemed = access_grant.get("status", {}).get("redemptions", 0)
-        return redeemed < allowed
+        now = datetime.datetime.now(datetime.UTC)
+        exp_time = datetime.datetime.fromisoformat(access_grant.get("status", {}).get("expirationTime", now.isoformat()))
+        return redeemed < allowed and now < exp_time
 
     def load_from_grant(self, name: str) -> str:
         k8s = K8sClient(self.kubeconfig, self.context)
@@ -385,7 +388,7 @@ class TokenModule:
                 found_not_ready = True
             if isinstance(access_grants, list):
                 access_grant, all_ready = self._load_from_list(access_grants)
-                if all_ready:
+                if all_ready or access_grant:
                     break
             time.sleep(self.retry_delay)
 
@@ -454,7 +457,7 @@ class TokenModule:
             if not has_condition(access_grant_it, "Ready"):
                 all_ready = False
                 continue
-            if not access_grant:
+            if not access_grant and self.can_be_redeemed(access_grant_it):
                 access_grant = access_grant_it
         return access_grant, all_ready
 

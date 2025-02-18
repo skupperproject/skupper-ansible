@@ -265,7 +265,8 @@ class TestTokenModule(TestCase):
         self.assertEqual(1, len(K8sClientMock.resources))
         def create_hook(definition: dict):
             if definition['kind'] == 'AccessGrant':
-                expiration = datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=15)
+                now = datetime.datetime.now(datetime.timezone.utc)
+                expiration = now + datetime.timedelta(minutes=15)
                 definition['status']['expirationTime'] = expiration.isoformat()
         K8sClientMock.new_resources_hook_fns.append(create_hook)
         with self.assertRaises(AnsibleExitJson) as exit:
@@ -279,13 +280,15 @@ class TestTokenModule(TestCase):
     def test_kube_site_ready_grant_expired_generated(self):
         K8sClientMock.resources.append(fake_site('default', 'my-site', True))
         grant = fake_grant(ns='default', name='my-grant')
-        expiration = datetime.datetime.now(datetime.UTC) - datetime.timedelta(seconds=1)
+        now = datetime.datetime.now(datetime.timezone.utc)
+        expiration = now - datetime.timedelta(seconds=1)
         grant['status']['expirationTime'] = expiration.isoformat()
         K8sClientMock.resources.append(grant)
         self.assertEqual(2, len(K8sClientMock.resources))
         def create_hook(definition: dict):
             if definition['kind'] == 'AccessGrant':
-                expiration = datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=15)
+                now = datetime.datetime.now(datetime.timezone.utc)
+                expiration = now + datetime.timedelta(minutes=15)
                 definition['status']['expirationTime'] = expiration.isoformat()
         K8sClientMock.new_resources_hook_fns.append(create_hook)
         with self.assertRaises(AnsibleExitJson) as exit:
@@ -620,7 +623,7 @@ def fake_grant(ns, name, redemptions=1, ready=True):
     }
     if ready:
         add_ready_condition(grant)
-        now = datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=15)
+        now = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=15)
         grant['status']['expirationTime'] = now.isoformat()
     return grant
 

@@ -126,6 +126,8 @@ import time
 import os
 import glob
 import copy
+import sys
+import typing as t
 from ansible_collections.skupper.v2.plugins.module_utils.k8s import (
     K8sClient,
     has_condition
@@ -148,6 +150,15 @@ try:
     import yaml
 except ImportError:
     pass
+try:
+    import dateutil
+except ImportError:
+    dateutil_found = False
+else:
+    dateutil_found = True
+
+
+_ISO8601 = sys.version_info >= (3, 11)
 
 
 def argspec():
@@ -358,8 +369,14 @@ class TokenModule:
     def can_be_redeemed(self, access_grant: dict) -> bool:
         allowed = access_grant.get("spec", {}).get("redemptionsAllowed", 0)
         redeemed = access_grant.get("status", {}).get("redemptions", 0)
-        now = datetime.datetime.now(datetime.UTC)
-        exp_time = datetime.datetime.fromisoformat(access_grant.get("status", {}).get("expirationTime", now.isoformat()))
+        now = datetime.datetime.now(datetime.timezone.utc)
+        if _ISO8601:
+            exp_time = datetime.datetime.fromisoformat(access_grant.get("status", {}).get("expirationTime", now.isoformat()))
+        elif dateutil_found:
+            exp_time = dateutil.parser.isoparse(access_grant.get("status", {}).get("expirationTime", now.isoformat()))
+        else:
+            self.module.warn("unable to parse iso8601 time, grant expiration time will not be validated")
+            exp_time = datetime.datetime.now(datetime.timezone.utc)
         return redeemed < allowed and now < exp_time
 
     def load_from_grant(self, name: str) -> str:
@@ -450,7 +467,7 @@ class TokenModule:
             format(kind + (("/" + name) if name else ""), self.namespace or "default")
         )
 
-    def _load_from_list(self, access_grants) -> tuple[dict, bool]:
+    def _load_from_list(self, access_grants) -> t.Tuple[dict, bool]:
         all_ready = True
         access_grant = {}
         for access_grant_it in access_grants:

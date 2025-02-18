@@ -111,6 +111,7 @@ EXAMPLES = r'''
 
 
 import copy
+import typing as t
 
 from ansible_collections.skupper.v2.plugins.module_utils.k8s import (
     K8sClient
@@ -212,7 +213,7 @@ class ResourceModule:
 
         self.module.exit_json(**result)
 
-    def load_from_path(self, platform) -> tuple[str, bool]:
+    def load_from_path(self, platform) -> t.Tuple[str, bool]:
         if self.params["path"].startswith(("http://", "https://")):
             try:
                 fetch_res, fetch_info = fetch_url(

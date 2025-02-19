@@ -1,6 +1,7 @@
 import io
 import os
 import tempfile
+import typing as t
 from unittest import TestCase
 from unittest.mock import patch
 from kubernetes import config
@@ -398,7 +399,7 @@ class TestResourceModule(TestCase):
         else:
             raise ApiException(status=404)
 
-    def fetch_url(self, *args, **kwargs) -> tuple[io.IOBase, dict]:
+    def fetch_url(self, *args, **kwargs) -> t.Tuple[io.IOBase, dict]:
         url = kwargs.get("url", "")
         if not url or not str(url).endswith(".yaml"):
             return None, {"status": 404, "msg": "resource not found"}

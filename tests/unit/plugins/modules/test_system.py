@@ -2,6 +2,7 @@ import base64
 import os
 import shutil
 import tempfile
+import typing as t
 from unittest import TestCase
 from unittest.mock import patch
 from ansible.module_utils import basic
@@ -107,7 +108,7 @@ class TestSystemModule(TestCase):
         shutil.rmtree(os.path.join(self.temphome, "bundles"),
                       ignore_errors=True)
 
-    def run_command(self, module, args) -> tuple[int, str, str]:
+    def run_command(self, module, args) -> t.Tuple[int, str, str]:
         self._run_commands.append(args)
         if "-b" in args:
             bundles_home = os.path.join(self.temphome, "bundles")

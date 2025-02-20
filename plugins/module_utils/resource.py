@@ -34,6 +34,8 @@ def load(path: str, platform: str, maxdepth=3) -> str:
     for filename in yamls:
         with open(filename, "r", encoding="utf-8") as stream:
             for obj in yaml.safe_load_all(stream):
+                if not isinstance(obj, dict):
+                    continue
                 if platform not in ("podman", "docker", "linux") or allowed(obj):
                     objects.append(obj)
     definitions = yaml.safe_dump_all(objects)

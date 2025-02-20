@@ -1,5 +1,6 @@
 import io
 import os
+import shutil
 import tempfile
 import typing as t
 from unittest import TestCase
@@ -82,7 +83,12 @@ class K8sMock():
 
 class TestResourceModule(TestCase):
 
+    def tearDown(self):
+        for d in self.tempDirs:
+            shutil.rmtree(d)
+
     def setUp(self):
+        self.tempDirs = []
         self.store = {}
         self.k8s = K8sMock()
         self.mock_module = patch.multiple(basic.AnsibleModule,
@@ -176,7 +182,10 @@ class TestResourceModule(TestCase):
             }
         ]
         for subdir in [False, True]:
-            path = tempfile.mkdtemp()
+            home = os.path.expanduser("~")
+            path = tempfile.mkdtemp(dir=home)
+            self.tempDirs.append(path)
+            path_param = "~/{}".format(path[len(home)+1:])
             store_path = path
             if subdir:
                 store_path = os.path.join(path, "subdir")
@@ -186,7 +195,7 @@ class TestResourceModule(TestCase):
                 f.write(sample_site_def)
             for test_case in test_cases:
                 set_module_args({
-                    'path': path,
+                    'path': path_param,
                     'state': test_case.get("state", ""),
                     'platform': 'podman',
                 })

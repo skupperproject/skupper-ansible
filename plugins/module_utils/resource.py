@@ -16,6 +16,7 @@ __metaclass__ = type
 
 def load(path: str, platform: str, maxdepth=3) -> str:
     yamls = []
+    path = os.path.expanduser(path)
     if os.path.isdir(path):
         for (dirpath, dirnames, filenames) in os.walk(path):
             if dirpath == path:

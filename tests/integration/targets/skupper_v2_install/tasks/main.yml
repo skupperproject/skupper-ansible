@@ -14,7 +14,9 @@
     state: present
     src: "{{ skupper_v2_url }}"
     kubeconfig: "{{ kubeconfig }}"
-  when: skupper_namespace.resources | length == 0
+  when:
+    - skupper_v2_install | bool
+    - skupper_namespace.resources | length == 0
 - name: Waiting on controller to be ready
   kubernetes.core.k8s_info:
     api_version: apps/v1
@@ -26,4 +28,6 @@
     wait_condition:
       type: Available
       status: true
-  when: skupper_namespace.resources | length == 0
+  when:
+    - skupper_v2_install | bool
+    - skupper_namespace.resources | length == 0

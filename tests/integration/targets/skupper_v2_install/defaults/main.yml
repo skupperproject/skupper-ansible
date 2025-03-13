@@ -1,1 +1,2 @@
 skupper_v2_url: https://github.com/skupperproject/skupper/releases/download/v2-dev-release/skupper-cluster-scope.yaml
+skupper_v2_install: true

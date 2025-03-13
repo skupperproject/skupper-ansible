@@ -1,3 +1,4 @@
 ---
 kubeconfig: ""
 # cli_image: ""
+# skupper_v2_install: false

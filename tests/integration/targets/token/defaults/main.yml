@@ -3,6 +3,7 @@ token_image: "{{ cli_image | default('quay.io/skupper/cli:v2-dev') }}"
 namespace: "" # noqa: var-naming
 namespace_west: token-west-testing
 namespace_east: token-east-testing
+backend_container_engine: podman
 kube_verify_command: kubectl -n token-west-testing exec deploy/curl -- curl -s http://backend:8080/api/hello
 nonkube_verify_command: curl -s http://0.0.0.0:18080/api/hello
 matrix:

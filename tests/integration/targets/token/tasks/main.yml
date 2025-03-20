@@ -14,6 +14,17 @@
         ports:
           - 19090:8080
         remove: true
+      when: backend_container_engine == 'podman'
+    - name: Run backend as a docker container bound to 19090
+      tags: always
+      community.docker.docker_container:
+        name: token_testing_backend
+        image: quay.io/skupper/hello-world-backend
+        state: started
+        ports:
+          - 19090:8080
+        auto_remove: true
+      when: backend_container_engine == 'docker'
     - name: "Run token module tests for all scenarios"
       tags: always
       with_items:
@@ -28,3 +39,10 @@
       containers.podman.podman_container:
         name: token_testing_backend
         state: absent
+      when: backend_container_engine == 'podman'
+    - name: Delete the backend docker container
+      tags: always
+      community.docker.docker_container:
+        name: token_testing_backend
+        state: absent
+      when: backend_container_engine == 'docker'

@@ -5,5 +5,9 @@
     namespace: "{{ namespace }}"
     image: "{{ system_image }}"
   register: _system
-- name: Validate namespace stopped
-  ansible.builtin.include_tasks: validate-namespace-stopped.yml
+- name: Assert stop action performed successfully
+  ansible.builtin.assert:
+    that:
+      - _system.changed
+- name: Validate namespace is deleted
+  ansible.builtin.include_tasks: validate-namespace-deleted.yml

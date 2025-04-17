@@ -28,6 +28,11 @@
 - name: Remove namespace files
   ansible.builtin.include_role:
     name: delete_nonkube_namespace
+- name: Create the directory site bundle directory
+  ansible.builtin.file:
+    path: "{{ '/tmp/' + site_name + '-bundle' }}"
+    state: directory
+    mode: '0755'
 - name: Extract the bundle tarball file
   ansible.builtin.unarchive:
     src: "{{ '/tmp/' + site_name + '-bundle.tar.gz' }}"

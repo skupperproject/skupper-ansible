@@ -13,7 +13,7 @@
 - name: Removing nonkube namespaces
   tags: always
   skupper.v2.system:
-    action: teardown
+    action: stop
     platform: podman
     namespace: "{{ ns }}"
   loop:

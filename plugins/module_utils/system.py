@@ -116,31 +116,6 @@ def systemd_create(module: AnsibleModule, service_name: str, service_file: str) 
     return changed
 
 
-def start_service(module: AnsibleModule, namespace: str) -> bool:
-    return _systemd_command(module, namespace, "start")
-
-
-def stop_service(module: AnsibleModule, namespace: str) -> bool:
-    return _systemd_command(module, namespace, "stop")
-
-
-def _systemd_command(module: AnsibleModule, namespace: str, command: str) -> bool:
-    name = default_service_name(namespace)
-    base_command = ["systemctl"]
-    if os.getuid() != 0:
-        base_command.append("--user")
-    system_status = base_command + ["status", name]
-    pre_status, out, err = run_command(module, system_status)
-    system_command = base_command + [command, name]
-    code, out, err = run_command(module, system_command)
-    if code != 0:
-        module.warn(
-            "error executing %s command for service '%s': %s" % (command, name, err))
-    post_status, out, err = run_command(module, system_status)
-    changed = code == 0 and pre_status != post_status
-    return changed
-
-
 def default_service_name(namespace: str = "default") -> str:
     return "skupper-%s.service" % (namespace)
 

@@ -50,8 +50,6 @@ class TestSystemModule(TestCase):
         self._create_service_ns = ""
         self._create_service_ret = True
         self._create_delete_ns = ""
-        self._start_service_ns = ""
-        self._stop_service_ns = ""
         self.mock_module = patch.multiple(basic.AnsibleModule,
                                           exit_json=exit_json,
                                           fail_json=fail_json,
@@ -72,10 +70,6 @@ class TestSystemModule(TestCase):
             'ansible_collections.skupper.v2.plugins.module_utils.system.create_service', new=self.create_service)
         self.mock_delete_service = patch(
             'ansible_collections.skupper.v2.plugins.module_utils.system.delete_service', new=self.delete_service)
-        self.mock_start_service = patch(
-            'ansible_collections.skupper.v2.plugins.module_utils.system.start_service', new=self.start_service)
-        self.mock_stop_service = patch(
-            'ansible_collections.skupper.v2.plugins.module_utils.system.stop_service', new=self.stop_service)
         self.mock_runas = patch(
             'ansible_collections.skupper.v2.plugins.module_utils.system.runas', new=self.runas)
         self.mock_userns = patch(
@@ -84,16 +78,12 @@ class TestSystemModule(TestCase):
         self.mock_run_command.start()
         self.mock_create_service.start()
         self.mock_delete_service.start()
-        self.mock_start_service.start()
-        self.mock_stop_service.start()
         self.mock_runas.start()
         self.mock_userns.start()
         self.addCleanup(self.mock_data_home.stop)
         self.addCleanup(self.mock_run_command.stop)
         self.addCleanup(self.mock_create_service.stop)
         self.addCleanup(self.mock_delete_service.stop)
-        self.addCleanup(self.mock_start_service.stop)
-        self.addCleanup(self.mock_stop_service.stop)
         self.addCleanup(self.mock_runas.stop)
         self.addCleanup(self.mock_userns.stop)
         try:
@@ -110,10 +100,10 @@ class TestSystemModule(TestCase):
 
     def run_command(self, module, args) -> t.Tuple[int, str, str]:
         self._run_commands.append(args)
-        if "-b" in args:
+        if "generate-bundle" in args:
             bundles_home = os.path.join(self.temphome, "bundles")
             os.makedirs(bundles_home, exist_ok=True)
-            if "bundle" in args:
+            if "shell-script" in args:
                 bundle = os.path.join(
                     bundles_home, "skupper-install-my-site.sh")
                 with open(bundle, "w", encoding='utf-8') as f:
@@ -149,18 +139,6 @@ class TestSystemModule(TestCase):
         self._delete_service_ns = namespace
         return True
 
-    def start_service(self, module, namespace) -> bool:
-        if self._start_service_ns == namespace:
-            return False
-        self._start_service_ns = namespace
-        return True
-
-    def stop_service(self, module, namespace) -> bool:
-        if self._stop_service_ns == namespace:
-            return False
-        self._stop_service_ns = namespace
-        return True
-
     def runas(self, engine) -> str:
         if engine == "podman":
             return "1000:1000"
@@ -189,14 +167,14 @@ class TestSystemModule(TestCase):
                 set_module_args(input)
                 self.module.main()
 
-    def test_action_setup_no_resources(self):
+    def test_action_start_no_resources(self):
         with self.assertRaises(AnsibleFailJson) as ex:
             set_module_args({})
             self.module.main()
         self.assertTrue(str(ex.exception.__str__()).__contains__(
             "no resources found"), ex.exception.msg)
 
-    def test_action_setup_already_exists(self):
+    def test_action_start_already_exists(self):
         for ns in ["default", "west"]:
             os.makedirs(os.path.join(self.temphome,
                         "namespaces", ns, "runtime"))
@@ -205,35 +183,35 @@ class TestSystemModule(TestCase):
                 self.module.main()
         self.assertFalse(exit.exception.changed)
 
-    def test_action_setup(self):
+    def test_action_start(self):
         test_cases = [
             {
-                "name": "setup-minimal",
+                "name": "start-minimal",
             }, {
-                "name": "setup-default",
+                "name": "start-default",
                 "input": {
                     "namespace": "default",
                 },
             }, {
-                "name": "setup-default-docker",
+                "name": "start-default-docker",
                 "input": {
                     "namespace": "default",
                     "platform": "docker",
                 },
             }, {
-                "name": "setup-west-podman",
+                "name": "start-west-podman",
                 "input": {
                     "namespace": "west",
                     "engine": "podman",
                 },
             }, {
-                "name": "setup-west-linux",
+                "name": "start-west-linux",
                 "input": {
                     "namespace": "west",
                     "platform": "linux",
                 },
             }, {
-                "name": "setup-east-docker",
+                "name": "start-east-docker",
                 "input": {
                     "namespace": "west",
                     "platform": "docker",
@@ -266,7 +244,7 @@ class TestSystemModule(TestCase):
             first_command = self._run_commands[0]
             self.assertEqual(expectedEngine, first_command[0])
             self.assertIn(image, first_command)
-            self.assertEqual(["-n", namespace, "system", "setup"],
+            self.assertEqual(["-n", namespace, "system", "start"],
                              first_command[len(first_command) - 4:])
             self.assertIn("SKUPPER_PLATFORM={}".format(
                 platform), first_command)
@@ -301,19 +279,18 @@ class TestSystemModule(TestCase):
             first_command = self._run_commands[0]
             self.assertEqual(expectedEngine, first_command[0])
             self.assertIn("quay.io/skupper/cli:v2-dev", first_command)
-            self.assertEqual(["-n", "default", "system", "setup",
-                             "-f"], first_command[len(first_command) - 5:])
+            self.assertEqual(["-n", "default", "system", "reload"], first_command[len(first_command) - 4:])
             self.assertIn("SKUPPER_PLATFORM=podman", first_command)
             self.assertIn("1000:1000", first_command)
             self.assertIn("--userns=keep-id", first_command)
             self.assertIn("{}:/output:z".format(self.temphome), first_command)
             self.assertIn(
                 "{}/namespaces/default/input/resources:/input:z".format(self.temphome), first_command)
-            self.assertNotIn("-b", first_command)
+            self.assertNotIn("--type", first_command)
             self.assertEqual("default", self._create_service_ns)
 
-    def test_action_bundle_tarball(self):
-        for strategy in ["bundle", "tarball"]:
+    def test_action_shellscript_tarball(self):
+        for strategy in ["shell-script", "tarball"]:
             self._run_commands = []
             self.create_resources("default")
             with self.assertRaises(AnsibleExitJson) as exit:
@@ -325,8 +302,9 @@ class TestSystemModule(TestCase):
             first_command = self._run_commands[0]
             self.assertEqual(expectedEngine, first_command[0])
             self.assertIn("quay.io/skupper/cli:v2-dev", first_command)
-            self.assertEqual(["-n", "default", "system", "setup",
-                             "-b", strategy], first_command[len(first_command) - 6:])
+            self.assertEqual(["-n", "default", "system", "generate-bundle",
+                             "--type", strategy, "skupper-install-my-site"],
+                             first_command[len(first_command) - 7:])
             self.assertIn("SKUPPER_PLATFORM=podman", first_command)
             self.assertIn("1000:1000", first_command)
             self.assertIn("--userns=keep-id", first_command)
@@ -341,7 +319,7 @@ class TestSystemModule(TestCase):
             self.assertEqual(exit.exception.bundle.encode(),
                              base64.b64encode(expectedBundleContent.encode()))
 
-    def test_action_teardown(self):
+    def test_action_stop(self):
         test_cases = [{
             "name": "not_found",
         }, {
@@ -369,7 +347,7 @@ class TestSystemModule(TestCase):
                     f.write("platform: {}".format(platform))
             with self.assertRaises(AnsibleExitJson) as exit:
                 input = {
-                    "action": "teardown",
+                    "action": "stop",
                     "namespace": namespace,
                     "platform": platform,
                 }
@@ -385,55 +363,3 @@ class TestSystemModule(TestCase):
                 first_command = self._run_commands[0]
                 self.assertEqual(expected_command,
                                  first_command, first_command)
-
-    def test_action_start(self):
-        test_cases = [{
-            "namespace": "default",
-            "expectChanged": True,
-        }, {
-            "namespace": "default",
-            "expectChanged": False,
-        }, {
-            "namespace": "west",
-            "expectChanged": True,
-        }, {
-            "namespace": "west",
-            "expectChanged": False,
-        }]
-        for tc in test_cases:
-            namespace = tc.get("namespace", "default")
-            expect_changed = tc.get("expectChanged", False)
-            with self.assertRaises(AnsibleExitJson) as exit:
-                input = {
-                    "action": "start",
-                    "namespace": namespace,
-                }
-                set_module_args(input)
-                self.module.main()
-            self.assertEqual(expect_changed, exit.exception.changed)
-
-    def test_action_stop(self):
-        test_cases = [{
-            "namespace": "default",
-            "expectChanged": True,
-        }, {
-            "namespace": "default",
-            "expectChanged": False,
-        }, {
-            "namespace": "west",
-            "expectChanged": True,
-        }, {
-            "namespace": "west",
-            "expectChanged": False,
-        }]
-        for tc in test_cases:
-            namespace = tc.get("namespace", "default")
-            expect_changed = tc.get("expectChanged", False)
-            with self.assertRaises(AnsibleExitJson) as exit:
-                input = {
-                    "action": "stop",
-                    "namespace": namespace,
-                }
-                set_module_args(input)
-                self.module.main()
-            self.assertEqual(expect_changed, exit.exception.changed)

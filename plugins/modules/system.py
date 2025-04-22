@@ -16,8 +16,8 @@ version_added: "2.0.0"
 description:
     - Manages the lifecycle of non-kube namespaces.
     - Executes the provided action for a non-kube site definition on a given namespace
-    - It can be used to setup, reload, start, stop and teardown a namespace definition
-    - It has the ability to produce a self-extracting or a tarball bundle
+    - It can be used to start, reload and stop a namespace definition
+    - It has the ability to produce site bundles (tarball or a self-extracting shell-script)
     - Runs with podman (default) or docker binaries
     - Only valid for platforms "podman", "docker" and "linux"
 
@@ -25,16 +25,14 @@ options:
     action:
         description:
             - The action to perform against a given namespace definition
-            - V(setup) - a new site is initialized and started (no-op if namespace is already initialized)
+            - V(start) - a new site is initialized and started (no-op if namespace is already initialized)
             - V(reload) - a site is created or re-initialized (Certificate Authorities are preserved)
-            - V(start) - components are started
-            - V(stop) - components are stopped
-            - V(teardown) - stops and removes a site definition
-            - V(bundle) - generates a self-extracting bundle
+            - V(stop) - stops and removes a site definition
+            - V(shell-script) - generates a self-extracting bundle
             - V(tarball) - generates a tarball bundle
         type: str
-        choices: ["setup", "reload", "start", "stop", "teardown", "bundle", "tarball"]
-        default: setup
+        choices: ["start", "reload", "stop", "shell-script", "tarball"]
+        default: start
     image:
         description:
             - The image used to initialize your site or bundle
@@ -67,16 +65,16 @@ path:
     type: str
 bundle:
     description:
-        - Base 64 encoded content of the generated bundle or tarball
-        - Only populated when action is bundle or tarball
+        - Base 64 encoded content of the generated shell-script or tarball bundle
+        - Only populated when action is shell-script or tarball
     returned: success
     type: str
 links:
     description:
-        - Static links generated for non-kube sites with a RouterAccess
+        - Static links generated for non-kube sites with link access enabled (RouterAccess provided)
         - Dictionary keys are the target hostname or ip of the link
-        - Each value has a valid link that can be applied to another site
-    returned: when platform in ('podman', 'docker', 'linux') and a RouterAccess is defined
+        - Each value has a valid link that can be applied to another site using the M(skupper.v2.resource) module
+    returned: when platform in ('podman', 'docker', 'linux') and link access enabled (RouterAccess provided)
     type: dict
     sample: {'my.host': '---\napiVersion: skupper.io/v2alpha1...'}
 """
@@ -85,6 +83,7 @@ EXAMPLES = r'''
 # Initializes the default namespace based on existing resources
 - name: Initialize the default namespace using podman
   skupper.v2.system:
+    action: start
 
 # Initializes the west namespace using docker
 - name: Initialize the west namespace using docker
@@ -93,7 +92,7 @@ EXAMPLES = r'''
     namespace: west
 
 # Reloads the definitions for the west namespace
-- name: Initialize the west namespace
+- name: Reloads the west namespace definition
   skupper.v2.system:
     action: reload
     namespace: west
@@ -101,25 +100,13 @@ EXAMPLES = r'''
 # Removes a site definition from the west namespace
 - name: Removes the west namespace
   skupper.v2.system:
-    action: teardown
+    action: stop
     namespace: west
 
-# Stops the skupper components on a given namespace
-- name: Stops the components on the east namespace
+# Produces a self-extracting shell-script bundle based on the default namespace definitions
+- name: Generate a self-extracting shell-script bundle based on the default namespace definitions
   skupper.v2.system:
-    action: stop
-    namespace: east
-
-# Starts the skupper components on a given namespace
-- name: Starts the components on the east namespace
-  skupper.v2.system:
-    action: start
-    namespace: east
-
-# Produces a self-extracting site bundle based on the default namespace definitions
-- name: Generate a self-extracting site bundle
-  skupper.v2.system:
-    action: bundle
+    action: shell-script
     register: result
 
 # Produces a tarball bundle based on the west namespace definitions
@@ -141,9 +128,7 @@ from ansible_collections.skupper.v2.plugins.module_utils.system import (
     runas,
     userns,
     create_service,
-    delete_service,
-    start_service,
-    stop_service
+    delete_service
 )
 from ansible_collections.skupper.v2.plugins.module_utils.resource import (
     load,
@@ -173,9 +158,9 @@ except ImportError:
 
 def argspec():
     spec = copy.deepcopy(common_args())
-    spec["action"] = dict(type="str", default="setup",
-                          choices=["setup", "reload", "teardown",
-                                   "stop", "start", "bundle", "tarball"])
+    spec["action"] = dict(type="str", default="start",
+                          choices=["start", "reload", "stop",
+                                   "shell-script", "tarball"])
     spec["image"] = dict(type="str",
                          default="quay.io/skupper/cli:v2-dev")
     spec["engine"] = dict(type="str", default="podman",
@@ -213,27 +198,25 @@ class SystemModule:
         path = namespace_home(self.namespace)
         # pylint: disable=unnecessary-lambda
         changed = {
-            'setup': lambda: self.setup(),
-            'reload': lambda: self.setup(force=True),
-            'teardown': lambda: self.teardown(self.namespace),
-            'start': lambda: start_service(self.module, self.namespace),
-            'stop': lambda: stop_service(self.module, self.namespace),
-            'bundle': lambda: self.setup(strategy="bundle"),
-            'tarball': lambda: self.setup(strategy="tarball")
+            'start': lambda: self.start(),
+            'reload': lambda: self.start(force=True),
+            'stop': lambda: self.stop(self.namespace),
+            'shell-script': lambda: self.start(strategy="shell-script"),
+            'tarball': lambda: self.start(strategy="tarball")
         }[self._action]()
 
         # handling bundle return
-        if changed and self._action in ("bundle", "tarball"):
+        if changed and self._action in ("shell-script", "tarball"):
             site_name = self._read_site_name()
             path = ""
             if site_name:
-                ext = "sh" if self._action == "bundle" else "tar.gz"
+                ext = "sh" if self._action == "shell-script" else "tar.gz"
                 file_name = "skupper-install-%s.%s" % (site_name, ext)
                 path = os.path.join(data_home(), "bundles", file_name)
                 with open(path, 'rb') as bundle:
                     bundle_encoded = base64.b64encode(bundle.read())
                     result['bundle'] = bundle_encoded.decode('utf-8')
-        if self._action in ("setup", "reload"):
+        if self._action in ("start", "reload"):
             result["links"] = self.load_static_links()
 
         # preparing response
@@ -245,7 +228,7 @@ class SystemModule:
     def params(self):
         return self.module.params
 
-    def setup(self, force: bool = False, strategy: str = "") -> bool:
+    def start(self, force: bool = False, strategy: str = "") -> bool:
         self.module.debug("namespace: %s" % (self.namespace))
         runtime_dir = os.path.join(namespace_home(self.namespace), "runtime")
         if not strategy and os.path.isdir(runtime_dir) and not force:
@@ -258,8 +241,8 @@ class SystemModule:
                 "no resources found at: {}".format(resources_home_dir))
 
         command = [
-            self._engine, "run", "--rm", "--name",
-            "skupper-setup-%d" % (int(time.time())),
+            self._engine, "run", "--rm", "--pull", "always", "--name",
+            "skupper-start-%d" % (int(time.time())),
             "--network", "host", "--security-opt", "label=disable", "-u",
             runas(self._engine), "--userns=%s" % (userns(self._engine))
         ]
@@ -268,15 +251,18 @@ class SystemModule:
         for var, val in env(self.platform, self._engine).items():
             command.extend(["-e", "%s=%s" % (var, val)])
         command.append(self._image)
-        command.extend(["-n", self.namespace, "system", "setup"])
+        command.extend(["-n", self.namespace, "system"])
         if strategy:
-            command.extend(["-b", strategy])
+            bundle_name = "skupper-install-{}".format(self._read_site_name())
+            command.extend(["generate-bundle", "--type", strategy, bundle_name])
         elif force:
-            command.append("-f")
+            command.append("reload")
+        else:
+            command.append("start")
 
         code, out, err = run_command(self.module, command)
         if code != 0:
-            msg = "error setting up '%s' namespace: %s" % (
+            msg = "error performing system action on '%s' namespace: %s" % (
                 self.namespace, out or err)
             self.module.fail_json(msg)
             return False
@@ -286,7 +272,7 @@ class SystemModule:
 
         return True
 
-    def teardown(self, namespace: str = "default") -> bool:
+    def stop(self, namespace: str = "default") -> bool:
         internal_dir = os.path.join(namespace_home(namespace), "internal")
         changed = False
         if not os.path.isdir(internal_dir):

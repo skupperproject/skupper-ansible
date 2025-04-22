@@ -16,22 +16,20 @@
   environment:
     DBUS_SESSION_BUS_ADDRESS: "{{ 'unix:path=/run/user/' + ansible_real_user_id | string + '/bus' }}"
   block:
-    - name: Validate system setup action
-      ansible.builtin.include_tasks: action-setup.yml
+    - name: Validate system start action
+      ansible.builtin.include_tasks: action-start.yml
     - name: Validate system reload action
       ansible.builtin.include_tasks: action-reload.yml
     - name: Validate system stop action
       ansible.builtin.include_tasks: action-stop.yml
-    - name: Validate system start action
-      ansible.builtin.include_tasks: action-start.yml
-    - name: Validate system teardown action
-      ansible.builtin.include_tasks: action-teardown.yml
-    - name: Validate system bundle action
-      ansible.builtin.include_tasks: action-bundle.yml
+    - name: Validate system shell-script action
+      ansible.builtin.include_tasks: action-shell-script.yml
+    - name: Validate system tarball action
+      ansible.builtin.include_tasks: action-tarball.yml
   always:
-    - name: Run the teardown action
+    - name: Run the stop action
       skupper.v2.system:
-        action: teardown
+        action: stop
         namespace: "{{ namespace }}"
       failed_when: false
     - name: Remove namespace files

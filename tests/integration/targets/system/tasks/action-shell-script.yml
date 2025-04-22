@@ -6,7 +6,7 @@
     platform: podman
 - name: Run the bundle action
   skupper.v2.system:
-    action: bundle
+    action: shell-script
     namespace: "{{ namespace }}"
     image: "{{ system_image }}"
   register: _system

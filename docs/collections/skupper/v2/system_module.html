@@ -152,8 +152,8 @@ see <a class="reference internal" href="#ansible-collections-skupper-v2-system-m
 <ul class="simple">
 <li><p>Manages the lifecycle of non-kube namespaces.</p></li>
 <li><p>Executes the provided action for a non-kube site definition on a given namespace</p></li>
-<li><p>It can be used to setup, reload, start, stop and teardown a namespace definition</p></li>
-<li><p>It has the ability to produce a self-extracting or a tarball bundle</p></li>
+<li><p>It can be used to start, reload and stop a namespace definition</p></li>
+<li><p>It has the ability to produce site bundles (tarball or a self-extracting shell-script)</p></li>
 <li><p>Runs with podman (default) or docker binaries</p></li>
 <li><p>Only valid for platforms “podman”, “docker” and “linux”</p></li>
 </ul>
@@ -180,21 +180,17 @@ see <a class="reference internal" href="#ansible-collections-skupper-v2-system-m
 <a class="ansibleOptionLink" href="#parameter-action" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
 <td><div class="ansible-option-cell"><p>The action to perform against a given namespace definition</p>
-<p><code class="ansible-value docutils literal notranslate"><span class="pre">setup</span></code> - a new site is initialized and started (no-op if namespace is already initialized)</p>
+<p><code class="ansible-value docutils literal notranslate"><span class="pre">start</span></code> - a new site is initialized and started (no-op if namespace is already initialized)</p>
 <p><code class="ansible-value docutils literal notranslate"><span class="pre">reload</span></code> - a site is created or re-initialized (Certificate Authorities are preserved)</p>
-<p><code class="ansible-value docutils literal notranslate"><span class="pre">start</span></code> - components are started</p>
-<p><code class="ansible-value docutils literal notranslate"><span class="pre">stop</span></code> - components are stopped</p>
-<p><code class="ansible-value docutils literal notranslate"><span class="pre">teardown</span></code> - stops and removes a site definition</p>
-<p><code class="ansible-value docutils literal notranslate"><span class="pre">bundle</span></code> - generates a self-extracting bundle</p>
+<p><code class="ansible-value docutils literal notranslate"><span class="pre">stop</span></code> - stops and removes a site definition</p>
+<p><code class="ansible-value docutils literal notranslate"><span class="pre">shell-script</span></code> - generates a self-extracting bundle</p>
 <p><code class="ansible-value docutils literal notranslate"><span class="pre">tarball</span></code> - generates a tarball bundle</p>
 <p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
 <ul class="simple">
-<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">&quot;setup&quot;</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">&quot;start&quot;</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
 <li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;reload&quot;</span></code></p></li>
-<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;start&quot;</span></code></p></li>
 <li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;stop&quot;</span></code></p></li>
-<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;teardown&quot;</span></code></p></li>
-<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;bundle&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;shell-script&quot;</span></code></p></li>
 <li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;tarball&quot;</span></code></p></li>
 </ul>
 </div></td>
@@ -264,6 +260,7 @@ see <a class="reference internal" href="#ansible-collections-skupper-v2-system-m
 <div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initializes the default namespace based on existing resources</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Initialize the default namespace using podman</span>
 <span class="w">  </span><span class="nt">skupper.v2.system</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">start</span>
 
 <span class="c1"># Initializes the west namespace using docker</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Initialize the west namespace using docker</span>
@@ -272,7 +269,7 @@ see <a class="reference internal" href="#ansible-collections-skupper-v2-system-m
 <span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">west</span>
 
 <span class="c1"># Reloads the definitions for the west namespace</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Initialize the west namespace</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reloads the west namespace definition</span>
 <span class="w">  </span><span class="nt">skupper.v2.system</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reload</span>
 <span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">west</span>
@@ -280,25 +277,13 @@ see <a class="reference internal" href="#ansible-collections-skupper-v2-system-m
 <span class="c1"># Removes a site definition from the west namespace</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Removes the west namespace</span>
 <span class="w">  </span><span class="nt">skupper.v2.system</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">teardown</span>
+<span class="w">    </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stop</span>
 <span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">west</span>
 
-<span class="c1"># Stops the skupper components on a given namespace</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Stops the components on the east namespace</span>
+<span class="c1"># Produces a self-extracting shell-script bundle based on the default namespace definitions</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate a self-extracting shell-script bundle based on the default namespace definitions</span>
 <span class="w">  </span><span class="nt">skupper.v2.system</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stop</span>
-<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">east</span>
-
-<span class="c1"># Starts the skupper components on a given namespace</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Starts the components on the east namespace</span>
-<span class="w">  </span><span class="nt">skupper.v2.system</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">start</span>
-<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">east</span>
-
-<span class="c1"># Produces a self-extracting site bundle based on the default namespace definitions</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate a self-extracting site bundle</span>
-<span class="w">  </span><span class="nt">skupper.v2.system</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bundle</span>
+<span class="w">    </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">shell-script</span>
 <span class="w">    </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">result</span>
 
 <span class="c1"># Produces a tarball bundle based on the west namespace definitions</span>
@@ -324,8 +309,8 @@ see <a class="reference internal" href="#ansible-collections-skupper-v2-system-m
 <div class="ansibleOptionAnchor" id="return-bundle"></div><p class="ansible-option-title" id="ansible-collections-skupper-v2-system-module-return-bundle"><strong>bundle</strong></p>
 <a class="ansibleOptionLink" href="#return-bundle" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Base 64 encoded content of the generated bundle or tarball</p>
-<p>Only populated when action is bundle or tarball</p>
+<td><div class="ansible-option-cell"><p>Base 64 encoded content of the generated shell-script or tarball bundle</p>
+<p>Only populated when action is shell-script or tarball</p>
 <p class="ansible-option-line"><strong class="ansible-option-returned-bold">Returned:</strong> success</p>
 </div></td>
 </tr>
@@ -333,10 +318,10 @@ see <a class="reference internal" href="#ansible-collections-skupper-v2-system-m
 <div class="ansibleOptionAnchor" id="return-links"></div><p class="ansible-option-title" id="ansible-collections-skupper-v2-system-module-return-links"><strong>links</strong></p>
 <a class="ansibleOptionLink" href="#return-links" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">dictionary</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Static links generated for non-kube sites with a RouterAccess</p>
+<td><div class="ansible-option-cell"><p>Static links generated for non-kube sites with link access enabled (RouterAccess provided)</p>
 <p>Dictionary keys are the target hostname or ip of the link</p>
-<p>Each value has a valid link that can be applied to another site</p>
-<p class="ansible-option-line"><strong class="ansible-option-returned-bold">Returned:</strong> when platform in (‘podman’, ‘docker’, ‘linux’) and a RouterAccess is defined</p>
+<p>Each value has a valid link that can be applied to another site using the <a class="reference internal" href="resource_module.html#ansible-collections-skupper-v2-resource-module"><span class="std std-ref">skupper.v2.resource</span></a> module</p>
+<p class="ansible-option-line"><strong class="ansible-option-returned-bold">Returned:</strong> when platform in (‘podman’, ‘docker’, ‘linux’) and link access enabled (RouterAccess provided)</p>
 <p class="ansible-option-line ansible-option-sample"><strong class="ansible-option-sample-bold">Sample:</strong> <code class="ansible-option-sample docutils literal notranslate"><span class="pre">{&quot;my.host&quot;:</span> <span class="pre">&quot;---\\napiVersion:</span> <span class="pre">skupper.io/v2alpha1...&quot;}</span></code></p>
 </div></td>
 </tr>

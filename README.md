@@ -96,35 +96,41 @@ podman run --name backend -d --rm -p 127.0.0.1:9090:8080 quay.io/skupper/hello-w
 
 Tasks to run west and east sites using podman:
 
+(resources are available at https://github.com/fgiorgetti/skupper-example-yaml/tree/v2-nonkube-resources)
+
 ```
-- name: Creating Skupper resources on west namespace
-  skupper.v2.resource:
-    path: /home/fgiorget/git/skupper-example-yaml/west/west-nonkube.yaml
-    namespace: "west"
-    platform: "podman"
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Creating Skupper resources on west namespace
+      skupper.v2.resource:
+        path:  /home/fgiorget/git/skupper-example-yaml/west/west-nonkube.yaml
+        namespace: "west"
+        platform: "podman"
 
-- name: Creating Skupper resources on east namespace
-  skupper.v2.resource:
-    path: /home/fgiorget/git/skupper-example-yaml/east/east-nonkube.yaml
-    namespace: "east"
-    platform: "podman"
+    - name: Creating Skupper resources on east namespace
+      skupper.v2.resource:
+        path: /home/fgiorget/git/skupper-example-yaml/east/east-nonkube.yaml
+        namespace: "east"
+        platform: "podman"
 
-- name: Setup the west site and retrieve a static link
-  skupper.v2.system:
-    namespace: "west"
-    platform: "podman"
-  register: west
+    - name: Setup the west site and retrieve a static link
+      skupper.v2.system:
+        namespace: "west"
+        platform: "podman"
+      register: west
 
-- name: Apply token to east site
-  skupper.v2.resource:
-    def: "{{ west.links['0.0.0.0'] }}"
-    namespace: "east"
-    platform: "podman"
+    - name: Apply token to east site
+      skupper.v2.resource:
+        def: "{{ west.links['0.0.0.0'] }}"
+        namespace: "east"
+        platform: "podman"
 
-- name: Setup the east site
-  skupper.v2.system:
-    namespace: "east"
-    platform: "podman"
+    - name: Setup the east site
+      skupper.v2.system:
+        namespace: "east"
+        platform: "podman"
 ```
 
 To clean up you can run the following commands and tasks:

@@ -96,7 +96,7 @@ podman run --name backend -d --rm -p 127.0.0.1:9090:8080 quay.io/skupper/hello-w
 
 Tasks to run west and east sites using podman:
 
-(resources are available at https://github.com/fgiorgetti/skupper-example-yaml/tree/v2-nonkube-resources)
+(resources are available at https://github.com/fgiorgetti/skupper-example-yaml/tree/v2)
 
 ```
 ---
@@ -105,13 +105,13 @@ Tasks to run west and east sites using podman:
   tasks:
     - name: Creating Skupper resources on west namespace
       skupper.v2.resource:
-        path:  /home/fgiorget/git/skupper-example-yaml/west/west-nonkube.yaml
+        path:  https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/v2/system/west.yaml
         namespace: "west"
         platform: "podman"
 
     - name: Creating Skupper resources on east namespace
       skupper.v2.resource:
-        path: /home/fgiorget/git/skupper-example-yaml/east/east-nonkube.yaml
+        path: https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/v2/system/east.yaml
         namespace: "east"
         platform: "podman"
 
@@ -119,6 +119,7 @@ Tasks to run west and east sites using podman:
       skupper.v2.system:
         namespace: "west"
         platform: "podman"
+        image: quay.io/skupper/cli:2.0.0
       register: west
 
     - name: Apply token to east site
@@ -149,6 +150,7 @@ Teardown both frontend and backend namespaces:
     action: teardown
     namespace: "{{ item }}"
     platform: "podman"
+    image: quay.io/skupper/cli:2.0.0
   with_items:
     - west
     - east

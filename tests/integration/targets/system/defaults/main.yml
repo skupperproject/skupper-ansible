@@ -1,4 +1,4 @@
 ---
 namespace: system-testing # noqa: var-naming
 site_name: my-site
-system_image: "{{ cli_image | default('quay.io/skupper/cli:v2-dev') }}"
+system_image: "{{ cli_image | default('quay.io/skupper/cli:2.0.0') }}"

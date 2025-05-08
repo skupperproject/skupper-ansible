@@ -96,7 +96,7 @@ podman run --name backend -d --rm -p 127.0.0.1:9090:8080 quay.io/skupper/hello-w
 
 Tasks to run west and east sites using podman:
 
-(resources are available at https://github.com/fgiorgetti/skupper-example-yaml/tree/v2)
+(resources are available at https://github.com/skupperproject/skupper-example-yaml/tree/v2)
 
 ```
 ---
@@ -132,6 +132,7 @@ Tasks to run west and east sites using podman:
       skupper.v2.system:
         namespace: "east"
         platform: "podman"
+        image: quay.io/skupper/cli:2.0.0
 ```
 
 To clean up you can run the following commands and tasks:

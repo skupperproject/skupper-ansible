@@ -9,6 +9,8 @@
       tags: always
       ansible.builtin.command:
         cmd: "{{ backend_container_engine }} run --rm -d --name token_testing_backend -p 19090:8080 quay.io/skupper/hello-world-backend"
+      register: backend_run
+      changed_when: backend_run.rc == 0
     - name: "Run token module tests for all scenarios"
       tags: always
       with_items:
@@ -22,3 +24,5 @@
       tags: always
       ansible.builtin.command:
         cmd: "{{ backend_container_engine }} rm -f token_testing_backend"
+      register: backend_rm
+      changed_when: backend_rm.rc == 0

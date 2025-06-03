@@ -5,26 +5,10 @@
   block:
     - name: Gathering facts
       ansible.builtin.gather_facts:
-    - name: Run backend as a podman container bound to 19090
+    - name: Run backend as a container bound to 19090
       tags: always
-      containers.podman.podman_container:
-        name: token_testing_backend
-        image: quay.io/skupper/hello-world-backend
-        state: started
-        ports:
-          - 19090:8080
-        remove: true
-      when: backend_container_engine == 'podman'
-    - name: Run backend as a docker container bound to 19090
-      tags: always
-      community.docker.docker_container:
-        name: token_testing_backend
-        image: quay.io/skupper/hello-world-backend
-        state: started
-        ports:
-          - 19090:8080
-        auto_remove: true
-      when: backend_container_engine == 'docker'
+      ansible.builtin.command:
+        cmd: "{{ backend_container_engine }} run --rm -d --name token_testing_backend -p 19090:8080 quay.io/skupper/hello-world-backend"
     - name: "Run token module tests for all scenarios"
       tags: always
       with_items:
@@ -34,15 +18,7 @@
     - name: Cleanup namespaces
       tags: always
       ansible.builtin.include_tasks: cleanup.yml
-    - name: Delete the backend podman container
+    - name: Delete the backend container
       tags: always
-      containers.podman.podman_container:
-        name: token_testing_backend
-        state: absent
-      when: backend_container_engine == 'podman'
-    - name: Delete the backend docker container
-      tags: always
-      community.docker.docker_container:
-        name: token_testing_backend
-        state: absent
-      when: backend_container_engine == 'docker'
+      ansible.builtin.command:
+        cmd: "{{ backend_container_engine }} rm -f token_testing_backend"

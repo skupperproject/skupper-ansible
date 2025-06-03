@@ -2,4 +2,3 @@
 collections:
   - kubernetes.core
   - containers.podman
-  - community.docker

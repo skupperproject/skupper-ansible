@@ -12,6 +12,7 @@ OPTIONS ?=
 all: clean lint sanity unit coverage
 
 lint:
+	pip install -r ./tests/unit/requirements.txt -U
 	ansible-galaxy collection install -r tests/integration/requirements.yml
 	ANSIBLE_ROLES_PATH=./tests/integration/targets ANSIBLE_LIBRARY=./plugins/modules ANSIBLE_MODULE_UTILS=./plugins/module_utils ansible-lint -v --offline
 

@@ -10,6 +10,8 @@
     namespace: "{{ namespace }}"
     image: "{{ system_image }}"
   register: _system
+  environment:
+    SKUPPER_ROUTER_IMAGE: "{{ system_router_image }}"
 - name: Assert start action performed successfully
   ansible.builtin.assert:
     that:
@@ -38,6 +40,8 @@
     namespace: "{{ namespace }}"
     image: "{{ system_image }}"
   register: _system
+  environment:
+    SKUPPER_ROUTER_IMAGE: "{{ system_router_image }}"
 - name: Assert start action performed successfully
   ansible.builtin.assert:
     that:

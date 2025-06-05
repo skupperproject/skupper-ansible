@@ -28,6 +28,8 @@
         namespace: "{{ namespace_west }}"
         platform: "{{ item.west.platform }}"
         image: "{{ token_image }}"
+      environment:
+        SKUPPER_ROUTER_IMAGE: "{{ token_router_image }}"
       when: item.west.platform != "kubernetes"
     - name: Retrieve or create west token
       skupper.v2.token:
@@ -49,6 +51,8 @@
         image: "{{ token_image }}"
         namespace: "{{ namespace_east }}"
         platform: "{{ item.east.platform }}"
+      environment:
+        SKUPPER_ROUTER_IMAGE: "{{ token_router_image }}"
       when: item.east.platform != "kubernetes"
     - name: Call backend service
       ansible.builtin.command: "{{ (item.west.platform == 'kubernetes') | ternary(kube_verify_command, nonkube_verify_command) }}"

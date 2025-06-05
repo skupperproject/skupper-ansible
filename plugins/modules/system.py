@@ -250,6 +250,7 @@ class SystemModule:
             command.extend(["-v", "%s:%s:z" % (source, dest)])
         for var, val in env(self.platform, self._engine).items():
             command.extend(["-e", "%s=%s" % (var, val)])
+        self.module.debug("SKUPPER_ROUTER_IMAGE: {}".format(os.environ.get("SKUPPER_ROUTER_IMAGE")))
         command.append(self._image)
         command.extend(["-n", self.namespace, "system"])
         if strategy:

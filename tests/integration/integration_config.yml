@@ -1,5 +1,6 @@
 ---
 kubeconfig: ""
 # cli_image: ""
+# router_image: ""
 # skupper_v2_install: false
 # backend_container_engine: podman

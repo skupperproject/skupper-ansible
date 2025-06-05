@@ -5,5 +5,7 @@
     namespace: "{{ namespace }}"
     image: "{{ system_image }}"
   register: _system
+  environment:
+    SKUPPER_ROUTER_IMAGE: "{{ system_router_image }}"
 - name: Validate namespace stopped
   ansible.builtin.include_tasks: validate-namespace-stopped.yml

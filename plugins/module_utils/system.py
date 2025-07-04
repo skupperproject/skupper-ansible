@@ -62,8 +62,9 @@ def env(platform: str, engine: str = "podman") -> dict:
     container_env = {
         "SKUPPER_OUTPUT_PATH": data_home(),
         "SKUPPER_PLATFORM": platform,
-        "SKUPPER_ROUTER_IMAGE": os.environ.get("SKUPPER_ROUTER_IMAGE"),
     }
+    if os.environ.get("SKUPPER_ROUTER_IMAGE"):
+        container_env["SKUPPER_ROUTER_IMAGE"] = os.environ.get("SKUPPER_ROUTER_IMAGE")
     endpoint = container_endpoint(engine)
     if platform != "linux":
         if is_sock_endpoint(endpoint):

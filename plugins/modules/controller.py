@@ -31,9 +31,9 @@ options:
             - The controller-image to use
         type: str
         default: quay.io/skupper/system-controller:v2-dev
-    engine:
+    platform:
         description:
-            - The container engine used to run the controller for system sites
+            - The platform used to run the controller for system sites
         type: str
         default: podman
         choices: ["podman", "docker"]
@@ -54,7 +54,7 @@ EXAMPLES = r'''
 - name: Installs the skupper-controller using podman
   skupper.v2.controller:
     action: install
-    engine: podman
+    platform: podman
 
 # Uninstalls the skupper-controller
 - name: Installs the skupper-controller
@@ -80,7 +80,9 @@ from ansible_collections.skupper.v2.plugins.module_utils.system import (
     create_service,
     delete_service,
     service_exists,
-    systemd_create
+    systemd_create,
+    systemd_delete,
+    enable_podman_socket
 )
 from ansible_collections.skupper.v2.plugins.module_utils.resource import (
     load,
@@ -114,8 +116,8 @@ def argspec():
     spec["action"] = dict(type="str", default="install",
                           choices=["install", "uninstall"])
     spec["image"] = dict(type="str",
-                         default="quay.io/skupper/cli:v2-dev")
-    spec["engine"] = dict(type="str", default="podman",
+                         default="quay.io/skupper/system-controller:v2-dev")
+    spec["platform"] = dict(type="str", default="podman",
                           choices=["podman", "docker"])
     return spec
 
@@ -125,7 +127,7 @@ class ControllerModule:
         self.module = module
         self._action = self.params.get("action")
         self._image = self.params.get("image")
-        self._engine = self.params.get("engine")
+        self._platform = self.params.get("platform")
 
     def run(self):
         result = dict(
@@ -140,8 +142,8 @@ class ControllerModule:
         changed = False
         # pylint: disable=unnecessary-lambda
         changed = {
-            'install': lambda: self.install(strategy="install"),
-            'uninstall': lambda: self.uninstall(strategy="uninstall")
+            'install': lambda: self.install(),
+            'uninstall': lambda: self.uninstall()
         }[self._action]()
 
         # preparing response
@@ -153,12 +155,6 @@ class ControllerModule:
         return self.module.params
 
     def install(self) -> bool:
-        self.module.debug("installing on namespace: %s" % (self.namespace))
-
-        if self.platform == "linux":
-            self.module.fail_json("controller is not yet supported with the selected " \
-            "platform: 'linux' - you can still use 'podman' or 'docker'")
-
         if self.service_exists():
             self.module.debug("skupper-controller service already exists")
             return False
@@ -167,17 +163,20 @@ class ControllerModule:
             self.module.debug("{} container already exists".format(self.container_name()))
             return False
 
+        if self._platform == "podman":
+            enable_podman_socket(self.module)
+
         command = [
-            self._engine, "run", "--pull", "always", "--name",
-            self.container_name(),
+            self._platform, "run", "-d", "--pull", "always", "--name",
+            self.container_name(), "--label=application=skupper-v2",
             "--network", "host", "--security-opt", "label=disable", "-u",
-            runas(self._engine), "--userns=%s" % (userns(self._engine))
+            runas(self._platform), "--userns=%s" % (userns(self._platform))
         ]
         requires_mounts_for = list()
-        for source, dest in base_mounts(self.platform, self._engine).items():
+        for source, dest in base_mounts(self._platform, self._platform).items():
             requires_mounts_for.append(source)
             command.extend(["-v", "%s:%s:z" % (source, dest)])
-        env_dict = env(self.platform, self._engine)
+        env_dict = env(self._platform, self._platform)
         for var, val in env_dict.items():
             command.extend(["-e", "%s=%s" % (var, val)])
         command.append(self._image)
@@ -187,22 +186,42 @@ class ControllerModule:
             msg = "error creating container '%s': %s" % (
                 self.container_name(), out or err)
             self.module.fail_json(msg)
-            return False
 
         try:
-            self.create_startup_scripts(self.module, self._engine)
+            self.create_startup_scripts(self._platform)
         except Exception as ex:
             self.module.fail_json("unable to create startup scripts: {}".format(ex))
         try:
-            self.create_service(self.module, mounts=requires_mounts_for, envs=env_dict)
+            self.create_service(mounts=requires_mounts_for, envs=env_dict)
         except Exception as ex:
             self.module.fail_json("unable to create systemd service: {}".format(ex))
 
         return True
 
     def uninstall(self) -> bool:
-        return False 
-    
+        changed = False
+
+        if self.service_exists():
+            if systemd_delete(self.module, self.service_name()):
+                changed = True
+
+        if self.container_already_exists():
+            command = [self._platform, "rm", "--force", "-t", "10", self.container_name()]
+            code, out, err = run_command(self.module, command)
+            if code != 0:
+                self.module.fail_json("error removing {} container: {}".format(self.container_name(), (err or out)))
+            changed = True
+
+        base_path = "{}/system-controller".format(data_home())
+        if os.path.exists(base_path):
+            try:
+                shutil.rmtree(base_path)
+                changed = True
+            except Exception as ex:
+                self.module.warn("unable to remove {}: {}", base_path, ex)
+
+        return changed
+
     def service_name(self) -> str:
         return "skupper-controller.service"
 
@@ -214,41 +233,41 @@ class ControllerModule:
         if not os.path.exists(base_path):
             os.makedirs(base_path)
         def write_header(file):
-            file.write("#!/usr/bin/env sh")
-            file.write("")
-            file.write("set -o errexit")
-            file.write("set -o nounset")
+            file.write("#!/usr/bin/env sh\n")
+            file.write("\n")
+            file.write("set -o errexit\n")
+            file.write("set -o nounset\n")
         start_file = "{}/start.sh".format(base_path)
         stop_file = "{}/stop.sh".format(base_path)
         with open(start_file, "w", encoding="utf-8") as out_file:
             write_header(out_file)
-            out_file.write("{} start {}".format(engine, self.container_name()))
+            out_file.write("{} start {}\n".format(engine, self.container_name()))
         with open(stop_file, "w", encoding="utf-8") as out_file:
             write_header(out_file)
-            out_file.write("{} stop -t 10 {}".format(engine, self.container_name()))
+            out_file.write("{} stop -t 10 {}\n".format(engine, self.container_name()))
 
     def create_service(self, mounts=list(), envs=dict()):
-        startup_scripts_path = "{}/system-controller/internal/scripts/".format(data_home())
+        startup_scripts_path = "{}/system-controller/internal/scripts".format(data_home())
         service_file = "{}/{}".format(service_dir(), self.service_name())
         with open(service_file, "w", encoding="utf-8") as out_file:
-            out_file.write("[Unit]")
-            out_file.write("Description=skupper-controller")
-            out_file.write("After=network-online.target")
-            out_file.write("Wants=network-online.target")
+            out_file.write("[Unit]\n")
+            out_file.write("Description=skupper-controller\n")
+            out_file.write("After=network-online.target\n")
+            out_file.write("Wants=network-online.target\n")
             for mount in mounts:          
-                out_file.write("RequiresMountsFor={}".format(mount))
-            out_file.write("")
-            out_file.write("[Service]")
-            out_file.write("TimeoutStopSec=70")
-            out_file.write("RemainAfterExit=yes")
+                out_file.write("RequiresMountsFor={}\n".format(mount))
+            out_file.write("\n")
+            out_file.write("[Service]\n")
+            out_file.write("TimeoutStopSec=70\n")
+            out_file.write("RemainAfterExit=yes\n")
             for var, val in envs.items():
-                out_file.write("Environment={}={}".format(var, val))
-            out_file.write("ExecStart=/bin/bash {}/start.sh".format(startup_scripts_path))
-            out_file.write("ExecStop=/bin/bash {}/stop.sh".format(startup_scripts_path))
-            out_file.write("Type=simple")
-            out_file.write("")
-            out_file.write("[Install]")
-            out_file.write("WantedBy=default.target")
+                out_file.write("Environment={}={}\n".format(var, val))
+            out_file.write("ExecStart=/bin/bash {}/start.sh\n".format(startup_scripts_path))
+            out_file.write("ExecStop=/bin/bash {}/stop.sh\n".format(startup_scripts_path))
+            out_file.write("Type=simple\n")
+            out_file.write("\n")
+            out_file.write("[Install]\n")
+            out_file.write("WantedBy=default.target\n")
         return systemd_create(self.module, self.service_name(), service_file)
     
     def container_name(self) -> str:
@@ -257,7 +276,7 @@ class ControllerModule:
         return container_name
 
     def container_already_exists(self) -> bool:
-        return container_exists(self.module, self.container_name)
+        return container_exists(self.module, self.container_name())
 
 
 def main():

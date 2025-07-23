@@ -201,7 +201,7 @@ def service_exists(module: AnsibleModule, name: str) -> bool:
     list_command = ["systemctl"]
     if os.getuid() != 0:
         list_command.append("--user")
-    list_command.append("--list-units", "--all", "--no-pager", "--output=json")
+    list_command.extend(["list-units", "--all", "--no-pager", "--output=json"])
     code, out, err = run_command(module, list_command)
     if code != 0:
         module.fail_json("error listing service units: {}".format(err))
@@ -213,3 +213,13 @@ def service_exists(module: AnsibleModule, name: str) -> bool:
             return True
 
     return False
+
+
+def enable_podman_socket(module: AnsibleModule):
+    command = ["systemctl"]
+    if os.getuid() != 0:
+        command.append("--user")
+    command.extend(["enable", "--now", "podman.socket"])
+    code, out, err = run_command(module, command)
+    if code != 0:
+        module.fail_json("error enabling podman.socket service: {}", (err or out))

@@ -60,7 +60,6 @@ EXAMPLES = r'''
 - name: Installs the skupper-controller
   skupper.v2.controller:
     action: uninstall
-
 '''
 
 
@@ -73,42 +72,20 @@ from ansible_collections.skupper.v2.plugins.module_utils.container import (
 )
 from ansible_collections.skupper.v2.plugins.module_utils.system import (
     base_mounts,
-    mounts,
     env,
     runas,
     userns,
-    create_service,
-    delete_service,
     service_exists,
     systemd_create,
     systemd_delete,
     enable_podman_socket
 )
-from ansible_collections.skupper.v2.plugins.module_utils.resource import (
-    load,
-    version_kind
-)
 from ansible_collections.skupper.v2.plugins.module_utils.common import (
-    is_non_kube,
     data_home,
-    namespace_home,
-    resources_home,
     service_dir
 )
-from ansible_collections.skupper.v2.plugins.module_utils.args import (
-    common_args,
-    is_valid_name
-)
-import copy
-import base64
 import shutil
 import os
-import time
-import glob
-try:
-    import yaml
-except ImportError:
-    pass
 
 
 def argspec():

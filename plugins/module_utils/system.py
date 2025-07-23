@@ -205,9 +205,12 @@ def service_exists(module: AnsibleModule, name: str) -> bool:
     code, out, err = run_command(module, list_command)
     if code != 0:
         module.fail_json("error listing service units: {}".format(err))
-        return False
 
-    units = json.loads(out)
+    try:
+        units = json.loads(out)
+    except Exception as ex:
+        units = {}
+        module.warn("invalid json data: {}".format(ex))
     for unit in units:
         if unit['unit'] == name:
             return True

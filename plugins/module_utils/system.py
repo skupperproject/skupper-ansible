@@ -2,12 +2,16 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 
-import grp
-import os
-from ansible.module_utils.basic import AnsibleModule
 from .common import runtime_dir, data_home, service_dir, namespace_home
 from .command import run_command
 from .exceptions import RuntimeException
+try:
+    import grp
+    import json
+    import os
+    from ansible.module_utils.basic import AnsibleModule
+except ImportError:
+    pass
 
 
 def container_endpoint(engine: str = "podman") -> str:
@@ -48,9 +52,15 @@ def runas(engine: str = "podman") -> str:
 
 
 def mounts(namespace: str, platform: str, engine: str = "podman") -> dict:
+    mount_points = base_mounts(platform, engine)
+    namespace_resources = os.path.join(namespace_home(namespace), "input", "resources")
+    mount_points[namespace_resources] = "/input"
+    return mount_points
+
+
+def base_mounts(platform: str, engine: str = "podman") -> dict:
     mount_points = {
         data_home(): "/output",
-        os.path.join(namespace_home(namespace), "input", "resources"): "/input",
     }
     endpoint = container_endpoint(engine)
     if platform != "linux" and is_sock_endpoint(endpoint):
@@ -88,17 +98,18 @@ def systemd_available(module: AnsibleModule) -> bool:
 def systemd_create(module: AnsibleModule, service_name: str, service_file: str) -> bool:
     changed = False
     target_service_file = os.path.join(service_dir(), service_name)
-    try:
-        with open(service_file, "r", encoding="utf-8") as in_file:
-            with open(target_service_file, "w", encoding="utf-8") as out_file:
-                module.debug("writing service file: %s" % (target_service_file))
-                content = in_file.read()
-                wrote = out_file.write(content)
-                module.debug("wrote: %d/%d" % (len(content), wrote))
-                changed = True
-    except Exception as ex:
-        module.warn("error writing service file '%s': %s" % (target_service_file, ex))
-        return changed
+    if service_file != target_service_file:
+        try:
+            with open(service_file, "r", encoding="utf-8") as in_file:
+                with open(target_service_file, "w", encoding="utf-8") as out_file:
+                    content = in_file.read()
+                    module.debug("writing service file: %s" % (target_service_file))
+                    wrote = out_file.write(content)
+                    module.debug("wrote: %d/%d" % (len(content), wrote))
+                    changed = True
+        except Exception as ex:
+            module.warn("error writing service file '%s': %s" % (target_service_file, ex))
+            return changed
     base_command = ["systemctl"]
     if os.getuid() != 0:
         base_command.append("--user")
@@ -181,3 +192,37 @@ def delete_service(module: AnsibleModule, namespace: str = "default") -> bool:
         return False
     name = default_service_name(namespace)
     return systemd_delete(module, name)
+
+
+def service_exists(module: AnsibleModule, name: str) -> bool:
+    if not systemd_available(module):
+        return False
+
+    list_command = ["systemctl"]
+    if os.getuid() != 0:
+        list_command.append("--user")
+    list_command.extend(["list-units", "--all", "--no-pager", "--output=json"])
+    code, out, err = run_command(module, list_command)
+    if code != 0:
+        module.fail_json("error listing service units: {}".format(err))
+
+    try:
+        units = json.loads(out)
+    except Exception as ex:
+        units = {}
+        module.warn("invalid json data: {}".format(ex))
+    for unit in units:
+        if unit['unit'] == name:
+            return True
+
+    return False
+
+
+def enable_podman_socket(module: AnsibleModule):
+    command = ["systemctl"]
+    if os.getuid() != 0:
+        command.append("--user")
+    command.extend(["enable", "--now", "podman.socket"])
+    code, out, err = run_command(module, command)
+    if code != 0:
+        module.fail_json("error enabling podman.socket service: {}".format(err or out))

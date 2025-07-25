@@ -225,4 +225,4 @@ def enable_podman_socket(module: AnsibleModule):
     command.extend(["enable", "--now", "podman.socket"])
     code, out, err = run_command(module, command)
     if code != 0:
-        module.fail_json("error enabling podman.socket service: {}", (err or out))
+        module.fail_json("error enabling podman.socket service: {}".format(err or out))

@@ -95,7 +95,7 @@ def argspec():
     spec["image"] = dict(type="str",
                          default="quay.io/skupper/system-controller:v2-dev")
     spec["platform"] = dict(type="str", default="podman",
-                          choices=["podman", "docker"])
+                            choices=["podman", "docker"])
     return spec
 
 
@@ -135,7 +135,7 @@ class ControllerModule:
         if self.service_exists():
             self.module.debug("skupper-controller service already exists")
             return False
-        
+
         if self.container_already_exists():
             self.module.debug("{} container already exists".format(self.container_name()))
             return False
@@ -209,11 +209,13 @@ class ControllerModule:
         base_path = "{}/system-controller/internal/scripts/".format(data_home())
         if not os.path.exists(base_path):
             os.makedirs(base_path)
+
         def write_header(file):
             file.write("#!/usr/bin/env sh\n")
             file.write("\n")
             file.write("set -o errexit\n")
             file.write("set -o nounset\n")
+
         start_file = "{}/start.sh".format(base_path)
         stop_file = "{}/stop.sh".format(base_path)
         with open(start_file, "w", encoding="utf-8") as out_file:
@@ -223,7 +225,7 @@ class ControllerModule:
             write_header(out_file)
             out_file.write("{} stop -t 10 {}\n".format(engine, self.container_name()))
 
-    def create_service(self, mounts=list(), envs=dict()):
+    def create_service(self, mounts: list, envs: dict):
         startup_scripts_path = "{}/system-controller/internal/scripts".format(data_home())
         service_file = "{}/{}".format(service_dir(), self.service_name())
         with open(service_file, "w", encoding="utf-8") as out_file:
@@ -231,7 +233,7 @@ class ControllerModule:
             out_file.write("Description=skupper-controller\n")
             out_file.write("After=network-online.target\n")
             out_file.write("Wants=network-online.target\n")
-            for mount in mounts:          
+            for mount in mounts:
                 out_file.write("RequiresMountsFor={}\n".format(mount))
             out_file.write("\n")
             out_file.write("[Service]\n")
@@ -246,7 +248,7 @@ class ControllerModule:
             out_file.write("[Install]\n")
             out_file.write("WantedBy=default.target\n")
         return systemd_create(self.module, self.service_name(), service_file)
-    
+
     def container_name(self) -> str:
         # user-skupper-controller
         container_name = "{}-skupper-controller".format(os.getlogin())

@@ -28,10 +28,10 @@ def has_podman(module: AnsibleModule) -> bool:
 
 def container_exists(module: AnsibleModule, name: str) -> bool:
     container_engines = []
-    if has_docker(module):
-        container_engines.append("docker")
     if has_podman(module):
         container_engines.append("podman")
+    if has_docker(module):
+        container_engines.append("docker")
     for engine in container_engines:
       command = [engine, "inspect", name]
       code, out, err = run_command(module, command)

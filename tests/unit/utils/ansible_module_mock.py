@@ -1,4 +1,5 @@
 import json
+import re
 
 from ansible.module_utils import basic
 from ansible.module_utils.common.text.converters import to_bytes
@@ -61,3 +62,37 @@ def get_bin_path(self, arg, required=False):
 def self_client(*args, **kwargs):
     print("self.client called")
     pass
+
+
+class CommandArgs(object):
+    def __init__(self, args: list, prefix: bool = False):
+        self.args = args
+        self.prefix = prefix
+
+    def __eq__(self, value):
+        return self.args == value.args and self.prefix == value.prefix
+
+    def __hash__(self):
+        return hash("{}-{}".format(self.prefix, self.args))
+
+    def __repr__(self):
+        return f"CommandArgs(args={self.args},prefix={self.prefix})"
+
+    def matches(self, args: list) -> bool:
+        if self.prefix:
+            return self.args == args[:len(self.args)]
+        return self.args == args
+
+
+class CommandResponse(object):
+    def __init__(self, code=0, out="", err=""):
+        self.code: int = code
+        self.out : str = out
+        self.err : str = err
+
+class RegexMatcher:
+    def __init__(self, pattern):
+        self.pattern = pattern
+
+    def __eq__(self, other):
+        return re.match(self.pattern, other) is not None

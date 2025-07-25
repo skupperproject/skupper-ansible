@@ -67,7 +67,7 @@ class TestControllerModule(TestCase):
         for ca, cr in self._run_commands.items():
             if ca.matches(args):
                 return cr.code, cr.out, cr.err
-        print("COMMAND NOT MOCKED: {}", args)
+        print("COMMAND NOT MOCKED: {}".format(args))
         return 0, "", ""
 
     def create_service(self, module, namespace) -> bool:
@@ -260,12 +260,160 @@ class TestControllerModule(TestCase):
             systemd_path = "systemd/system"
         self.assertTrue(os.path.exists("{}/{}/skupper-controller.service".format(self.temphome, systemd_path, "skupper-controller.service")))
     
+    def test_uninstall_no_changes(self):
+        # service does not exist
+        systemd_cmd = self.systemctl_command()
+        systemd_cmd.extend(["list-units", "--all", "--no-pager", "--output=json"])
+        self._run_commands[CommandArgs(args=systemd_cmd)] = CommandResponse(code=0, out='[]')
+        self._run_commands[CommandArgs(args=["podman", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
+        self._run_commands[CommandArgs(args=["docker", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
+        with self.assertRaises(AnsibleExitJson) as exit:
+            set_module_args({"action": "uninstall"})
+            self.module.main()
+        self.assertFalse(exit.exception.changed)
+
+    def _create_service_file(self):
+        systemd_path = "systemd/user"
+        if os.getuid() == 0:
+            systemd_path = "systemd/system"
+        base_path = "{}/{}".format(self.temphome, systemd_path)
+        os.makedirs(base_path)
+        service_file = "{}/skupper-controller.service".format(base_path)
+        with open(service_file, "w") as f:
+            f.write("dummy content\n")
+
+    def _create_startup_scripts(self):
+        base_path = "{}/{}".format(self.temphome, "system-controller/internal/scripts")
+        os.makedirs(base_path)
+        for script in ["start.sh", "stop.sh"]:
+            with open("{}/{}".format(base_path, script), "w") as f:
+                f.write("dummy content\n")
+
+    def test_uninstall(self):
+        # create expected resources
+        self._create_service_file()
+        self._create_startup_scripts()
+
+        # service defined
+        systemctl = self.systemctl_command()
+
+        # mock commands
+        disable_cmd = CommandArgs(args=systemctl + ["disable", "--now", "skupper-controller.service"])
+        reload_cmd = CommandArgs(args=systemctl + ["daemon-reload"])
+        reset_cmd = CommandArgs(args=systemctl + ["reset-failed"])
+        container_rm_cmd = CommandArgs(args=["podman", "rm", "--force", "-t", "10", self.expected_container_name()])
+        mock_commands = [disable_cmd, reload_cmd, reset_cmd, container_rm_cmd]
+        for ca in mock_commands:
+            self._run_commands[ca] = CommandResponse()
+
+        # special mock commands
+        list_cmd = CommandArgs(args=systemctl + ['list-units', '--all', '--no-pager', '--output=json'])
+        self._run_commands[list_cmd] = CommandResponse(code=0, out='[{"unit": "skupper-controller.service"}]')
+        special_commands = [list_cmd]
+
+        # assert changed
+        with self.assertRaises(AnsibleExitJson) as exit:
+            set_module_args({"action": "uninstall"})
+            self.module.main()
+        self.assertTrue(exit.exception.changed)
+
+        # assert commands called
+        for ca in mock_commands + special_commands:
+            self.assertTrue(ca.called(), "Expected command not called: {}".format(ca))
+
+        # assert startup scripts path removed
+        scripts_path = "{}/{}".format(self.temphome, "system-controller")
+        self.assertFalse(os.path.exists(scripts_path))
+
+    def test_uninstall_service_remove_fails(self):
+        # create expected resources
+        self._create_service_file()
+        self._create_startup_scripts()
+
+        # service defined
+        systemctl = self.systemctl_command()
+
+        # mock commands
+        disable_cmd = CommandArgs(args=systemctl + ["disable", "--now", "skupper-controller.service"])
+        self._run_commands[disable_cmd] = CommandResponse(code=1, err="mock error")
+        reload_cmd = CommandArgs(args=systemctl + ["daemon-reload"])
+        self._run_commands[reload_cmd] = CommandResponse(code=1, err="mock error")
+        reset_cmd = CommandArgs(args=systemctl + ["reset-failed"])
+        self._run_commands[reset_cmd] = CommandResponse(code=1, err="mock error")
+
+        # special mock commands
+        list_cmd = CommandArgs(args=systemctl + ['list-units', '--all', '--no-pager', '--output=json'])
+        self._run_commands[list_cmd] = CommandResponse(code=0, out='[{"unit": "skupper-controller.service"}]')
+        special_commands = [disable_cmd, reload_cmd, reset_cmd, list_cmd]
+
+        # assert changed
+        with patch("os.remove") as remove_mock:
+            remove_mock.side_effect = Exception("mock remove error")
+            with patch.object(basic.AnsibleModule, "warn") as mock_warn:
+                with self.assertRaises(AnsibleExitJson) as exit:
+                    set_module_args({"action": "uninstall"})
+                    self.module.main()
+
+        self.assertTrue(exit.exception.changed)
+
+        # assert commands called
+        for ca in special_commands:
+            self.assertTrue(ca.called(), "Expected command not called: {}".format(ca))
+
+        systemd_path = "systemd/user"
+        if os.getuid() == 0:
+            systemd_path = "systemd/system"
+        service_file = "{}/{}/skupper-controller.service".format(self.temphome, systemd_path)
+
+        self.assertEqual(len(mock_warn.mock_calls), 4)
+        remove_mock.assert_called()
+        self.assertEqual(mock_warn.call_args_list[0].args[0], "error stopping service '{}': {}".format("skupper-controller.service", "mock error"))
+        self.assertEqual(mock_warn.call_args_list[1].args[0], "error removing service file '{}': {}".format(service_file, "mock remove error"))
+        self.assertEqual(mock_warn.call_args_list[2].args[0], "error running systemd command '{}': {}".format(reload_cmd.args, "mock error"))
+        self.assertEqual(mock_warn.call_args_list[3].args[0], "error running systemd command '{}': {}".format(reset_cmd.args, "mock error"))
+
     def test_uninstall_container_remove_fails(self):
-        pass
+        # mock commands
+        systemctl = self.systemctl_command()
+        list_cmd = CommandArgs(args=systemctl + ['list-units', '--all', '--no-pager', '--output=json'])
+        self._run_commands[list_cmd] = CommandResponse(code=0, out='[]')
+
+        container_rm_cmd = CommandArgs(args=["podman", "rm", "--force", "-t", "10", self.expected_container_name()])
+        self._run_commands[container_rm_cmd] = CommandResponse(code=1, err="mock error")
+
+        # assert changed
+        with self.assertRaises(AnsibleFailJson) as ex:
+            set_module_args({"action": "uninstall"})
+            self.module.main()
+
+        self.assertEqual(ex.exception.msg[1], "error removing {} container: {}".format(self.expected_container_name(), "mock error"))
 
     def test_uninstall_path_remove_fails(self):
-        pass
-    
-    def test_uninstall(self):
-        pass
+        # create expected resources
+        self._create_startup_scripts()
 
+        # service defined
+        systemctl = self.systemctl_command()
+
+        # special mock commands
+        list_cmd = CommandArgs(args=systemctl + ['list-units', '--all', '--no-pager', '--output=json'])
+        self._run_commands[list_cmd] = CommandResponse(code=0, out='[{"unit": "skupper-controller.service"}]')
+        special_commands = [list_cmd]
+
+        with patch.object(basic.AnsibleModule, "warn") as mock_warn:
+            with patch("shutil.rmtree") as mock_rmtree:
+                mock_rmtree.side_effect = Exception("mock exception removing dirs")
+                with self.assertRaises(AnsibleExitJson) as exit:
+                    set_module_args({"action": "uninstall"})
+                    self.module.main()
+
+        # assert commands called
+        for ca in special_commands:
+            self.assertTrue(ca.called(), "Expected command not called: {}".format(ca))
+
+        self.assertTrue(mock_rmtree.assert_called)
+        scripts_path = "{}/{}".format(self.temphome, "system-controller")
+        mock_warn.assert_called_with("unable to remove {}: {}".format(scripts_path, "mock exception removing dirs"))
+        self.assertTrue(os.path.exists(scripts_path))
+
+        self.assertTrue(exit.exception.changed)

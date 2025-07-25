@@ -86,6 +86,7 @@ from ansible_collections.skupper.v2.plugins.module_utils.common import (
 )
 import shutil
 import os
+import pwd
 
 
 def argspec():
@@ -228,6 +229,8 @@ class ControllerModule:
     def create_service(self, mounts: list, envs: dict):
         startup_scripts_path = "{}/system-controller/internal/scripts".format(data_home())
         service_file = "{}/{}".format(service_dir(), self.service_name())
+        if not os.path.exists(service_dir()):
+            os.makedirs(service_dir())
         with open(service_file, "w", encoding="utf-8") as out_file:
             out_file.write("[Unit]\n")
             out_file.write("Description=skupper-controller\n")
@@ -251,7 +254,7 @@ class ControllerModule:
 
     def container_name(self) -> str:
         # user-skupper-controller
-        container_name = "{}-skupper-controller".format(os.getlogin())
+        container_name = "{}-skupper-controller".format(pwd.getpwuid(os.getuid())[0])
         return container_name
 
     def container_already_exists(self) -> bool:

@@ -1,5 +1,5 @@
 import os
-import re
+import pwd
 import shutil
 import tempfile
 import typing as t
@@ -39,12 +39,17 @@ class TestControllerModule(TestCase):
 
         self.mock_data_home = patch(
             'ansible_collections.skupper.v2.plugins.module_utils.common.data_home', new=data_home_mock)
+        self.mock_config_home = patch(
+            'ansible_collections.skupper.v2.plugins.module_utils.common.config_dir', new=data_home_mock)
         self.mock_run_command = patch(
             'ansible_collections.skupper.v2.plugins.module_utils.command.run_command', new=self.run_command)
         self.mock_data_home.start()
+        self.mock_config_home.start()
         self.mock_run_command.start()
         self.addCleanup(self.mock_data_home.stop)
+        self.addCleanup(self.mock_config_home.stop)
         self.addCleanup(self.mock_run_command.stop)
+        self.addCleanup(self.clean_temp_home)
         try:
             from ansible_collections.skupper.v2.plugins.modules import controller
             self.module = controller
@@ -52,10 +57,11 @@ class TestControllerModule(TestCase):
             pass
 
     def clean_temp_home(self):
-        shutil.rmtree(os.path.join(self.temphome, "namespaces"),
+        shutil.rmtree(os.path.join(self.temphome, "system-controller"),
                       ignore_errors=True)
-        shutil.rmtree(os.path.join(self.temphome, "bundles"),
+        shutil.rmtree(os.path.join(self.temphome, "systemd"),
                       ignore_errors=True)
+        os.rmdir(self.temphome)
 
     def run_command(self, module, args) -> t.Tuple[int, str, str]:
         for ca, cr in self._run_commands.items():
@@ -79,7 +85,7 @@ class TestControllerModule(TestCase):
         return cmd
 
     def expected_container_name(self):
-        return "{}-skupper-controller".format(os.getlogin())
+        return "{}-skupper-controller".format(pwd.getpwuid(os.getuid())[0])
 
     def test_install_systemd_unavailable(self):
         systemd_cmd = self.systemctl_command()
@@ -206,9 +212,53 @@ class TestControllerModule(TestCase):
                 self.module.main()
         mock_warn.assert_called_with("error enabling service 'skupper-controller.service': mock error")
         self.assertTrue(exit.exception.changed)
-    
-    def test_install(self):
-        pass
+
+    def test_install_podman(self):
+        self._test_install("podman")
+
+    def test_install_docker(self):
+        self._test_install("docker")
+
+    def _test_install(self, platform: str):
+        # must be imported after data_home is mocked
+        from ansible_collections.skupper.v2.plugins.module_utils.system import (
+            base_mounts,
+            env,
+            runas,
+            userns,
+        )
+
+        # expected container run command
+        run_command_args = [
+            platform, "run", "-d", "--pull", "always", "--name",
+            self.expected_container_name(), "--label=application=skupper-v2",
+            "--network", "host", "--security-opt", "label=disable", "-u",
+            runas(platform), "--userns=%s" % (userns(platform))
+        ]
+        for source, dest in base_mounts(platform, platform).items():
+            run_command_args.extend(["-v", "%s:%s:z" % (source, dest)])
+        env_dict = env(platform, platform)
+        for var, val in env_dict.items():
+            run_command_args.extend(["-e", "%s=%s" % (var, val)])
+        run_command_args.append("quay.io/skupper/system-controller:v2-dev")
+        run_command = CommandArgs(args=run_command_args)
+        self._run_commands[run_command] = CommandResponse()
+        self._run_commands[CommandArgs(args=["podman", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
+        self._run_commands[CommandArgs(args=["docker", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
+
+        with self.assertRaises(AnsibleExitJson) as exit:
+            set_module_args({"action": "install"})
+            self.module.main()
+        self.assertTrue(exit.exception.changed)
+        self.assertTrue(run_command.called)
+
+        self.assertTrue(os.path.exists("{}/{}/start.sh".format(self.temphome, "system-controller/internal/scripts")))
+        self.assertTrue(os.path.exists("{}/{}/stop.sh".format(self.temphome, "system-controller/internal/scripts")))
+
+        systemd_path = "systemd/user"
+        if os.getuid() == 0:
+            systemd_path = "systemd/system"
+        self.assertTrue(os.path.exists("{}/{}/skupper-controller.service".format(self.temphome, systemd_path, "skupper-controller.service")))
     
     def test_uninstall_container_remove_fails(self):
         pass

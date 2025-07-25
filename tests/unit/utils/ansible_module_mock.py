@@ -68,6 +68,7 @@ class CommandArgs(object):
     def __init__(self, args: list, prefix: bool = False):
         self.args = args
         self.prefix = prefix
+        self._called: int = 0
 
     def __eq__(self, value):
         return self.args == value.args and self.prefix == value.prefix
@@ -79,9 +80,17 @@ class CommandArgs(object):
         return f"CommandArgs(args={self.args},prefix={self.prefix})"
 
     def matches(self, args: list) -> bool:
+        result = False
         if self.prefix:
-            return self.args == args[:len(self.args)]
-        return self.args == args
+            result = self.args == args[:len(self.args)]
+        else:
+            result = self.args == args
+        if result:
+            self._called += 1
+        return result
+
+    def called(self) -> bool:
+        return self._called > 0
 
 
 class CommandResponse(object):

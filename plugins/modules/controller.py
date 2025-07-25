@@ -196,7 +196,7 @@ class ControllerModule:
                 shutil.rmtree(base_path)
                 changed = True
             except Exception as ex:
-                self.module.warn("unable to remove {}: {}", base_path, ex)
+                self.module.warn("unable to remove {}: {}".format(base_path, ex))
 
         return changed
 

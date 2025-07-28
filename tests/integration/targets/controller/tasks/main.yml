@@ -22,6 +22,4 @@
   always:
     - name: "Cleaning up"
       tags: always
-      with_items:
-        - "{{ matrix }}"
       ansible.builtin.include_tasks: cleanup.yml

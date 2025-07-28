@@ -57,7 +57,7 @@ EXAMPLES = r'''
     platform: podman
 
 # Uninstalls the skupper-controller
-- name: Installs the skupper-controller
+- name: Uninstalls the skupper-controller
   skupper.v2.controller:
     action: uninstall
 '''

@@ -68,7 +68,7 @@ class CommandArgs(object):
     def __init__(self, args: list, prefix: bool = False):
         self.args = args
         self.prefix = prefix
-        self._called: int = 0
+        self._matched: int = 0
 
     def __eq__(self, value):
         return self.args == value.args and self.prefix == value.prefix
@@ -86,11 +86,11 @@ class CommandArgs(object):
         else:
             result = self.args == args
         if result:
-            self._called += 1
+            self._matched += 1
         return result
 
-    def called(self) -> bool:
-        return self._called > 0
+    def matched(self) -> bool:
+        return self._matched > 0
 
 
 class CommandResponse(object):

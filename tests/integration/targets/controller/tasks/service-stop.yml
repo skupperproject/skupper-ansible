@@ -1,15 +1,4 @@
 ---
-- name: Start the skupper-controller service
-  ansible.builtin.systemd:
-    name: skupper-controller
-    state: started
-    scope: "{{ 'user' if ansible_user_id != 'root' else 'system' }}"
-  register: service
-
-- name: Assert that the service is already running
-  ansible.builtin.assert:
-    that: not service.changed
-
 - name: Stop the skupper-controller service
   ansible.builtin.systemd:
     name: skupper-controller
@@ -28,3 +17,14 @@
     '{{ '{{' }}.Names{{ '}}' }}'"
   retries: 5
   until: "ansible_user_id + '-skupper-controller' not in exists.stdout"
+
+- name: Stop the skupper-controller service
+  ansible.builtin.systemd:
+    name: skupper-controller
+    state: stopped
+    scope: "{{ 'user' if ansible_user_id != 'root' else 'system' }}"
+  register: service
+
+- name: Assert that the service is already stopped
+  ansible.builtin.assert:
+    that: not service.changed

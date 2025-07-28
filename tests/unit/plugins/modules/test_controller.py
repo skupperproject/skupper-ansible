@@ -255,7 +255,7 @@ class TestControllerModule(TestCase):
             set_module_args({"action": "install"})
             self.module.main()
         self.assertTrue(exit.exception.changed)
-        self.assertTrue(run_command.called)
+        self.assertTrue(run_command.matched)
 
         self.assertTrue(os.path.exists("{}/{}/start.sh".format(self.temphome, "system-controller/internal/scripts")))
         self.assertTrue(os.path.exists("{}/{}/stop.sh".format(self.temphome, "system-controller/internal/scripts")))
@@ -338,7 +338,7 @@ class TestControllerModule(TestCase):
 
         # assert commands called
         for ca in mock_commands + special_commands:
-            self.assertTrue(ca.called(), "Expected command not called: {}".format(ca))
+            self.assertTrue(ca.matched(), "Expected command not called: {}".format(ca))
 
         # assert startup scripts path removed
         scripts_path = "{}/{}".format(self.temphome, "system-controller")
@@ -377,7 +377,7 @@ class TestControllerModule(TestCase):
 
         # assert commands called
         for ca in special_commands:
-            self.assertTrue(ca.called(), "Expected command not called: {}".format(ca))
+            self.assertTrue(ca.matched(), "Expected command not called: {}".format(ca))
 
         systemd_path = "systemd/user"
         if os.getuid() == 0:
@@ -428,7 +428,7 @@ class TestControllerModule(TestCase):
 
         # assert commands called
         for ca in special_commands:
-            self.assertTrue(ca.called(), "Expected command not called: {}".format(ca))
+            self.assertTrue(ca.matched(), "Expected command not called: {}".format(ca))
 
         self.assertTrue(mock_rmtree.assert_called)
         scripts_path = "{}/{}".format(self.temphome, "system-controller")

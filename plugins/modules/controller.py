@@ -68,7 +68,7 @@ from ansible_collections.skupper.v2.plugins.module_utils.command import (
     run_command
 )
 from ansible_collections.skupper.v2.plugins.module_utils.container import (
-    container_exists,
+    container_info,
 )
 from ansible_collections.skupper.v2.plugins.module_utils.system import (
     base_mounts,
@@ -137,8 +137,9 @@ class ControllerModule:
             self.module.debug("skupper-controller service already exists")
             return False
 
-        if self.container_already_exists():
-            self.module.debug("{} container already exists".format(self.container_name()))
+        exists, platform = self.get_container_info()
+        if exists:
+            self.module.debug("{} container already exists (platform: {})".format(self.container_name(), platform))
             return False
 
         if self._platform == "podman":
@@ -183,8 +184,9 @@ class ControllerModule:
             if systemd_delete(self.module, self.service_name()):
                 changed = True
 
-        if self.container_already_exists():
-            command = [self._platform, "rm", "--force", "-t", "10", self.container_name()]
+        exists, platform = self.get_container_info()
+        if exists and platform:
+            command = [platform, "rm", "--force", self.container_name()]
             code, out, err = run_command(self.module, command)
             if code != 0:
                 self.module.fail_json("error removing {} container: {}".format(self.container_name(), (err or out)))
@@ -257,8 +259,8 @@ class ControllerModule:
         container_name = "{}-skupper-controller".format(pwd.getpwuid(os.getuid())[0])
         return container_name
 
-    def container_already_exists(self) -> bool:
-        return container_exists(self.module, self.container_name())
+    def get_container_info(self) -> tuple[bool, str]:
+        return container_info(self.module, self.container_name())
 
 
 def main():

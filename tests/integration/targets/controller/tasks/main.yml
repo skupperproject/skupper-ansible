@@ -12,17 +12,16 @@
   environment:
     DBUS_SESSION_BUS_ADDRESS: "{{ 'unix:path=/run/user/' + ansible_real_user_id | string + '/bus' }}"
   block:
-    - name: TEST
-      ansible.builtin.debug: msg="BLABLA"
-    # - name: Controller install podman
-    #   ansible.builtin.include_tasks: action-install-podman.yml
-    # - name: Validate controller install podman action
-    #   ansible.builtin.include_tasks: validate-install-podman.yml
+    - name: Gathering facts
+      ansible.builtin.gather_facts:
+    - name: "Run controller module tests for all scenarios"
+      tags: always
+      with_items:
+        - "{{ matrix }}"
+      ansible.builtin.include_tasks: workflow.yml
   always:
-    - name: Run the uninstall action
-      skupper.v2.controller:
-        action: uninstall
-      failed_when: false
-    - name: Remove controller files
-      ansible.builtin.include_role:
-        name: delete_nonkube_controller
+    - name: "Cleaning up"
+      tags: always
+      with_items:
+        - "{{ matrix }}"
+      ansible.builtin.include_tasks: cleanup.yml

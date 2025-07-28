@@ -1,0 +1,31 @@
+---
+- name: "Install the controller using {{ item.platform }}"
+  skupper.v2.controller:
+    action: install
+    platform: "{{ item.platform }}"
+    image: "{{ controller_image }}"
+  register: install
+
+- name: Assert that the install has made changes
+  ansible.builtin.assert:
+    that: install.changed
+
+- name: List containers and filter the skupper-controller
+  register: exists
+  changed_when: false
+  ansible.builtin.command: "{{ item.platform }} ps --filter 'name={{ ansible_user_id }}-skupper-controller' --format
+    '{{ '{{' }}.Names{{ '}}' }}'"
+
+- name: Assert that the skupper-controller container is running
+  ansible.builtin.assert:
+    that:
+      - "ansible_user_id + '-skupper-controller' == exists.stdout"
+
+- name: Collect stats for the system controller directory
+  ansible.builtin.stat:
+    path: "{{ controller_home }}"
+  register: stat_result
+
+- name: Assert that the system controller directory exists
+  ansible.builtin.assert:
+    that: stat_result.stat is defined and stat_result.stat.isdir

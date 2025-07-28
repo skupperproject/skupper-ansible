@@ -1,0 +1,12 @@
+---
+- name: "Install the controller"
+  ansible.builtin.include_tasks: install.yml
+
+- name: "Stop controller using the service"
+  ansible.builtin.include_tasks: service-stop.yml
+
+- name: "Start controller using the service"
+  ansible.builtin.include_tasks: service-start.yml
+
+- name: "Uninstall the controller"
+  ansible.builtin.include_tasks: uninstall.yml

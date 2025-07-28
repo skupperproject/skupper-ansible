@@ -1,0 +1,11 @@
+---
+- name: Run the uninstall action
+  skupper.v2.controller:
+    action: uninstall
+    platform: "{{ item.platform }}"
+  failed_when: false
+- name: Removing controller directory
+  ansible.builtin.file:
+    path: "{{ controller_home }}"
+    state: absent
+  failed_when: false

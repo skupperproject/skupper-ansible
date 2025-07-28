@@ -1,0 +1,25 @@
+---
+- name: "Uninstall the controller using {{ item.platform }}"
+  skupper.v2.controller:
+    action: uninstall
+    platform: "{{ item.platform }}"
+  register: uninstall
+
+- name: Assert that the uninstall has made changes
+  ansible.builtin.assert:
+    that: uninstall.changed
+
+- name: List containers and filter the skupper-controller
+  register: exists
+  changed_when: false
+  ansible.builtin.command: "{{ item.platform }} ps -a --filter 'name={{ ansible_user_id }}-skupper-controller' --format
+    '{{ '{{' }}.Names{{ '}}' }}'"
+
+- name: Assert that the skupper-controller container is not present
+  ansible.builtin.assert:
+    that: "ansible_user_id + '-skupper-controller' not in exists.stdout"
+
+- name: Assert that the system controller directory does not exist
+  ansible.builtin.file:
+    path: "{{ controller_home }}"
+    state: absent

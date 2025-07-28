@@ -138,7 +138,7 @@ class TestControllerModule(TestCase):
             with self.assertRaises(AnsibleExitJson) as exit:
                 set_module_args({"action": "install", "platform": "podman"})
                 self.module.main()
-        mock_debug.assert_called_once_with("{} container already exists".format(expected_name))
+        mock_debug.assert_called_once_with("{} container already exists (platform: podman)".format(expected_name))
         self.assertFalse(exit.exception.changed)
 
     def test_install_enable_podman_fails(self):
@@ -294,7 +294,13 @@ class TestControllerModule(TestCase):
             with open("{}/{}".format(base_path, script), "w") as f:
                 f.write("dummy content\n")
 
-    def test_uninstall(self):
+    def test_uninstall_podman(self):
+        self._uninstall("podman")
+
+    def test_uninstall_docker(self):
+        self._uninstall("docker")
+
+    def _uninstall(self, platform: str):
         # create expected resources
         self._create_service_file()
         self._create_startup_scripts()
@@ -303,11 +309,12 @@ class TestControllerModule(TestCase):
         systemctl = self.systemctl_command()
 
         # mock commands
+        inspect_cmd = CommandArgs(args=[platform, "inspect", self.expected_container_name()])
         disable_cmd = CommandArgs(args=systemctl + ["disable", "--now", "skupper-controller.service"])
         reload_cmd = CommandArgs(args=systemctl + ["daemon-reload"])
         reset_cmd = CommandArgs(args=systemctl + ["reset-failed"])
-        container_rm_cmd = CommandArgs(args=["podman", "rm", "--force", "-t", "10", self.expected_container_name()])
-        mock_commands = [disable_cmd, reload_cmd, reset_cmd, container_rm_cmd]
+        container_rm_cmd = CommandArgs(args=[platform, "rm", "--force", self.expected_container_name()])
+        mock_commands = [disable_cmd, reload_cmd, reset_cmd, container_rm_cmd, inspect_cmd]
         for ca in mock_commands:
             self._run_commands[ca] = CommandResponse()
 
@@ -315,6 +322,13 @@ class TestControllerModule(TestCase):
         list_cmd = CommandArgs(args=systemctl + ['list-units', '--all', '--no-pager', '--output=json'])
         self._run_commands[list_cmd] = CommandResponse(code=0, out='[{"unit": "skupper-controller.service"}]')
         special_commands = [list_cmd]
+
+        if platform == "podman":
+            fail_platform = "docker"
+        else:
+            fail_platform = "podman"
+        inspect_fail_cmd = CommandArgs(args=[fail_platform, "inspect", self.expected_container_name()])
+        self._run_commands[inspect_fail_cmd] = CommandResponse(code=1)
 
         # assert changed
         with self.assertRaises(AnsibleExitJson) as exit:
@@ -383,7 +397,7 @@ class TestControllerModule(TestCase):
         list_cmd = CommandArgs(args=systemctl + ['list-units', '--all', '--no-pager', '--output=json'])
         self._run_commands[list_cmd] = CommandResponse(code=0, out='[]')
 
-        container_rm_cmd = CommandArgs(args=["podman", "rm", "--force", "-t", "10", self.expected_container_name()])
+        container_rm_cmd = CommandArgs(args=["podman", "rm", "--force", self.expected_container_name()])
         self._run_commands[container_rm_cmd] = CommandResponse(code=1, err="mock error")
 
         # assert changed

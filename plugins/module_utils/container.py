@@ -21,7 +21,7 @@ def has_podman(module: AnsibleModule) -> bool:
     return code == 0
 
 
-def container_exists(module: AnsibleModule, name: str) -> bool:
+def container_info(module: AnsibleModule, name: str) -> tuple[bool, str]:
     container_engines = []
     if has_podman(module):
         container_engines.append("podman")
@@ -31,5 +31,5 @@ def container_exists(module: AnsibleModule, name: str) -> bool:
         command = [engine, "inspect", name]
         code, out, err = run_command(module, command)
         if code == 0:
-            return True
-    return False
+            return True, engine
+    return False, ""

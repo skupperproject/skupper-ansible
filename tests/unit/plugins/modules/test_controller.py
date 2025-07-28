@@ -29,6 +29,7 @@ class TestControllerModule(TestCase):
         self.mock_module.start()
         self.addCleanup(self.mock_module.stop)
 
+        self._image: str = ""
         self._run_commands: dict[CommandArgs, CommandResponse] = dict()
 
         # do not use real datahome path
@@ -216,6 +217,10 @@ class TestControllerModule(TestCase):
     def test_install_podman(self):
         self._test_install("podman")
 
+    def test_install_podman_custom_image(self):
+        self._image = "quay.io/skupper/system-controller:custom"
+        self._test_install("podman")
+
     def test_install_docker(self):
         self._test_install("docker")
 
@@ -240,7 +245,7 @@ class TestControllerModule(TestCase):
         env_dict = env(platform, platform)
         for var, val in env_dict.items():
             run_command_args.extend(["-e", "%s=%s" % (var, val)])
-        run_command_args.append("quay.io/skupper/system-controller:v2-dev")
+        run_command_args.append(self._image or "quay.io/skupper/system-controller:v2-dev")
         run_command = CommandArgs(args=run_command_args)
         self._run_commands[run_command] = CommandResponse()
         self._run_commands[CommandArgs(args=["podman", "inspect", self.expected_container_name()])] = CommandResponse(code=1)

@@ -1,0 +1,13 @@
+---
+- name: Setting controller directory (rootless)
+  ansible.builtin.set_fact:
+    _controller_home: "{{ lookup('env', 'HOME') + '/.local/share/skupper/system-controller/' }}"
+  when: ansible_real_user_id != 0
+- name: Setting controller directory (rootful)
+  ansible.builtin.set_fact:
+    _controller_home: "{{ '/var/lib/skupper/system-controller/' }}"
+  when: ansible_real_user_id == 0
+- name: Removing controller directory
+  ansible.builtin.file:
+    path: "{{ _controller_home }}"
+    state: absent

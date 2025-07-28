@@ -1,0 +1,28 @@
+---
+- name: Set facts for controller module tests (rootless)
+  ansible.builtin.set_fact:
+    controller_home: "{{ lookup('env', 'HOME') + '/.local/share/skupper/system-controller' }}"
+  when: ansible_real_user_id != 0
+- name: Set facts for controller module tests (rootful)
+  ansible.builtin.set_fact:
+    controller_home: "{{ '/var/lib/skupper/system-controller' }}"
+  when: ansible_real_user_id == 0
+
+- name: Run controller module tests
+  environment:
+    DBUS_SESSION_BUS_ADDRESS: "{{ 'unix:path=/run/user/' + ansible_real_user_id | string + '/bus' }}"
+  block:
+    - name: TEST
+      ansible.builtin.debug: msg="BLABLA"
+    # - name: Controller install podman
+    #   ansible.builtin.include_tasks: action-install-podman.yml
+    # - name: Validate controller install podman action
+    #   ansible.builtin.include_tasks: validate-install-podman.yml
+  always:
+    - name: Run the uninstall action
+      skupper.v2.controller:
+        action: uninstall
+      failed_when: false
+    - name: Remove controller files
+      ansible.builtin.include_role:
+        name: delete_nonkube_controller

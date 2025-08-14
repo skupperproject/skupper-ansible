@@ -221,6 +221,16 @@ class TestControllerModule(TestCase):
         self._image = "quay.io/skupper/system-controller:custom"
         self._test_install("podman")
 
+    def test_install_podman_create_data_home(self):
+        original_temphome = self.temphome
+        new_temphome = self.temphome + ".new"
+        self.temphome = new_temphome
+        def cleanup():
+            shutil.rmtree(new_temphome)
+        self.addCleanup(cleanup)
+        self._test_install("podman")
+        self.temphome = original_temphome
+
     def test_install_docker(self):
         self._test_install("docker")
 

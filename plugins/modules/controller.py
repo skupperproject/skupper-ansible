@@ -160,6 +160,9 @@ class ControllerModule:
             command.extend(["-e", "%s=%s" % (var, val)])
         command.append(self._image)
 
+        if not os.path.exists(data_home()):
+            os.makedirs(data_home())
+
         code, out, err = run_command(self.module, command)
         if code != 0:
             msg = "error creating container '%s': %s" % (

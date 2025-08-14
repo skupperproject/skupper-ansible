@@ -41,22 +41,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: curl
-  name: curl
+    app: fedora
+  name: fedora
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: curl
+      app: fedora
   template:
     metadata:
       labels:
-        app: curl
+        app: fedora
     spec:
       containers:
-        - image: quay.io/curl/curl
+        - image: quay.io/fedora/fedora-minimal
           command: ['tail', '-f', '/dev/null']
           imagePullPolicy: Always
-          name: curl
+          name: fedora
       restartPolicy: Always
       terminationGracePeriodSeconds: 30

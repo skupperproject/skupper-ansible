@@ -54,7 +54,7 @@ spec:
         app: fedora
     spec:
       containers:
-        - image: quay.io/fedora/fedora
+        - image: quay.io/fedora/fedora-minimal
           command: ['tail', '-f', '/dev/null']
           imagePullPolicy: Always
           name: fedora

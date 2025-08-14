@@ -71,6 +71,7 @@ jobs:
       - name: Run integration tests
         working-directory: ./ansible_collections/skupper/v2
         run: |
+          set -o pipefail
           make integration | tee ansible-test-integration.out
       - name: Archiving e2e-test output
         uses: actions/upload-artifact@v4

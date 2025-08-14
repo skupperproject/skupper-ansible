@@ -1,0 +1,25 @@
+---
+- name: Set facts for controller module tests (rootless)
+  ansible.builtin.set_fact:
+    controller_home: "{{ lookup('env', 'HOME') + '/.local/share/skupper/system-controller' }}"
+  when: ansible_real_user_id != 0
+- name: Set facts for controller module tests (rootful)
+  ansible.builtin.set_fact:
+    controller_home: "{{ '/var/lib/skupper/system-controller' }}"
+  when: ansible_real_user_id == 0
+
+- name: Run controller module tests
+  environment:
+    DBUS_SESSION_BUS_ADDRESS: "{{ 'unix:path=/run/user/' + ansible_real_user_id | string + '/bus' }}"
+  block:
+    - name: Gathering facts
+      ansible.builtin.gather_facts:
+    - name: "Run controller module tests for all scenarios"
+      tags: always
+      with_items:
+        - "{{ matrix }}"
+      ansible.builtin.include_tasks: workflow.yml
+  always:
+    - name: "Cleaning up"
+      tags: always
+      ansible.builtin.include_tasks: cleanup.yml

@@ -18,7 +18,7 @@ lint:
 
 release-changelog:
 	pip install --user -U antsibull-changelog
-	antsibull-changelog release -v
+	antsibull-changelog release -v --reload-plugins
 
 build-docs: build install
 	pip install --user -U virtualenv

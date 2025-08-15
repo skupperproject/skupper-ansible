@@ -1,4 +1,4 @@
-VERSION := 2.1.0-dev
+VERSION := 2.1.2-preview
 TARBALL := skupper-v2-$(VERSION).tar.gz
 
 IMAGES = default fedora40 ubuntu2404
@@ -18,7 +18,7 @@ lint:
 
 release-changelog:
 	pip install --user -U antsibull-changelog
-	antsibull-changelog release -v
+	antsibull-changelog release -v --reload-plugins
 
 build-docs: build install
 	pip install --user -U virtualenv

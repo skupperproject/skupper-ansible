@@ -18,3 +18,17 @@ releases:
     release_date: '2025-01-17'
   2.0.0-preview-1:
     release_date: '2025-01-20'
+  2.1.1:
+    changes:
+      major_changes:
+      - New module skupper.v2.controller for system sites
+      - Refactored skupper.v2.system actions to match the Skupper CLI actions for
+        system sites
+      release_summary: 'Introducing the controller module for system sites
+
+        '
+    modules:
+    - description: Manages the lifecycle of the skupper-controller for system sites
+      name: controller
+      namespace: ''
+    release_date: '2025-08-14'

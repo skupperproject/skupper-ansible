@@ -4,6 +4,25 @@ Skupper V2 collection Release Notes
 
 .. contents:: Topics
 
+v2.1.1
+======
+
+Release Summary
+---------------
+
+Introducing the controller module for system sites
+
+Major Changes
+-------------
+
+- New module skupper.v2.controller for system sites
+- Refactored skupper.v2.system actions to match the Skupper CLI actions for system sites
+
+New Modules
+-----------
+
+- skupper.v2.controller - Manages the lifecycle of the skupper-controller for system sites
+
 v2.0.0
 ======
 

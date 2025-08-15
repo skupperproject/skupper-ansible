@@ -1,5 +1,5 @@
 ---
-controller_image: "{{ system_controller_image | default('quay.io/skupper/system-controller:2.1.1') }}"
+controller_image: "{{ system_controller_image | default('quay.io/skupper/system-controller:v2-dev') }}"
 matrix:
   - platform: podman
   - platform: docker

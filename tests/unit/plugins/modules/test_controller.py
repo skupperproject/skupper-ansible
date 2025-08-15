@@ -255,7 +255,7 @@ class TestControllerModule(TestCase):
         env_dict = env(platform, platform)
         for var, val in env_dict.items():
             run_command_args.extend(["-e", "%s=%s" % (var, val)])
-        run_command_args.append(self._image or "quay.io/skupper/system-controller:2.1.1")
+        run_command_args.append(self._image or "quay.io/skupper/system-controller:v2-dev")
         run_command = CommandArgs(args=run_command_args)
         self._run_commands[run_command] = CommandResponse()
         self._run_commands[CommandArgs(args=["podman", "inspect", self.expected_container_name()])] = CommandResponse(code=1)

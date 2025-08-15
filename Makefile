@@ -1,4 +1,4 @@
-VERSION := 2.1.1
+VERSION := 2.1.2-preview
 TARBALL := skupper-v2-$(VERSION).tar.gz
 
 IMAGES = default fedora40 ubuntu2404

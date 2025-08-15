@@ -1,5 +1,5 @@
 ---
-token_image: "{{ cli_image | default('quay.io/skupper/cli:2.1.1') }}"
+token_image: "{{ cli_image | default('quay.io/skupper/cli:v2-dev') }}"
 token_router_image: "{{ router_image | default('') }}"
 namespace: "" # noqa: var-naming
 namespace_west: token-west-testing

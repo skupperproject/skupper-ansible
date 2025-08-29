@@ -248,6 +248,13 @@ class SystemModule:
         ]
         for source, dest in mounts(self.namespace, self.platform, self._engine).items():
             command.extend(["-v", "%s:%s:z" % (source, dest)])
+
+        defaultConfigJson = os.path.join(os.getenv("HOME"), ".docker", "config.json")
+        configJson = os.environ.get("REGISTRY_AUTH_FILE") or defaultConfigJson
+        if os.path.exists(configJson):
+            command.extend(["-v", "%s:%s:z" % (configJson, "/config.json")])
+            command.extend(["-e", "REGISTRY_AUTH_FILE=/config.json"])
+
         for var, val in env(self.platform, self._engine).items():
             command.extend(["-e", "%s=%s" % (var, val)])
         self.module.debug("SKUPPER_ROUTER_IMAGE: {}".format(os.environ.get("SKUPPER_ROUTER_IMAGE")))

@@ -39,7 +39,7 @@ options:
         description:
             - The image used to initialize your site or bundle
         type: str
-        default: quay.io/skupper/cli:2.0.0
+        default: quay.io/skupper/cli:2.0.1
     engine:
         description:
             - The container engine used to manage a namespace or produce a bundle
@@ -177,7 +177,7 @@ def argspec():
                           choices=["setup", "reload", "teardown",
                                    "stop", "start", "bundle", "tarball"])
     spec["image"] = dict(type="str",
-                         default="quay.io/skupper/cli:2.0.0")
+                         default="quay.io/skupper/cli:2.0.1")
     spec["engine"] = dict(type="str", default="podman",
                           choices=["podman", "docker"])
     return spec

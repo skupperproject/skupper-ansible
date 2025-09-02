@@ -119,7 +119,7 @@ Tasks to run west and east sites using podman:
       skupper.v2.system:
         namespace: "west"
         platform: "podman"
-        image: quay.io/skupper/cli:2.0.0
+        image: quay.io/skupper/cli:2.0.1
       register: west
 
     - name: Apply token to east site
@@ -132,7 +132,7 @@ Tasks to run west and east sites using podman:
       skupper.v2.system:
         namespace: "east"
         platform: "podman"
-        image: quay.io/skupper/cli:2.0.0
+        image: quay.io/skupper/cli:2.0.1
 ```
 
 To clean up you can run the following commands and tasks:
@@ -151,7 +151,7 @@ Teardown both frontend and backend namespaces:
     action: teardown
     namespace: "{{ item }}"
     platform: "podman"
-    image: quay.io/skupper/cli:2.0.0
+    image: quay.io/skupper/cli:2.0.1
   with_items:
     - west
     - east

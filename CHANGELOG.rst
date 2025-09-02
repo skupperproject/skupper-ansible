@@ -4,6 +4,20 @@ Skupper V2 collection Release Notes
 
 .. contents:: Topics
 
+v2.0.1
+======
+
+Release Summary
+---------------
+
+Fixes minor issues
+
+Major Changes
+-------------
+
+- Allow customization of router image on system module - backport from 2.0 (https://github.com/skupperproject/skupper-ansible/pull/61)
+- Fixed parsing of optional skupper router image env var (https://github.com/skupperproject/skupper-ansible/pull/63)
+
 v2.0.0
 ======
 

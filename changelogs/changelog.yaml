@@ -18,3 +18,9 @@ releases:
     release_date: '2025-01-17'
   2.0.0-preview-1:
     release_date: '2025-01-20'
+  2.0.1:
+    changes:
+      major_changes:
+      - Allow customization of router image on system module - backport from 2.0 (https://github.com/skupperproject/skupper-ansible/pull/61)
+      - Fixed parsing of optional skupper router image env var (https://github.com/skupperproject/skupper-ansible/pull/63)
+      release_summary: Fixes minor issues

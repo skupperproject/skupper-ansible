@@ -249,7 +249,7 @@ class TestSystemModule(TestCase):
             input = tc.get("input", {})
             namespace = input.get("namespace", "default")
             platform = input.get("platform", "podman")
-            image = input.get("image", "quay.io/skupper/cli:2.0.0")
+            image = input.get("image", "quay.io/skupper/cli:2.0.1")
             self.create_resources(namespace)
             with self.assertRaises(AnsibleExitJson) as exit:
                 set_module_args(input)
@@ -300,7 +300,7 @@ class TestSystemModule(TestCase):
             self.assertEqual(1, len(self._run_commands), self._run_commands)
             first_command = self._run_commands[0]
             self.assertEqual(expectedEngine, first_command[0])
-            self.assertIn("quay.io/skupper/cli:2.0.0", first_command)
+            self.assertIn("quay.io/skupper/cli:2.0.1", first_command)
             self.assertEqual(["-n", "default", "system", "setup",
                              "-f"], first_command[len(first_command) - 5:])
             self.assertIn("SKUPPER_PLATFORM=podman", first_command)
@@ -324,7 +324,7 @@ class TestSystemModule(TestCase):
             self.assertEqual(1, len(self._run_commands), self._run_commands)
             first_command = self._run_commands[0]
             self.assertEqual(expectedEngine, first_command[0])
-            self.assertIn("quay.io/skupper/cli:2.0.0", first_command)
+            self.assertIn("quay.io/skupper/cli:2.0.1", first_command)
             self.assertEqual(["-n", "default", "system", "setup",
                              "-b", strategy], first_command[len(first_command) - 6:])
             self.assertIn("SKUPPER_PLATFORM=podman", first_command)

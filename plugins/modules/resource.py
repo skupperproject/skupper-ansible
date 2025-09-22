@@ -63,6 +63,14 @@ author:
     - Fernando Giorgetti (@fgiorgetti)
 '''
 
+RETURN = r'''
+path:
+    description:
+        - Path to the namespace where resources are located when manipulating a system site
+    returned: success
+    type: str
+'''
+
 EXAMPLES = r'''
 # Applying resources to a kubernetes cluster
 - name: Apply Skupper Resources
@@ -122,7 +130,8 @@ from ansible_collections.skupper.v2.plugins.module_utils.resource import (
     delete as resource_delete
 )
 from ansible_collections.skupper.v2.plugins.module_utils.common import (
-    is_non_kube
+    is_non_kube,
+    namespace_home
 )
 from ansible_collections.skupper.v2.plugins.module_utils.exceptions import (
     RuntimeException
@@ -186,12 +195,13 @@ class ResourceModule:
         changed = False
         state = self.params.get("state", "present")
         overwrite = state == "latest"
+        path = ""
         try:
             if is_non_kube(platform):
                 namespace = self.params["namespace"] or "default"
                 if not is_valid_name(namespace):
                     self.module.fail_json("invalid namespace (rfc1123): {}".format(namespace))
-
+                path = namespace_home(namespace)
                 if state == "absent":
                     changed = resource_delete(definitions, namespace)
                 else:
@@ -210,6 +220,7 @@ class ResourceModule:
             self.module.fail_json(ex.args)
 
         result['changed'] = changed
+        result['path'] = path
 
         self.module.exit_json(**result)
 

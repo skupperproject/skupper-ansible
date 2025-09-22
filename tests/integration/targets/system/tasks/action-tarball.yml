@@ -2,12 +2,12 @@
 - name: Create Site A resources
   skupper.v2.resource:
     path: "{{ role_path }}/files/site_a.yml"
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     platform: podman
 - name: Run the tarball action
   skupper.v2.system:
     action: tarball
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     image: "{{ system_image }}"
   register: _system
   environment:
@@ -42,7 +42,7 @@
     remote_src: true
 - name: Installing the tarball bundle
   ansible.builtin.command:
-    cmd: "{{ './install.sh -n ' + namespace }}"
+    cmd: "{{ './install.sh -n ' + namespace | string }}"
     chdir: "{{ '/tmp/' + site_name + '-bundle' }}"
   register: _bundle
   changed_when: _bundle.rc == 0
@@ -50,7 +50,7 @@
   ansible.builtin.include_tasks: validate-namespace-running.yml
 - name: Deleting namespace using the bundle script
   ansible.builtin.command:
-    cmd: "{{ './install.sh -x -n ' + namespace }}"
+    cmd: "{{ './install.sh -x -n ' + namespace | string }}"
     chdir: "{{ '/tmp/' + site_name + '-bundle' }}"
   register: _bundle
   changed_when: _bundle.rc == 0

@@ -4,7 +4,7 @@
     api_version: skupper.io/v2alpha1
     kind: "{{ item.kind }}"
     name: "{{ item.name }}"
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     kubeconfig: "{{ kubeconfig }}"
   register: my_resource
 - name: Assert that the resource was successfully retrieved

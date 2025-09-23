@@ -1,9 +1,8 @@
 ---
 - name: Retrieve expected resource from the filesystem (rootless)
   ansible.builtin.set_fact:
-    _content: >
-      "{{ lookup('file', lookup('env', 'HOME') + '/.local/share/skupper/namespaces/' +
-      namespace | string + '/input/resources/' + item.file) | from_yaml }}"
+    _content: "{{ lookup('file', lookup('env', 'HOME') + '/.local/share/skupper/namespaces/' +
+              namespace | string + '/input/resources/' + item.file) | from_yaml }}"
   when: ansible_real_user_id != 0
 - name: Retrieve expected resource from the filesystem (rootful)
   ansible.builtin.set_fact:

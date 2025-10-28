@@ -2,7 +2,7 @@
 - name: Create Site A resources
   skupper.v2.resource:
     path: "{{ role_path }}/files/site_a.yml"
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     platform: podman
 - name: Get skupper-site-ca key file hash
   ansible.builtin.set_fact:
@@ -11,7 +11,7 @@
 - name: Run the reload action
   skupper.v2.system:
     action: reload
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     image: "{{ system_image }}"
   register: _system
   environment:

@@ -5,7 +5,7 @@
   when: ansible_real_user_id != 0
 - name: Set the filename to be verified (rootful)
   ansible.builtin.set_fact:
-    _filename: "{{ '/var/lib/skupper/namespaces/' + namespace + '/input/resources/' + item.file }}"
+    _filename: "{{ '/var/lib/skupper/namespaces/' + namespace | string + '/input/resources/' + item.file }}"
   when: ansible_real_user_id == 0
 - name: Retrieve expected resource from the filesystem
   ansible.builtin.stat:

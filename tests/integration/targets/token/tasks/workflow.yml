@@ -56,7 +56,7 @@
       when: item.east.platform != "kubernetes"
     - name: Call backend service
       ansible.builtin.command: "{{ (item.west.platform == 'kubernetes') | ternary(kube_verify_command, nonkube_verify_command) }}"
-      retries: 10
+      retries: 10 * {{ test_retry_multiplier | default (1) | int }}
       delay: 6
       register: _call_backend
       until: _call_backend.rc == 0

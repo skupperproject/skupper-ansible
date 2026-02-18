@@ -51,6 +51,7 @@ class TestControllerModule(TestCase):
         self.addCleanup(self.mock_config_home.stop)
         self.addCleanup(self.mock_run_command.stop)
         self.addCleanup(self.clean_temp_home)
+        self.mock_runas()
         try:
             from ansible_collections.skupper.v2.plugins.modules import controller
             self.module = controller
@@ -154,6 +155,11 @@ class TestControllerModule(TestCase):
             "error enabling podman.socket service: mock"), ex.exception.msg)
 
     def test_install_container_create_fails(self):
+        def runas(engine: str = "podman") -> str:
+            return "{}:{}".format(os.getuid(), os.getgid())
+        runas_mock = patch('ansible_collections.skupper.v2.plugins.module_utils.system.runas', new=runas)
+        runas_mock.start()
+        self.addCleanup(runas_mock.stop)
         # improve run_command mock to include a command prefix check
         self._run_commands[CommandArgs(args=["podman", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
         self._run_commands[CommandArgs(args=["docker", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
@@ -230,6 +236,13 @@ class TestControllerModule(TestCase):
         self.addCleanup(cleanup)
         self._test_install("podman")
         self.temphome = original_temphome
+
+    def mock_runas(self):
+        def runas(engine: str = "podman") -> str:
+            return "{}:{}".format(os.getuid(), os.getgid())
+        runas_mock = patch('ansible_collections.skupper.v2.plugins.module_utils.system.runas', new=runas)
+        runas_mock.start()
+        self.addCleanup(runas_mock.stop)
 
     def test_install_docker(self):
         self._test_install("docker")

@@ -2,7 +2,7 @@
 - name: Create Site A resources based on definition
   skupper.v2.resource:
     def: "{{ lookup('ansible.builtin.file', 'site_a.yml') }}"
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     platform: podman
   register: _result
 - name: Assert that resources have been created
@@ -19,7 +19,7 @@
 - name: Delete Site A resources based on remote path with invalid resources
   skupper.v2.resource:
     path: "{{ role_path }}/files/site_invalid.yml"
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     state: absent
     platform: podman
   register: _result

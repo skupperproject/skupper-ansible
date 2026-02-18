@@ -2,12 +2,12 @@
 - name: Create Site A resources
   skupper.v2.resource:
     path: "{{ role_path }}/files/site_a.yml"
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     platform: podman
 - name: Run the start action
   skupper.v2.system:
     action: start
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     image: "{{ system_image }}"
   register: _system
   environment:
@@ -37,7 +37,7 @@
 - name: Run the start action (no change)
   skupper.v2.system:
     action: start
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     image: "{{ system_image }}"
   register: _system
   environment:

@@ -3,7 +3,7 @@ TARBALL := skupper-v2-$(VERSION).tar.gz
 
 IMAGES = default fedora40 ubuntu2404
 PYTHON ?= `python -c 'import platform; print(".".join(platform.python_version_tuple()[0:2]))'`
-PYTHON_DOCKER = 3.12
+PYTHON_DOCKER = 3.13
 
 INTEGRATION_TARGETS = resource system
 

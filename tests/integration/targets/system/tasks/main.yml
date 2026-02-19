@@ -7,7 +7,7 @@
   when: ansible_real_user_id != 0
 - name: Set facts for system module tests (rootful)
   ansible.builtin.set_fact:
-    namespace_home: "{{ '/var/lib/skupper/namespaces/' + namespace }}"
+    namespace_home: "{{ '/var/lib/skupper/namespaces/' + namespace | string }}"
     bundle_path: "{{ '/var/lib/skupper/bundles/skupper-install-' + site_name + '.sh' }}"
     tarball_path: "{{ '/var/lib/skupper/bundles/skupper-install-' + site_name + '.tar.gz' }}"
   when: ansible_real_user_id == 0
@@ -30,7 +30,7 @@
     - name: Run the stop action
       skupper.v2.system:
         action: stop
-        namespace: "{{ namespace }}"
+        namespace: "{{ namespace | string }}"
       failed_when: false
     - name: Remove namespace files
       ansible.builtin.include_role:

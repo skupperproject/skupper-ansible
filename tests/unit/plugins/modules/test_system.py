@@ -164,13 +164,13 @@ class TestSystemModule(TestCase):
         ]
         for input in inputs:
             with self.assertRaises(AnsibleFailJson) as ex:
-                set_module_args(input)
-                self.module.main()
+                with set_module_args(input):
+                    self.module.main()
 
     def test_action_start_no_resources(self):
         with self.assertRaises(AnsibleFailJson) as ex:
-            set_module_args({})
-            self.module.main()
+            with set_module_args({}):
+                self.module.main()
         self.assertTrue(str(ex.exception.__str__()).__contains__(
             "no resources found"), ex.exception.msg)
 
@@ -179,8 +179,8 @@ class TestSystemModule(TestCase):
             os.makedirs(os.path.join(self.temphome,
                         "namespaces", ns, "runtime"))
             with self.assertRaises(AnsibleExitJson) as exit:
-                set_module_args({"namespace": ns})
-                self.module.main()
+                with set_module_args({"namespace": ns}):
+                    self.module.main()
         self.assertFalse(exit.exception.changed)
 
     def test_action_start(self):
@@ -230,8 +230,8 @@ class TestSystemModule(TestCase):
             image = input.get("image", "quay.io/skupper/cli:2.1.1")
             self.create_resources(namespace)
             with self.assertRaises(AnsibleExitJson) as exit:
-                set_module_args(input)
-                self.module.main()
+                with set_module_args(input):
+                    self.module.main()
             self.assertTrue(exit.exception.changed)
             self.assertEqual(exit.exception.path, os.path.join(
                 self.temphome, "namespaces", namespace))
@@ -267,8 +267,8 @@ class TestSystemModule(TestCase):
                             "default", "runtime"), exist_ok=True)
             self.create_resources("default")
             with self.assertRaises(AnsibleExitJson) as exit:
-                set_module_args({"action": "reload"})
-                self.module.main()
+                with set_module_args({"action": "reload"}):
+                    self.module.main()
             self.assertTrue(exit.exception.changed)
             self.assertEqual(exit.exception.path, os.path.join(
                 self.temphome, "namespaces", "default"))
@@ -294,8 +294,8 @@ class TestSystemModule(TestCase):
             self._run_commands = []
             self.create_resources("default")
             with self.assertRaises(AnsibleExitJson) as exit:
-                set_module_args({"action": strategy})
-                self.module.main()
+                with set_module_args({"action": strategy}):
+                    self.module.main()
             self.assertTrue(exit.exception.changed)
             expectedEngine = "podman"
             self.assertEqual(1, len(self._run_commands), self._run_commands)
@@ -351,8 +351,8 @@ class TestSystemModule(TestCase):
                     "namespace": namespace,
                     "platform": platform,
                 }
-                set_module_args(input)
-                self.module.main()
+                with set_module_args(input):
+                    self.module.main()
             self.assertEqual(exit.exception.changed, expect_changed)
             if not expect_changed:
                 continue

@@ -2,7 +2,7 @@
 - name: Run the stop action
   skupper.v2.system:
     action: stop
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     image: "{{ system_image }}"
   register: _system
 - name: Assert stop action performed successfully

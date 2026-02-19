@@ -165,8 +165,8 @@ class TestTokenModule(TestCase):
 
     def test_module_accepts_no_args(self):
         with self.assertRaises(AnsibleExitJson):
-            set_module_args({'_ansible_check_mode': True})
-            self.module.main()
+            with set_module_args({'_ansible_check_mode': True}):
+                self.module.main()
 
     def test_module_fail_bad_args(self):
         args_list = [
@@ -176,13 +176,13 @@ class TestTokenModule(TestCase):
         ]
         for args in args_list:
             with self.assertRaises(AnsibleFailJson):
-                set_module_args(args)
-                self.module.main()
+                with set_module_args(args):
+                    self.module.main()
 
     def test_nonkube_load_links_none(self):
         with self.assertRaises(AnsibleExitJson):
-            set_module_args({'platform': 'podman'})
-            self.module.main()
+            with set_module_args({'platform': 'podman'}):
+                self.module.main()
 
     def test_nonkube_load_links(self):
         self._create_static_links()
@@ -215,13 +215,13 @@ class TestTokenModule(TestCase):
         ]
         for tc in test_cases:
             with self.assertRaises(AnsibleExitJson) as exit:
-                set_module_args({
+                with set_module_args({
                     'platform': 'podman',
                     'namespace': tc.get('namespace'),
                     'name': tc.get('router_access'),
                     'host': tc.get('host'),
-                })
-                self.module.main()
+                }):
+                    self.module.main()
             self.assertFalse(exit.exception.changed)
             self.assertEqual(exit.exception.token, tc.get("expected_token"))
 
@@ -242,14 +242,14 @@ class TestTokenModule(TestCase):
 
     def test_kube_no_site_found(self):
         with self.assertRaises(AnsibleFailJson):
-            set_module_args({})
-            self.module.main()
+            with set_module_args({}):
+                self.module.main()
 
     def test_kube_site_not_ready(self):
         K8sClientMock.resources.append(fake_site('default', 'my-site', False))
         with self.assertRaises(AnsibleFailJson):
-            set_module_args({})
-            self.module.main()
+            with set_module_args({}):
+                self.module.main()
 
     def test_kube_site_get_exception(self):
         my_site = fake_site('default', 'my-site', True)
@@ -257,9 +257,8 @@ class TestTokenModule(TestCase):
         my_site['metadata']['name'] = ''
         K8sClientMock.get_exception.append(my_site)
         with self.assertRaises(AnsibleFailJson):
-            set_module_args({})
-            self.module.main()
-
+            with set_module_args({}):
+                self.module.main()
     def test_kube_site_ready_grant_generated(self):
         K8sClientMock.resources.append(fake_site('default', 'my-site', True))
         self.assertEqual(1, len(K8sClientMock.resources))
@@ -270,8 +269,8 @@ class TestTokenModule(TestCase):
                 definition['status']['expirationTime'] = expiration.isoformat()
         K8sClientMock.new_resources_hook_fns.append(create_hook)
         with self.assertRaises(AnsibleExitJson) as exit:
-            set_module_args({})
-            self.module.main()
+            with set_module_args({}):
+                self.module.main()
         self.assertTrue(exit.exception.changed)
         self.assertEqual(2, len(K8sClientMock.resources))
         self.assertTrue(
@@ -292,8 +291,8 @@ class TestTokenModule(TestCase):
                 definition['status']['expirationTime'] = expiration.isoformat()
         K8sClientMock.new_resources_hook_fns.append(create_hook)
         with self.assertRaises(AnsibleExitJson) as exit:
-            set_module_args({})
-            self.module.main()
+            with set_module_args({}):
+                self.module.main()
         self.assertTrue(exit.exception.changed)
         self.assertEqual(3, len(K8sClientMock.resources))
         self.assertTrue(
@@ -303,8 +302,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.resources.append(fake_site('default', 'my-site', True))
         self.assertEqual(1, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleExitJson) as exit:
-            set_module_args({'name': 'new-grant'})
-            self.module.main()
+            with set_module_args({'name': 'new-grant'}):
+                self.module.main()
         self.assertTrue(exit.exception.changed)
         self.assertEqual(2, len(K8sClientMock.resources))
         self.assertEqual(
@@ -315,8 +314,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.create_exception.append(fake_grant('default', 'my-grant'))
         self.assertEqual(1, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleFailJson) as fail:
-            set_module_args({'name': 'my-grant'})
-            self.module.main()
+            with set_module_args({'name': 'my-grant'}):
+                self.module.main()
         self.assertEqual(1, len(K8sClientMock.resources))
 
     def test_kube_site_ready_new_named_grant_not_ready(self):
@@ -324,8 +323,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.new_resources_not_ready.append(fake_grant('default', 'my-grant'))
         self.assertEqual(1, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleFailJson) as fail:
-            set_module_args({'name': 'my-grant'})
-            self.module.main()
+            with set_module_args({'name': 'my-grant'}):
+                self.module.main()
         self.assertEqual(2, len(K8sClientMock.resources))
 
     def test_kube_site_ready_grant_not_ready(self):
@@ -335,8 +334,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.new_resources_not_ready.append(my_grant)
         self.assertEqual(2, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleFailJson):
-            set_module_args({'name': 'my-grant'})
-            self.module.main()
+            with set_module_args({'name': 'my-grant'}):
+                self.module.main()
         self.assertEqual(2, len(K8sClientMock.resources))
 
     def test_kube_site_ready_grants_ready(self):
@@ -345,8 +344,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.resources.append(fake_grant('default', 'my-grant-2'))
         self.assertEqual(3, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleExitJson):
-            set_module_args({})
-            self.module.main()
+            with set_module_args({}):
+                self.module.main()
         self.assertEqual(3, len(K8sClientMock.resources))
 
     def test_kube_site_ready_grants_not_ready(self):
@@ -359,8 +358,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.new_resources_not_ready.append(my_grant_2)
         self.assertEqual(3, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleExitJson):
-            set_module_args({})
-            self.module.main()
+            with set_module_args({}):
+                self.module.main()
         self.assertEqual(4, len(K8sClientMock.resources))
 
     def test_kube_site_ready_grant_get_exception(self):
@@ -370,8 +369,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.get_exception.append(my_grant)
         self.assertEqual(2, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleFailJson):
-            set_module_args({'name': 'my-grant'})
-            self.module.main()
+            with set_module_args({'name': 'my-grant'}):
+                self.module.main()
         self.assertEqual(2, len(K8sClientMock.resources))
 
     def test_kube_site_ready_generated_grant_get_exception(self):
@@ -383,8 +382,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.new_resources_hook_fns.append(create_hook)
         self.assertEqual(1, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleFailJson) as fail:
-            set_module_args({'name': 'my-grant'})
-            self.module.main()
+            with set_module_args({'name': 'my-grant'}):
+                self.module.main()
         self.assertEqual(2, len(K8sClientMock.resources), K8sClientMock.resources)
 
     def test_kube_site_ready_grant_cannot_be_redeemed(self):
@@ -395,8 +394,8 @@ class TestTokenModule(TestCase):
         self.assertEqual(2, len(K8sClientMock.resources))
         with patch.object(basic.AnsibleModule, "warn") as mock_warn:
             with self.assertRaises(AnsibleExitJson) as exit:
-                set_module_args({'name': 'my-grant'})
-                self.module.main()
+                with set_module_args({'name': 'my-grant'}):
+                    self.module.main()
         mock_warn.assert_called_once_with("accessgrant 'my-grant' cannot be redeemed")
         self.assertEqual(2, len(K8sClientMock.resources))
 
@@ -405,8 +404,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.resources.append(fake_grant('default', 'my-grant'))
         self.assertEqual(2, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleExitJson) as exit:
-            set_module_args({'name': 'my-grant'})
-            self.module.main()
+            with set_module_args({'name': 'my-grant'}):
+                self.module.main()
         self.assertFalse(exit.exception.changed)
         self.assertEqual(2, len(K8sClientMock.resources))
 
@@ -414,8 +413,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.resources.append(fake_site('default', 'my-site', False))
         self.assertEqual(1, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleFailJson):
-            set_module_args({'type': 'link'})
-            self.module.main()
+            with set_module_args({'type': 'link'}):
+                self.module.main()
         self.assertEqual(1, len(K8sClientMock.resources))
 
     def test_kube_site_existing_links_cert_get_exception(self):
@@ -425,8 +424,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.get_exception.append(fake_cert('default', 'link-1', default_issuer, True))
         self.assertEqual(1, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleFailJson):
-            set_module_args({'type': 'link'})
-            self.module.main()
+            with set_module_args({'type': 'link'}):
+                self.module.main()
         self.assertEqual(1, len(K8sClientMock.resources))
 
     def test_kube_existing_links_ready(self):
@@ -436,8 +435,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.resources.append(fake_secret('default', 'link-1'))
         self.assertEqual(3, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleExitJson) as exit:
-            set_module_args({'type': 'link'})
-            self.module.main()
+            with set_module_args({'type': 'link'}):
+                self.module.main()
         self.assertEqual(3, len(K8sClientMock.resources))
         self.assertFalse(exit.exception.changed)
         self.assertTrue(exit.exception.token)
@@ -451,8 +450,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.new_resources_hook_fns.append(create_secret_hook)
         self.assertEqual(3, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleExitJson) as exit:
-            set_module_args({'type': 'link'})
-            self.module.main()
+            with set_module_args({'type': 'link'}):
+                self.module.main()
         self.assertEqual(5, len(K8sClientMock.resources))
         self.assertTrue(exit.exception.changed)
         self.assertTrue(exit.exception.token)
@@ -464,8 +463,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.new_resources_hook_fns.append(create_secret_hook)
         self.assertEqual(1, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleExitJson) as exit:
-            set_module_args({'type': 'link'})
-            self.module.main()
+            with set_module_args({'type': 'link'}):
+                self.module.main()
         self.assertEqual(3, len(K8sClientMock.resources))
         self.assertTrue(exit.exception.changed)
         self.assertTrue(exit.exception.token)
@@ -477,8 +476,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.create_exception.append(fake_cert('default', 'my-link', site['status']['defaultIssuer'], True))
         self.assertEqual(1, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleFailJson) as fail:
-            set_module_args({'name': 'my-link', 'type': 'link'})
-            self.module.main()
+            with set_module_args({'name': 'my-link', 'type': 'link'}):
+                self.module.main()
         self.assertEqual(1, len(K8sClientMock.resources))
         self.assertTrue(fail.exception.failed)
         self.assertTrue(fail.exception.msg)
@@ -489,8 +488,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.new_resources_not_ready.append(fake_cert('default', 'my-link', site['status']['defaultIssuer'], True))
         self.assertEqual(1, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleFailJson) as fail:
-            set_module_args({'name': 'my-link', 'type': 'link'})
-            self.module.main()
+            with set_module_args({'name': 'my-link', 'type': 'link'}):
+                self.module.main()
         self.assertEqual(2, len(K8sClientMock.resources))
         self.assertTrue(fail.exception.failed)
         self.assertTrue(fail.exception.msg)
@@ -501,8 +500,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.new_resources_hook_fns.append(create_secret_hook)
         self.assertEqual(1, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleExitJson) as exit:
-            set_module_args({'name': 'my-link', 'type': 'link'})
-            self.module.main()
+            with set_module_args({'name': 'my-link', 'type': 'link'}):
+                self.module.main()
         self.assertEqual(3, len(K8sClientMock.resources))
         self.assertTrue(exit.exception.changed)
         self.assertTrue(exit.exception.token)
@@ -520,8 +519,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.resources.append(fake_secret('default', 'my-link'))
         self.assertEqual(3, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleExitJson) as exit:
-            set_module_args({'name': 'my-link', 'type': 'link'})
-            self.module.main()
+            with set_module_args({'name': 'my-link', 'type': 'link'}):
+                self.module.main()
         self.assertEqual(3, len(K8sClientMock.resources))
         self.assertFalse(exit.exception.changed)
         self.assertTrue(exit.exception.token)
@@ -539,8 +538,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.resources.append(fake_secret('default', 'my-link'))
         self.assertEqual(3, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleFailJson) as fail:
-            set_module_args({'name': 'my-link', 'type': 'link'})
-            self.module.main()
+            with set_module_args({'name': 'my-link', 'type': 'link'}):
+                self.module.main()
         self.assertEqual(3, len(K8sClientMock.resources))
         self.assertEqual('Certificate my-link exists in namespace and cannot be used', fail.exception.msg[1])
 
@@ -551,8 +550,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.resources.append(fake_secret('default', 'my-server-cert'))
         self.assertEqual(3, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleFailJson) as fail:
-            set_module_args({'name': 'my-server-cert', 'type': 'link'})
-            self.module.main()
+            with set_module_args({'name': 'my-server-cert', 'type': 'link'}):
+                self.module.main()
         self.assertEqual(3, len(K8sClientMock.resources))
         self.assertEqual('Certificate my-server-cert exists in namespace and cannot be used', fail.exception.msg[1])
 
@@ -563,8 +562,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.resources.append(fake_secret('default', 'my-server-cert'))
         self.assertEqual(3, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleFailJson) as fail:
-            set_module_args({'name': 'my-server-cert', 'type': 'link'})
-            self.module.main()
+            with set_module_args({'name': 'my-server-cert', 'type': 'link'}):
+                self.module.main()
         self.assertEqual(3, len(K8sClientMock.resources))
         self.assertEqual('Certificate my-server-cert exists in namespace and cannot be used', fail.exception.msg[1])
 
@@ -574,8 +573,8 @@ class TestTokenModule(TestCase):
         K8sClientMock.resources.append(fake_secret('default', 'my-link'))
         self.assertEqual(2, len(K8sClientMock.resources))
         with self.assertRaises(AnsibleFailJson) as fail:
-            set_module_args({'name': 'my-link', 'type': 'link'})
-            self.module.main()
+            with set_module_args({'name': 'my-link', 'type': 'link'}):
+                self.module.main()
         self.assertEqual(2, len(K8sClientMock.resources))
         self.assertEqual('Secret my-link exists in namespace and cannot be used', fail.exception.msg[1])
 

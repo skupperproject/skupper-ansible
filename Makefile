@@ -1,7 +1,7 @@
 VERSION := 2.1.1
 TARBALL := skupper-v2-$(VERSION).tar.gz
 
-IMAGES = default fedora40 ubuntu2404
+IMAGES = default ubuntu2404
 PYTHON ?= `python -c 'import platform; print(".".join(platform.python_version_tuple()[0:2]))'`
 PYTHON_DOCKER = 3.12
 
@@ -51,7 +51,7 @@ sanity:
 .PHONY: unit
 unit:
 	pip install -r ./tests/unit/requirements.txt -U
-	ansible-test units --color --coverage --python $(PYTHON) -v
+	ansible-test units --color --coverage --venv --python $(PYTHON) -v
 
 .PHONY: unit-docker
 unit-docker: $(foreach img,$(IMAGES),unit-docker-$(img))

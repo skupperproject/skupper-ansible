@@ -1,3 +1,7 @@
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
+
 import os
 import pwd
 import shutil
@@ -51,6 +55,7 @@ class TestControllerModule(TestCase):
         self.addCleanup(self.mock_config_home.stop)
         self.addCleanup(self.mock_run_command.stop)
         self.addCleanup(self.clean_temp_home)
+        self.mock_runas()
         try:
             from ansible_collections.skupper.v2.plugins.modules import controller
             self.module = controller
@@ -94,8 +99,8 @@ class TestControllerModule(TestCase):
         self._run_commands[CommandArgs(args=systemd_cmd)] = CommandResponse(code=1, err="mock")
         with patch.object(basic.AnsibleModule, "warn") as mock_warn:
             with self.assertRaises(AnsibleExitJson) as exit:
-                set_module_args({"action": "install"})
-                self.module.main()
+                with set_module_args({"action": "install"}):
+                    self.module.main()
         mock_warn.assert_called_once_with("unable to detect systemd: mock")
         self.assertFalse(exit.exception.changed)
     
@@ -104,8 +109,8 @@ class TestControllerModule(TestCase):
         systemd_cmd.extend(["list-units", "--all", "--no-pager", "--output=json"])
         self._run_commands[CommandArgs(args=systemd_cmd)] = CommandResponse(code=1, err="mock")
         with self.assertRaises(AnsibleFailJson) as ex:
-            set_module_args({"action": "install"})
-            self.module.main()
+            with set_module_args({"action": "install"}):
+                self.module.main()
         self.assertTrue(str(ex.exception.__str__()).__contains__(
             "error listing service units: mock"), ex.exception.msg)
     
@@ -115,8 +120,8 @@ class TestControllerModule(TestCase):
         self._run_commands[CommandArgs(args=systemd_cmd)] = CommandResponse(code=0, out="bad-data")
         with patch.object(basic.AnsibleModule, "warn") as mock_warn:
             with self.assertRaises(AnsibleExitJson) as exit:
-                set_module_args({"action": "install"})
-                self.module.main()
+                with set_module_args({"action": "install"}):
+                    self.module.main()
         mock_warn.assert_called_once_with(RegexMatcher("invalid json data: *"))
         self.assertFalse(exit.exception.changed)
     
@@ -125,8 +130,8 @@ class TestControllerModule(TestCase):
         systemd_cmd.extend(["list-units", "--all", "--no-pager", "--output=json"])
         self._run_commands[CommandArgs(args=systemd_cmd)] = CommandResponse(code=0, out='[{"unit": "skupper-controller.service"}]')
         with self.assertRaises(AnsibleExitJson) as exit:
-            set_module_args({"action": "install"})
-            self.module.main()
+            with set_module_args({"action": "install"}):
+                self.module.main()
         self.assertFalse(exit.exception.changed)
 
     def test_install_container_exists(self):
@@ -136,8 +141,8 @@ class TestControllerModule(TestCase):
         self._run_commands[CommandArgs(args=["podman", "inspect", expected_name])] = CommandResponse(code=0)
         with patch.object(basic.AnsibleModule, "debug") as mock_debug:
             with self.assertRaises(AnsibleExitJson) as exit:
-                set_module_args({"action": "install", "platform": "podman"})
-                self.module.main()
+                with set_module_args({"action": "install", "platform": "podman"}):
+                    self.module.main()
         mock_debug.assert_called_once_with("{} container already exists (platform: podman)".format(expected_name))
         self.assertFalse(exit.exception.changed)
 
@@ -148,12 +153,17 @@ class TestControllerModule(TestCase):
         self._run_commands[CommandArgs(args=["docker", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
         self._run_commands[CommandArgs(args=["podman", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
         with self.assertRaises(AnsibleFailJson) as ex:
-            set_module_args({"action": "install"})
-            self.module.main()
+            with set_module_args({"action": "install"}):
+                self.module.main()
         self.assertTrue(str(ex.exception.__str__()).__contains__(
             "error enabling podman.socket service: mock"), ex.exception.msg)
 
     def test_install_container_create_fails(self):
+        def runas(engine: str = "podman") -> str:
+            return "{}:{}".format(os.getuid(), os.getgid())
+        runas_mock = patch('ansible_collections.skupper.v2.plugins.module_utils.system.runas', new=runas)
+        runas_mock.start()
+        self.addCleanup(runas_mock.stop)
         # improve run_command mock to include a command prefix check
         self._run_commands[CommandArgs(args=["podman", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
         self._run_commands[CommandArgs(args=["docker", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
@@ -162,12 +172,12 @@ class TestControllerModule(TestCase):
         self._run_commands[CommandArgs(args=["docker", "run", "-d"], prefix=True)] = CommandResponse(code=1, err=mock_error)
         expected_name = self.expected_container_name()
         with self.assertRaises(AnsibleFailJson) as ex:
-            set_module_args({"action": "install"})
-            self.module.main()
+            with set_module_args({"action": "install"}):
+                self.module.main()
         self.assertEqual(ex.exception.msg[1], "error creating container '{}': {}".format(expected_name, mock_error))
         with self.assertRaises(AnsibleFailJson) as ex:
-            set_module_args({"action": "install", "platform": "docker"})
-            self.module.main()
+            with set_module_args({"action": "install", "platform": "docker"}):
+                self.module.main()
         self.assertEqual(ex.exception.msg[1], "error creating container '{}': {}".format(expected_name, mock_error))
 
     def test_install_startup_scripts_create_fails(self):
@@ -176,8 +186,8 @@ class TestControllerModule(TestCase):
         with patch("os.makedirs") as mock_makedirs:
             mock_makedirs.side_effect = Exception("mock exception creating dirs")
             with self.assertRaises(AnsibleFailJson) as ex:
-                set_module_args({"action": "install"})
-                self.module.main()
+                with set_module_args({"action": "install"}):
+                    self.module.main()
         self.assertEqual(ex.exception.msg[1], "unable to create startup scripts: mock exception creating dirs")
 
         def open_raise(*args, **kwargs):
@@ -189,8 +199,8 @@ class TestControllerModule(TestCase):
         self.addCleanup(open_mock.stop)
 
         with self.assertRaises(AnsibleFailJson) as ex:
-            set_module_args({"action": "install"})
-            self.module.main()
+            with set_module_args({"action": "install"}):
+                self.module.main()
         self.assertEqual(ex.exception.msg[1], "unable to create startup scripts: mock exception writing start.sh")
 
     def test_install_service_create_fails(self):
@@ -203,14 +213,14 @@ class TestControllerModule(TestCase):
         with patch('ansible_collections.skupper.v2.plugins.modules.controller.ControllerModule.create_service') as mock_create_service:
             mock_create_service.side_effect = Exception("skupper-controller.service")
             with self.assertRaises(AnsibleFailJson) as ex:
-                set_module_args({"action": "install"})
-                self.module.main()
+                with set_module_args({"action": "install"}):
+                    self.module.main()
             self.assertEqual(ex.exception.msg[1], "unable to create systemd service: skupper-controller.service")
         # warn on systemctl service creation
         with patch.object(basic.AnsibleModule, "warn") as mock_warn:
             with self.assertRaises(AnsibleExitJson) as exit:
-                set_module_args({"action": "install"})
-                self.module.main()
+                with set_module_args({"action": "install"}):
+                    self.module.main()
         mock_warn.assert_called_with("error enabling service 'skupper-controller.service': mock error")
         self.assertTrue(exit.exception.changed)
 
@@ -230,6 +240,13 @@ class TestControllerModule(TestCase):
         self.addCleanup(cleanup)
         self._test_install("podman")
         self.temphome = original_temphome
+
+    def mock_runas(self):
+        def runas(engine: str = "podman") -> str:
+            return "{}:{}".format(os.getuid(), os.getgid())
+        runas_mock = patch('ansible_collections.skupper.v2.plugins.module_utils.system.runas', new=runas)
+        runas_mock.start()
+        self.addCleanup(runas_mock.stop)
 
     def test_install_docker(self):
         self._test_install("docker")
@@ -262,8 +279,8 @@ class TestControllerModule(TestCase):
         self._run_commands[CommandArgs(args=["docker", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
 
         with self.assertRaises(AnsibleExitJson) as exit:
-            set_module_args({"action": "install"})
-            self.module.main()
+            with set_module_args({"action": "install"}):
+                self.module.main()
         self.assertTrue(exit.exception.changed)
         self.assertTrue(run_command.matched)
 
@@ -283,8 +300,8 @@ class TestControllerModule(TestCase):
         self._run_commands[CommandArgs(args=["podman", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
         self._run_commands[CommandArgs(args=["docker", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
         with self.assertRaises(AnsibleExitJson) as exit:
-            set_module_args({"action": "uninstall"})
-            self.module.main()
+            with set_module_args({"action": "uninstall"}):
+                self.module.main()
         self.assertFalse(exit.exception.changed)
 
     def _create_service_file(self):
@@ -342,8 +359,8 @@ class TestControllerModule(TestCase):
 
         # assert changed
         with self.assertRaises(AnsibleExitJson) as exit:
-            set_module_args({"action": "uninstall"})
-            self.module.main()
+            with set_module_args({"action": "uninstall"}):
+                self.module.main()
         self.assertTrue(exit.exception.changed)
 
         # assert commands called
@@ -380,8 +397,8 @@ class TestControllerModule(TestCase):
             remove_mock.side_effect = Exception("mock remove error")
             with patch.object(basic.AnsibleModule, "warn") as mock_warn:
                 with self.assertRaises(AnsibleExitJson) as exit:
-                    set_module_args({"action": "uninstall"})
-                    self.module.main()
+                    with set_module_args({"action": "uninstall"}):
+                        self.module.main()
 
         self.assertTrue(exit.exception.changed)
 
@@ -412,8 +429,8 @@ class TestControllerModule(TestCase):
 
         # assert changed
         with self.assertRaises(AnsibleFailJson) as ex:
-            set_module_args({"action": "uninstall"})
-            self.module.main()
+            with set_module_args({"action": "uninstall"}):
+                self.module.main()
 
         self.assertEqual(ex.exception.msg[1], "error removing {} container: {}".format(self.expected_container_name(), "mock error"))
 
@@ -433,8 +450,8 @@ class TestControllerModule(TestCase):
             with patch("shutil.rmtree") as mock_rmtree:
                 mock_rmtree.side_effect = Exception("mock exception removing dirs")
                 with self.assertRaises(AnsibleExitJson) as exit:
-                    set_module_args({"action": "uninstall"})
-                    self.module.main()
+                    with set_module_args({"action": "uninstall"}):
+                        self.module.main()
 
         # assert commands called
         for ca in special_commands:

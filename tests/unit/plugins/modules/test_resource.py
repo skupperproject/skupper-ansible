@@ -140,18 +140,18 @@ class TestResourceModule(TestCase):
         ]
         for input in inputs:
             with self.assertRaises(AnsibleFailJson) as ex:
-                set_module_args(input)
-                self.module.main()
+                with set_module_args(input):
+                    self.module.main()
 
     def test_module_fail_when_required_args_missing(self):
         with self.assertRaises(AnsibleFailJson):
-            set_module_args({})
-            self.module.main()
+            with set_module_args({}):
+                self.module.main()
 
     def test_module_fail_bad_args(self):
         with self.assertRaises(AnsibleFailJson):
-            set_module_args({"namespace": "invalid.name"})
-            self.module.main()
+            with set_module_args({"namespace": "invalid.name"}):
+                self.module.main()
 
     def test_nonkube_path_local_directory(self):
 
@@ -196,27 +196,26 @@ class TestResourceModule(TestCase):
             with open(filename, "w", encoding='utf-8') as f:
                 f.write(sample_site_def)
             for test_case in test_cases:
-                set_module_args({
+                with set_module_args({
                     'path': path_param,
                     'state': test_case.get("state", ""),
                     'platform': 'podman',
-                })
-
-                with self.assertRaises(AnsibleExitJson) as result:
-                    self.module.main()
-                self.assertTrue(
-                    result.exception.args[0]['changed'] == test_case.get(
-                        "expectChanged", False),
-                    "{} - {}".format(test_case.get("name"), result.exception)
-                )
-                storedObjects = 0
-                for file in ["Site-my-site", "RouterAccess-access-my-site", "Listener-backend"]:
-                    filename = os.path.join(
-                        self.temphome, "default/input/resources/{}.yaml".format(file))
-                    if os.path.isfile(filename):
-                        storedObjects += 1
-                self.assertEqual(test_case.get("storedObjects"), storedObjects,
-                                 "{} - {}".format(test_case.get("name"), result.exception))
+                }):
+                    with self.assertRaises(AnsibleExitJson) as result:
+                        self.module.main()
+                    self.assertTrue(
+                        result.exception.args[0]['changed'] == test_case.get(
+                            "expectChanged", False),
+                        "{} - {}".format(test_case.get("name"), result.exception)
+                    )
+                    storedObjects = 0
+                    for file in ["Site-my-site", "RouterAccess-access-my-site", "Listener-backend"]:
+                        filename = os.path.join(
+                            self.temphome, "default/input/resources/{}.yaml".format(file))
+                        if os.path.isfile(filename):
+                            storedObjects += 1
+                    self.assertEqual(test_case.get("storedObjects"), storedObjects,
+                                    "{} - {}".format(test_case.get("name"), result.exception))
 
     def test_kube_path_local_file(self):
 
@@ -252,20 +251,20 @@ class TestResourceModule(TestCase):
         with os.fdopen(fd, "w", encoding='utf-8') as f:
             f.write(sample_site_def)
         for test_case in test_cases:
-            set_module_args({
+            with set_module_args({
                 'path': fn,
                 'state': test_case.get("state", "")
-            })
+            }):
 
-            with self.assertRaises(AnsibleExitJson) as result:
-                self.module.main()
-            self.assertTrue(
-                result.exception.args[0]['changed'] == test_case.get(
-                    "expectChanged", False),
-                "{} - {}".format(test_case.get("name"), result.exception)
-            )
-            self.assertEqual(test_case.get("storedObjects"), len(
-                self.store), "incorrect amount of objects stored")
+                with self.assertRaises(AnsibleExitJson) as result:
+                    self.module.main()
+                self.assertTrue(
+                    result.exception.args[0]['changed'] == test_case.get(
+                        "expectChanged", False),
+                    "{} - {}".format(test_case.get("name"), result.exception)
+                )
+                self.assertEqual(test_case.get("storedObjects"), len(
+                    self.store), "incorrect amount of objects stored")
 
     def test_kube_path_http_file(self):
 
@@ -310,27 +309,27 @@ class TestResourceModule(TestCase):
             }
         ]
         for test_case in test_cases:
-            set_module_args({
+            with set_module_args({
                 'path': test_case.get("path", ""),
                 'state': test_case.get("state", "")
-            })
-            expectFailed = test_case.get("expectFail", False)
-            if not expectFailed:
-                with self.assertRaises(AnsibleExitJson) as result:
-                    self.module.main()
-            else:
-                with self.assertRaises(AnsibleFailJson) as result:
-                    self.module.main()
-            changed = 'changed' in result.exception.args[0] and result.exception.args[0]['changed']
-            self.assertTrue(changed == test_case.get("expectChanged", False),
-                            "{} - {}".format(test_case.get("name"),
-                                             result.exception)
-                            )
-            failed = 'failed' in result.exception.args[0] and result.exception.args[0]['failed']
-            self.assertTrue(failed == expectFailed,
-                            "{} - {}".format(test_case.get("name"), result.exception))
-            self.assertEqual(test_case.get("storedObjects"), len(
-                self.store), "incorrect amount of objects stored")
+            }):
+                expectFailed = test_case.get("expectFail", False)
+                if not expectFailed:
+                    with self.assertRaises(AnsibleExitJson) as result:
+                        self.module.main()
+                else:
+                    with self.assertRaises(AnsibleFailJson) as result:
+                        self.module.main()
+                changed = 'changed' in result.exception.args[0] and result.exception.args[0]['changed']
+                self.assertTrue(changed == test_case.get("expectChanged", False),
+                                "{} - {}".format(test_case.get("name"),
+                                                result.exception)
+                                )
+                failed = 'failed' in result.exception.args[0] and result.exception.args[0]['failed']
+                self.assertTrue(failed == expectFailed,
+                                "{} - {}".format(test_case.get("name"), result.exception))
+                self.assertEqual(test_case.get("storedObjects"), len(
+                    self.store), "incorrect amount of objects stored")
 
     def test_kube_def(self):
 
@@ -363,20 +362,20 @@ class TestResourceModule(TestCase):
             }
         ]
         for test_case in test_cases:
-            set_module_args({
+            with set_module_args({
                 'def': sample_site_def,
                 'state': test_case.get("state", "")
-            })
+            }):
 
-            with self.assertRaises(AnsibleExitJson) as result:
-                self.module.main()
-            self.assertTrue(
-                result.exception.args[0]['changed'] == test_case.get(
-                    "expectChanged", False),
-                "{} - {}".format(test_case.get("name"), result.exception)
-            )
-            self.assertEqual(test_case.get("storedObjects"), len(
-                self.store), "incorrect amount of objects stored")
+                with self.assertRaises(AnsibleExitJson) as result:
+                    self.module.main()
+                self.assertTrue(
+                    result.exception.args[0]['changed'] == test_case.get(
+                        "expectChanged", False),
+                    "{} - {}".format(test_case.get("name"), result.exception)
+                )
+                self.assertEqual(test_case.get("storedObjects"), len(
+                    self.store), "incorrect amount of objects stored")
 
     def k8s_create(self, **kwargs):
         if "body" not in kwargs:

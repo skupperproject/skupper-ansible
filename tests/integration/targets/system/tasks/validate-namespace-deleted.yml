@@ -2,12 +2,12 @@
 - name: Set expected values for rootless execution
   ansible.builtin.set_fact:
     runtime_dir: "{{ lookup('env', 'HOME') + '/.local/share/skupper/namespaces/' + namespace + '/runtime' }}"
-    systemctl_cmd: "{{ 'systemctl --user is-active skupper-' + namespace }}"
+    systemctl_cmd: "{{ 'systemctl --user is-active skupper-' + namespace | string }}"
   when: ansible_real_user_id != 0
 - name: Set expected values for rootful execution
   ansible.builtin.set_fact:
-    runtime_dir: "{{ '/var/lib/skupper/namespaces/' + namespace + '/runtime' }}"
-    systemctl_cmd: "{{ 'systemctl is-active skupper-' + namespace }}"
+    runtime_dir: "{{ '/var/lib/skupper/namespaces/' + namespace | string + '/runtime' }}"
+    systemctl_cmd: "{{ 'systemctl is-active skupper-' + namespace | string }}"
   when: ansible_real_user_id == 0
 - name: Stats for the namespace runtime directory
   register: _dir
@@ -27,7 +27,7 @@
     - "{{ 'inactive' not in _systemctl.stdout }}"
 - name: Assert that the skupper-router container does not exist
   containers.podman.podman_container_info:
-    name: "{{ namespace + '-skupper-router' }}"
+    name: "{{ namespace | string + '-skupper-router' }}"
   register: _container
 - name: Assert that no containers returned
   ansible.builtin.assert:

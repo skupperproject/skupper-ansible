@@ -2,7 +2,7 @@
 - name: Create Site A resources based on definition
   skupper.v2.resource:
     def: "{{ lookup('ansible.builtin.file', 'site_a.yml') }}"
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     kubeconfig: "{{ kubeconfig }}"
   register: _result
 - name: Assert that resources have been created
@@ -19,7 +19,7 @@
 - name: Create Site A resources based on definition (no changes expected)
   skupper.v2.resource:
     def: "{{ lookup('ansible.builtin.file', 'site_a.yml') }}"
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     kubeconfig: "{{ kubeconfig }}"
   register: _result
 - name: Assert that resources have not been changed
@@ -30,7 +30,7 @@
 - name: Create Site A resources based on local path (no changes expected)
   skupper.v2.resource:
     path: "{{ role_path }}/files/site_a.yml"
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     kubeconfig: "{{ kubeconfig }}"
   register: _result
 - name: Assert that resources have not been changed
@@ -41,7 +41,7 @@
 - name: Create Site A resources based on remote path (no changes expected)
   skupper.v2.resource:
     path: "{{ role_path }}/files/site_a.yml"
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     remote: true
     kubeconfig: "{{ kubeconfig }}"
   register: _result
@@ -53,7 +53,7 @@
 - name: Override Site A resources based on local path
   skupper.v2.resource:
     path: "{{ role_path }}/files/site_a.yml"
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     state: latest
     kubeconfig: "{{ kubeconfig }}"
   register: _result
@@ -65,7 +65,7 @@
 - name: Delete Site A resources based on remote path
   skupper.v2.resource:
     path: "{{ role_path }}/files/site_a.yml"
-    namespace: "{{ namespace }}"
+    namespace: "{{ namespace | string }}"
     state: absent
     kubeconfig: "{{ kubeconfig }}"
   register: _result

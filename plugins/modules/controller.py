@@ -30,7 +30,7 @@ options:
         description:
             - The controller-image to use
         type: str
-        default: quay.io/skupper/system-controller:2.1.1
+        default: quay.io/skupper/system-controller:2.1.3
     platform:
         description:
             - The platform used to run the controller for system sites
@@ -94,7 +94,7 @@ def argspec():
     spec["action"] = dict(type="str", default="install",
                           choices=["install", "uninstall"])
     spec["image"] = dict(type="str",
-                         default="quay.io/skupper/system-controller:2.1.1")
+                         default="quay.io/skupper/system-controller:2.1.3")
     spec["platform"] = dict(type="str", default="podman",
                             choices=["podman", "docker"])
     return spec

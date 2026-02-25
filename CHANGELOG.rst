@@ -4,6 +4,24 @@ Skupper V2 collection Release Notes
 
 .. contents:: Topics
 
+v2.1.3
+======
+
+Release Summary
+---------------
+
+Update components to 2.1.3
+
+Major Changes
+-------------
+
+- Add a retry multiplier to integration tests (#86)
+- Fix unhandled exception when a running a command that does not exist (#83)
+- Increased retry count on token integration test (#73)
+- Mount and uses the REGISTRY_AUTH_FILE when starting a system site (#74)
+- Updated cli image to 2.1.3
+- Updated skupper-controller image to 2.1.3
+
 v2.1.1
 ======
 

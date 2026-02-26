@@ -8,5 +8,5 @@
     kubeconfig: "{{ kubeconfig }}"
   register: _resource
   until: _resource.resources | length == 0
-  retries: 10
+  retries: "{{ 10 * test_retry_multiplier | default (1) | int }}"
   delay: 6

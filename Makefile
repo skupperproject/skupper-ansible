@@ -1,4 +1,4 @@
-VERSION := 2.1.2-preview
+VERSION := 2.1.4-preview
 TARBALL := skupper-v2-$(VERSION).tar.gz
 
 IMAGES = default ubuntu2404
@@ -34,8 +34,8 @@ build: clean
 	ansible-galaxy collection build
 
 clean:
-	@[ -f "$(TARBALL)" ] && rm $(TARBALL) || true
-	rm -rf tests/output
+	rm skupper-v2-*.tar.gz 2>/dev/null || true
+	rm -rf tests/output || true
 
 install:
 	@[ -f "$(TARBALL)" ] && true || (echo "Collection has not been built" && false)

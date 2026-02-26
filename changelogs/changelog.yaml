@@ -32,3 +32,16 @@ releases:
       name: controller
       namespace: ''
     release_date: '2025-08-14'
+  2.1.3:
+    changes:
+      major_changes:
+      - Add a retry multiplier to integration tests (#86)
+      - Fix unhandled exception when a running a command that does not exist (#83)
+      - Increased retry count on token integration test (#73)
+      - Mount and uses the REGISTRY_AUTH_FILE when starting a system site (#74)
+      - Updated cli image to 2.1.3
+      - Updated skupper-controller image to 2.1.3
+      release_summary: Update components to 2.1.3
+    release_date: '2026-02-24'
+  2.1.4-preview:
+    release_date: '2026-02-26'

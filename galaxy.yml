@@ -1,6 +1,6 @@
 namespace: skupper
 name: v2
-version: 2.1.2-preview
+version: 2.1.4-preview
 readme: README.md
 authors:
   - Fernando Giorgetti (@fgiorgetti)

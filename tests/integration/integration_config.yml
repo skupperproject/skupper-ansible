@@ -5,3 +5,4 @@ kubeconfig: ""
 # system_controller_image: ""
 # skupper_v2_install: false
 # backend_container_engine: podman
+test_retry_multiplier: 1

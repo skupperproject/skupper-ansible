@@ -15,8 +15,10 @@ Thank you for your interest in contributing to the Skupper v2 Ansible collection
 
 1. **Clone the repository**
   ```bash
-  git clone https://github.com/skupperproject/ansible_collections.git
-  cd ansible_collections/skupper/v2
+  mkdir -p ansible_collections/skupper
+  cd ansible_collections/skupper
+  git clone https://github.com/skupperproject/skupper-ansible.git v2
+  cd v2
   ```
   > **Note:** The repository must be cloned into the `ansible_collections/skupper/v2` directory structure as shown above. This directory layout is required for proper Ansible collection discovery and functionality.
 

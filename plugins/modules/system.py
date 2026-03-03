@@ -20,6 +20,8 @@ description:
     - It has the ability to produce site bundles (tarball or a self-extracting shell-script)
     - Runs with podman (default) or docker binaries
     - Only valid for platforms "podman", "docker" and "linux"
+    - When using podman-docker (Docker CLI that uses Podman underneath), use the podman platform, not docker.
+    - The docker platform expects a real Docker daemon and a system docker group; podman-docker does not satisfy these and will fail.
 
 options:
     action:

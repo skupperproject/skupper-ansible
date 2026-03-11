@@ -57,6 +57,41 @@ spec:
 
 """
 
+# Minimal AccessToken YAML for redeem tests (Kubernetes — controller fills status)
+sample_access_token_def = """---
+apiVersion: skupper.io/v2alpha1
+kind: AccessToken
+metadata:
+  name: my-token
+spec: {}
+"""
+
+# AccessToken with url/code for system-site HTTP redeem (Skupper non-kube)
+sample_access_token_system = """---
+apiVersion: skupper.io/v2alpha1
+kind: AccessToken
+metadata:
+  name: sys-tok
+spec:
+  url: https://claims.example.test/redeem
+  code: my-secret-code
+"""
+
+sample_redeem_http_response = """apiVersion: v1
+kind: Secret
+metadata:
+  name: link-secret-sys-tok
+data:
+  tls.crt: eQ==
+---
+apiVersion: skupper.io/v2alpha1
+kind: Link
+metadata:
+  name: sys-tok
+spec:
+  tlsCredentials: link-secret-sys-tok
+"""
+
 
 class K8sMock():
     def __init__(self, *args, **kwargs) -> None:
@@ -81,6 +116,15 @@ class K8sMock():
 
     def delete(self, **kwargs):
         pass
+
+
+class _DictLike:
+    """Wrapper so mock get() return value has to_dict() as K8sClient.get() expects."""
+    def __init__(self, d):
+        self._d = d
+
+    def to_dict(self):
+        return self._d
 
 
 class TestResourceModule(TestCase):
@@ -115,6 +159,7 @@ class TestResourceModule(TestCase):
         self.k8s.create = self.k8s_create
         self.k8s.patch = self.k8s_patch
         self.k8s.delete = self.k8s_delete
+        self.k8s.get = self.k8s_get
 
         # do not use real namespace path
         self.temphome = tempfile.mkdtemp()
@@ -184,10 +229,9 @@ class TestResourceModule(TestCase):
             }
         ]
         for subdir in [False, True]:
-            home = os.path.expanduser("~")
-            path = tempfile.mkdtemp(dir=home)
+            path = tempfile.mkdtemp()
             self.tempDirs.append(path)
-            path_param = "~/{}".format(path[len(home)+1:])
+            path_param = path
             store_path = path
             if subdir:
                 store_path = os.path.join(path, "subdir")
@@ -377,6 +421,111 @@ class TestResourceModule(TestCase):
                 self.assertEqual(test_case.get("storedObjects"), len(
                     self.store), "incorrect amount of objects stored")
 
+    def test_redeem_returns_link_and_secret(self):
+        """With redeem=true and an AccessToken in def, result includes redeemed_link_and_secret."""
+        with set_module_args({
+            "def": sample_access_token_def,
+            "namespace": "test",
+            "redeem": True,
+        }):
+            with self.assertRaises(AnsibleExitJson) as result:
+                self.module.main()
+        out = result.exception.args[0]
+        self.assertIn("redeemed_link_and_secret", out, "redeemed_link_and_secret in result")
+        redeemed = out["redeemed_link_and_secret"]
+        self.assertIsInstance(redeemed, list, "redeemed_link_and_secret is a list")
+        self.assertEqual(len(redeemed), 1, "one Link+Secret per AccessToken")
+        yaml_str = redeemed[0]
+        self.assertIn("Link", yaml_str)
+        self.assertIn("Secret", yaml_str)
+        self.assertIn("my-token", yaml_str)
+        self.assertIn("link-secret-my-token", yaml_str)
+        self.assertNotIn("AccessToken-my-token", self.store)
+
+    def test_redeem_system_site_http_returns_link_and_secret(self):
+        """podman/docker/linux: POST spec.url with spec.code; apply Secret+Link; drop AccessToken."""
+        calls = []
+
+        def fake_open_url(url, **kwargs):
+            calls.append(
+                {
+                    "url": url,
+                    "method": kwargs.get("method"),
+                    "data": kwargs.get("data"),
+                    "headers": kwargs.get("headers"),
+                }
+            )
+
+            class _Resp:
+                def read(self):
+                    return sample_redeem_http_response.encode("utf-8")
+
+            return _Resp()
+
+        with patch(
+            "ansible_collections.skupper.v2.plugins.modules.resource.open_url",
+            side_effect=fake_open_url,
+        ):
+            with set_module_args({
+                "def": sample_access_token_system,
+                "namespace": "east",
+                "platform": "podman",
+                "redeem": True,
+            }):
+                with self.assertRaises(AnsibleExitJson) as result:
+                    self.module.main()
+        out = result.exception.args[0]
+        self.assertIn("redeemed_link_and_secret", out)
+        self.assertTrue(out.get("changed"), "redeem writes Link/Secret and removes token")
+        redeemed = out["redeemed_link_and_secret"]
+        self.assertEqual(len(redeemed), 1)
+        self.assertIn("kind: Secret", redeemed[0])
+        self.assertIn("kind: Link", redeemed[0])
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0]["url"], "https://claims.example.test/redeem")
+        self.assertEqual(calls[0]["method"], "POST")
+        self.assertEqual(calls[0]["data"], b"my-secret-code")
+        self.assertEqual(calls[0]["headers"].get("name"), "sys-tok")
+        self.assertEqual(calls[0]["headers"].get("subject"), "east")
+        # AccessToken file removed from namespace resources
+        at_path = os.path.join(
+            self.temphome, "east", "input", "resources", "AccessToken-sys-tok.yaml"
+        )
+        self.assertFalse(
+            os.path.isfile(at_path),
+            "AccessToken yaml should never be written when redeem is true",
+        )
+
+    def test_redeem_kubernetes_uses_http_when_url_and_code(self):
+        """Kubernetes with spec.url/code: HTTP redeem only; no AccessToken in API store."""
+        calls = []
+
+        def fake_open_url(url, **kwargs):
+            calls.append(url)
+            class _Resp:
+                def read(self):
+                    return sample_redeem_http_response.encode("utf-8")
+            return _Resp()
+
+        with patch(
+            "ansible_collections.skupper.v2.plugins.modules.resource.open_url",
+            side_effect=fake_open_url,
+        ):
+            with set_module_args({
+                "def": sample_access_token_system,
+                "namespace": "east",
+                "platform": "kubernetes",
+                "redeem": True,
+            }):
+                with self.assertRaises(AnsibleExitJson) as result:
+                    self.module.main()
+        out = result.exception.args[0]
+        self.assertIn("redeemed_link_and_secret", out)
+        self.assertNotIn("AccessToken-sys-tok", self.store)
+        self.assertIn("Secret-link-secret-sys-tok", self.store)
+        self.assertIn("Link-sys-tok", self.store)
+        self.assertEqual(len(calls), 1)
+
     def k8s_create(self, **kwargs):
         if "body" not in kwargs:
             return
@@ -408,6 +557,31 @@ class TestResourceModule(TestCase):
             del self.store[key]
         else:
             raise ApiException(status=404)
+
+    def k8s_get(self, **kwargs):
+        """Mock get() for redeem flow: return AccessToken with Redeemed, Link, or Secret.
+        K8sClient.get() calls res.to_dict(), so return a wrapper that has to_dict()."""
+        name = kwargs.get("name", "")
+        kind = self.k8s._kind
+        if kind == "AccessToken":
+            d = {"status": {"conditions": [{"type": "Redeemed", "status": "True"}]}}
+        elif kind == "Link":
+            d = {
+                "metadata": {"name": name},
+                "spec": {"tlsCredentials": "link-secret-" + name},
+                "apiVersion": "skupper.io/v2alpha1",
+                "kind": "Link",
+            }
+        elif kind == "Secret":
+            d = {
+                "metadata": {"name": name},
+                "data": {"tls.crt": "YQ=="},
+                "kind": "Secret",
+                "apiVersion": "v1",
+            }
+        else:
+            d = {}
+        return _DictLike(d)
 
     def fetch_url(self, *args, **kwargs) -> t.Tuple[io.IOBase, dict]:
         url = kwargs.get("url", "")

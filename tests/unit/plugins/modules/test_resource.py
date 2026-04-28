@@ -3,6 +3,8 @@ import os
 import shutil
 import tempfile
 import typing as t
+
+import yaml
 from unittest import TestCase
 from unittest.mock import patch
 from kubernetes import config
@@ -57,7 +59,7 @@ spec:
 
 """
 
-# Minimal AccessToken YAML for redeem tests (Kubernetes — controller fills status)
+# Minimal AccessToken YAML (used with kubernetes default platform to assert normal apply)
 sample_access_token_def = """---
 apiVersion: skupper.io/v2alpha1
 kind: AccessToken
@@ -90,6 +92,22 @@ metadata:
   name: sys-tok
 spec:
   tlsCredentials: link-secret-sys-tok
+"""
+
+# Same documents as sample_redeem_http_response but Link before Secret (order must not matter).
+sample_redeem_http_response_link_first = """apiVersion: skupper.io/v2alpha1
+kind: Link
+metadata:
+  name: sys-tok
+spec:
+  tlsCredentials: link-secret-sys-tok
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: link-secret-sys-tok
+data:
+  tls.crt: eQ==
 """
 
 
@@ -137,10 +155,17 @@ class TestResourceModule(TestCase):
         self.tempDirs = []
         self.store = {}
         self.k8s = K8sMock()
+        self.module_warnings = []
+
+        def _capture_warn(*args, **kwargs):
+            msg = args[1] if len(args) > 1 else kwargs.get("message", "")
+            self.module_warnings.append(msg)
+
         self.mock_module = patch.multiple(basic.AnsibleModule,
                                           exit_json=exit_json,
                                           fail_json=fail_json,
-                                          get_bin_path=get_bin_path)
+                                          get_bin_path=get_bin_path,
+                                          warn=_capture_warn)
         self.mock_k8s_config = patch.multiple(
             config, load_kube_config=self.k8s.load_kube_config)
         self.mock_k8s_client = patch.multiple(K8sClient, __init__=self.k8s.__init__,
@@ -421,8 +446,8 @@ class TestResourceModule(TestCase):
                 self.assertEqual(test_case.get("storedObjects"), len(
                     self.store), "incorrect amount of objects stored")
 
-    def test_redeem_returns_link_and_secret(self):
-        """With redeem=true and an AccessToken in def, result includes redeemed_link_and_secret."""
+    def test_redeem_kubernetes_warns_and_applies_access_token(self):
+        """redeem=true on kubernetes is ignored; controller owns tokens; warn and apply CR as usual."""
         with set_module_args({
             "def": sample_access_token_def,
             "namespace": "test",
@@ -431,16 +456,10 @@ class TestResourceModule(TestCase):
             with self.assertRaises(AnsibleExitJson) as result:
                 self.module.main()
         out = result.exception.args[0]
-        self.assertIn("redeemed_link_and_secret", out, "redeemed_link_and_secret in result")
-        redeemed = out["redeemed_link_and_secret"]
-        self.assertIsInstance(redeemed, list, "redeemed_link_and_secret is a list")
-        self.assertEqual(len(redeemed), 1, "one Link+Secret per AccessToken")
-        yaml_str = redeemed[0]
-        self.assertIn("Link", yaml_str)
-        self.assertIn("Secret", yaml_str)
-        self.assertIn("my-token", yaml_str)
-        self.assertIn("link-secret-my-token", yaml_str)
-        self.assertNotIn("AccessToken-my-token", self.store)
+        self.assertNotIn("redeemed_links", out)
+        self.assertIn("AccessToken-my-token", self.store)
+        self.assertEqual(len(self.module_warnings), 1)
+        self.assertIn("kubernetes", self.module_warnings[0].lower())
 
     def test_redeem_system_site_http_returns_link_and_secret(self):
         """podman/docker/linux: POST spec.url with spec.code; apply Secret+Link; drop AccessToken."""
@@ -475,9 +494,9 @@ class TestResourceModule(TestCase):
                 with self.assertRaises(AnsibleExitJson) as result:
                     self.module.main()
         out = result.exception.args[0]
-        self.assertIn("redeemed_link_and_secret", out)
+        self.assertIn("redeemed_links", out)
         self.assertTrue(out.get("changed"), "redeem writes Link/Secret and removes token")
-        redeemed = out["redeemed_link_and_secret"]
+        redeemed = out["redeemed_links"]
         self.assertEqual(len(redeemed), 1)
         self.assertIn("kind: Secret", redeemed[0])
         self.assertIn("kind: Link", redeemed[0])
@@ -496,8 +515,66 @@ class TestResourceModule(TestCase):
             "AccessToken yaml should never be written when redeem is true",
         )
 
-    def test_redeem_kubernetes_uses_http_when_url_and_code(self):
-        """Kubernetes with spec.url/code: HTTP redeem only; no AccessToken in API store."""
+    def test_redeem_http_accepts_link_before_secret_in_response(self):
+        """Redeem HTTP body may list Link before Secret; bundle is normalized to Secret(s) then Link(s)."""
+
+        def fake_open_url(url, **kwargs):
+            class _Resp:
+                def read(self):
+                    return sample_redeem_http_response_link_first.encode("utf-8")
+
+            return _Resp()
+
+        with patch(
+            "ansible_collections.skupper.v2.plugins.modules.resource.open_url",
+            side_effect=fake_open_url,
+        ):
+            with set_module_args({
+                "def": sample_access_token_system,
+                "namespace": "east",
+                "platform": "podman",
+                "redeem": True,
+            }):
+                with self.assertRaises(AnsibleExitJson) as result:
+                    self.module.main()
+        redeemed = result.exception.args[0]["redeemed_links"][0]
+        kinds = [
+            d.get("kind")
+            for d in yaml.safe_load_all(redeemed)
+            if isinstance(d, dict) and d.get("kind")
+        ]
+        self.assertEqual(kinds, ["Secret", "Link"])
+
+    def test_redeem_http_failure_warns_without_failing_module(self):
+        """Redeem HTTP errors warn and set redeem_failures; module exits successfully (idempotent re-runs)."""
+
+        def fake_open_url(url, **kwargs):
+            raise OSError("claims endpoint unreachable")
+
+        with patch(
+            "ansible_collections.skupper.v2.plugins.modules.resource.open_url",
+            side_effect=fake_open_url,
+        ):
+            with set_module_args({
+                "def": sample_access_token_system,
+                "namespace": "east",
+                "platform": "podman",
+                "redeem": True,
+            }):
+                with self.assertRaises(AnsibleExitJson) as result:
+                    self.module.main()
+        out = result.exception.args[0]
+        self.assertFalse(out.get("failed", False))
+        self.assertIn("redeem_failures", out)
+        self.assertEqual(len(out["redeem_failures"]), 1)
+        self.assertEqual(out["redeem_failures"][0]["name"], "sys-tok")
+        self.assertIn("unreachable", out["redeem_failures"][0]["msg"])
+        self.assertNotIn("redeemed_links", out)
+        self.assertEqual(len(self.module_warnings), 1)
+        self.assertIn("sys-tok", self.module_warnings[0])
+
+    def test_redeem_kubernetes_warns_no_http_redeem(self):
+        """Kubernetes ignores redeem; open_url not used; AccessToken CR applied to cluster."""
         calls = []
 
         def fake_open_url(url, **kwargs):
@@ -520,11 +597,11 @@ class TestResourceModule(TestCase):
                 with self.assertRaises(AnsibleExitJson) as result:
                     self.module.main()
         out = result.exception.args[0]
-        self.assertIn("redeemed_link_and_secret", out)
-        self.assertNotIn("AccessToken-sys-tok", self.store)
-        self.assertIn("Secret-link-secret-sys-tok", self.store)
-        self.assertIn("Link-sys-tok", self.store)
-        self.assertEqual(len(calls), 1)
+        self.assertNotIn("redeemed_links", out)
+        self.assertIn("AccessToken-sys-tok", self.store)
+        self.assertEqual(len(calls), 0)
+        self.assertEqual(len(self.module_warnings), 1)
+        self.assertIn("kubernetes", self.module_warnings[0].lower())
 
     def k8s_create(self, **kwargs):
         if "body" not in kwargs:

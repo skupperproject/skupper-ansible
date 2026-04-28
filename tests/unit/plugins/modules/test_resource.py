@@ -545,6 +545,80 @@ class TestResourceModule(TestCase):
         ]
         self.assertEqual(kinds, ["Secret", "Link"])
 
+    def test_redeem_skips_when_link_exists_and_state_present(self):
+        """Do not HTTP-redeem if Link-{name}.yaml already exists and state is present."""
+        link_path = os.path.join(
+            self.temphome, "east", "input", "resources", "Link-sys-tok.yaml"
+        )
+        os.makedirs(os.path.dirname(link_path), exist_ok=True)
+        with open(link_path, "w", encoding="utf-8") as f:
+            f.write("kind: Link\nmetadata:\n  name: sys-tok\n")
+
+        calls = []
+
+        def fake_open_url(url, **kwargs):
+            calls.append(url)
+            class _Resp:
+                def read(self):
+                    return sample_redeem_http_response.encode("utf-8")
+            return _Resp()
+
+        with patch(
+            "ansible_collections.skupper.v2.plugins.modules.resource.open_url",
+            side_effect=fake_open_url,
+        ):
+            with set_module_args({
+                "def": sample_access_token_system,
+                "namespace": "east",
+                "platform": "podman",
+                "redeem": True,
+                "state": "present",
+            }):
+                with self.assertRaises(AnsibleExitJson) as result:
+                    self.module.main()
+        out = result.exception.args[0]
+        self.assertEqual(len(calls), 0)
+        self.assertNotIn("redeemed_links", out)
+        self.assertFalse(out.get("changed", False))
+        skip_warns = [w for w in self.module_warnings if "Skipping redeem" in w]
+        self.assertEqual(len(skip_warns), 1)
+        self.assertIn("sys-tok", skip_warns[0])
+
+    def test_redeem_runs_when_link_exists_and_state_latest(self):
+        """state=latest sets overwrite; redeem runs even if Link-{name}.yaml exists."""
+        link_path = os.path.join(
+            self.temphome, "east", "input", "resources", "Link-sys-tok.yaml"
+        )
+        os.makedirs(os.path.dirname(link_path), exist_ok=True)
+        with open(link_path, "w", encoding="utf-8") as f:
+            f.write("kind: Link\nmetadata:\n  name: sys-tok\n")
+
+        calls = []
+
+        def fake_open_url(url, **kwargs):
+            calls.append(url)
+            class _Resp:
+                def read(self):
+                    return sample_redeem_http_response.encode("utf-8")
+            return _Resp()
+
+        with patch(
+            "ansible_collections.skupper.v2.plugins.modules.resource.open_url",
+            side_effect=fake_open_url,
+        ):
+            with set_module_args({
+                "def": sample_access_token_system,
+                "namespace": "east",
+                "platform": "podman",
+                "redeem": True,
+                "state": "latest",
+            }):
+                with self.assertRaises(AnsibleExitJson) as result:
+                    self.module.main()
+        out = result.exception.args[0]
+        self.assertEqual(len(calls), 1)
+        self.assertIn("redeemed_links", out)
+
     def test_redeem_http_failure_warns_without_failing_module(self):
         """Redeem HTTP errors warn and set redeem_failures; module exits successfully (idempotent re-runs)."""
 

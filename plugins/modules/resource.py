@@ -52,9 +52,13 @@ options:
         choices: ["present", "latest", "absent"]
     redeem:
         description:
-        - For non-kubernetes platforms (for example V(podman), V(docker), or V(linux)), redeem C(AccessToken) documents without keeping them in the namespace; only Secret and Link are applied.
-        - Other documents in the same definition are applied first. With C(spec.url) and C(spec.code), uses HTTP (as C(skupper token redeem)).
-        - When V(platform) is V(kubernetes), this option is ignored and a warning is issued; the Skupper V2 controller on Kubernetes already handles AccessToken resources.
+        - For non-kubernetes platforms (for example V(podman), V(docker), or V(linux)),
+          redeem C(AccessToken) documents without keeping them in the namespace; only Secret
+          and Link are applied.
+        - Other documents in the same definition are applied first. With C(spec.url) and
+          C(spec.code), uses HTTP (as C(skupper token redeem)).
+        - When V(platform) is V(kubernetes), this option is ignored and a warning is issued;
+          the Skupper V2 controller on Kubernetes already handles AccessToken resources.
         type: bool
         default: false
 
@@ -126,11 +130,17 @@ EXAMPLES = r'''
 
 RETURN = r'''
 redeemed_links:
-  description: List of YAML strings per redeemed token when C(redeem=true) on a non-kubernetes platform. Each string contains all Secret documents from the redeem response, then all Link documents (each group in server response order).
+  description: >
+    List of YAML strings per redeemed token when C(redeem=true) on a non-kubernetes
+    platform. Each string contains all Secret documents from the redeem response, then
+    all Link documents (each group in server response order).
   type: list
   returned: when redeem is used on non-kubernetes and AccessToken documents were present
 redeem_failures:
-  description: List of dicts C(name), C(msg) for HTTP redemption failures on non-kubernetes. The module does not fail; warnings are issued so a repeat run can stay idempotent (for example unchanged with a warning).
+  description: >
+    List of dicts C(name), C(msg) for HTTP redemption failures on non-kubernetes. The
+    module does not fail; warnings are issued so a repeat run can stay idempotent (for
+    example unchanged with a warning).
   type: list
   returned: when one or more AccessToken redemptions failed
 '''
@@ -159,9 +169,10 @@ from ansible_collections.skupper.v2.plugins.module_utils.resource import (
     dump,
     delete as resource_delete,
 )
-from ansible_collections.skupper.v2.plugins.module_utils.common import is_non_kube
+from ansible_collections.skupper.v2.plugins.module_utils.common import is_non_kube, resources_home
 from ansible_collections.skupper.v2.plugins.module_utils.exceptions import RuntimeException
 from ansible_collections.skupper.v2.plugins.module_utils.args import common_args, is_valid_name
+
 
 def _split_access_tokens(definitions: str) -> t.Tuple[str, t.List[dict]]:
     other, tokens = [], []
@@ -171,6 +182,11 @@ def _split_access_tokens(definitions: str) -> t.Tuple[str, t.List[dict]]:
         elif isinstance(doc, dict):
             other.append(doc)
     return (yaml.safe_dump_all(other, indent=2) if other else ""), tokens
+
+
+def _nonkube_link_exists(namespace: str, link_name: str) -> bool:
+    path = os.path.join(resources_home(namespace), "Link-{}.yaml".format(link_name))
+    return os.path.isfile(path)
 
 
 def argspec():
@@ -305,7 +321,9 @@ class ResourceModule:
                     wo, tokens = _split_access_tokens(definitions)
                     if wo.strip():
                         changed = dump(wo, namespace, overwrite)
-                    redeemed, rch, redeem_fails = self._redeem_nonkube(namespace, tokens)
+                    redeemed, rch, redeem_fails = self._redeem_nonkube(
+                        namespace, tokens, overwrite
+                    )
                     if redeemed:
                         result["redeemed_links"] = redeemed
                     if redeem_fails:
@@ -327,7 +345,7 @@ class ResourceModule:
         self.module.exit_json(**result)
 
     def _redeem_nonkube(
-        self, namespace: str, tokens: t.List[dict]
+        self, namespace: str, tokens: t.List[dict], overwrite: bool
     ) -> t.Tuple[t.List[str], bool, t.List[dict]]:
         if not tokens:
             return [], False, []
@@ -340,9 +358,15 @@ class ResourceModule:
             if not n or n in seen:
                 continue
             seen.add(n)
+            if not overwrite and _nonkube_link_exists(ns, n):
+                self.module.warn(
+                    "Skipping redeem for AccessToken {0}: Link {0} already exists "
+                    "(use state=latest to replace).".format(n)
+                )
+                continue
             try:
                 bundle = _http_redeem_token(doc, ns)
-                if dump(bundle, ns, True):
+                if dump(bundle, ns, overwrite):
                     redeem_changed = True
                 out.append(bundle)
             except Exception as ex:

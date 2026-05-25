@@ -17,6 +17,7 @@ description:
     - Manages the lifecycle of the skupper-controller.
     - Prepares the environment and runs the skupper-controller for system sites
     - Runs with podman (default) or docker engines
+    - With podman-docker (Docker CLI using Podman), use the podman platform; the docker platform requires a real Docker daemon.
 
 options:
     action:

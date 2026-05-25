@@ -19,6 +19,8 @@ if you need to manage the lifecycle of non-kubernetes sites:
 
 * Podman or Docker
 
+If you have podman-docker (Docker CLI compatibility layer that uses Podman), use platform: podman in the collection modules; platform: docker requires a real Docker daemon and is not supported with podman-docker.
+
 # Installation
 
 To install the collection, run:

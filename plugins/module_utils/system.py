@@ -47,7 +47,11 @@ def runas(engine: str = "podman") -> str:
             docker_grp = grp.getgrnam("docker")
             gid = docker_grp.gr_gid
         except KeyError as ex:
-            raise RuntimeException("unable to determine docker group id") from ex
+            raise RuntimeException(
+                "unable to determine docker group id. "
+                "If you are using podman-docker (Docker CLI compatibility with Podman), use platform: podman instead of platform: docker. "
+                "The docker platform requires a real Docker daemon and a 'docker' group on the system."
+            ) from ex
     return "%d:%d" % (uid, gid)
 
 

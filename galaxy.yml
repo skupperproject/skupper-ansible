@@ -3,7 +3,9 @@ name: v2
 version: 2.1.4-preview
 readme: README.md
 authors:
+  - Aryan Puttur (@AryanP123)
   - Fernando Giorgetti (@fgiorgetti)
+  - Noe Luaces (@nluaces)
 description: Collection to manage skupper v2 sites
 license_file: 'LICENSE'
 tags:

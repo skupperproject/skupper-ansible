@@ -43,5 +43,15 @@ releases:
       - Updated skupper-controller image to 2.1.3
       release_summary: Update components to 2.1.3
     release_date: '2026-02-24'
-  2.1.4-preview:
-    release_date: '2026-02-26'
+  2.2.0:
+    changes:
+      major_changes:
+      - Added option to redeem access tokens on the resource module for non-kubernetes
+        platforms
+      - Improved error when platform is docker but only podman-docker is available
+      - The system and controller modules now use the 2.2.0 images
+      release_summary: Updated components to 2.2.0 and added new redeem option to
+        resource module
+    release_date: '2026-05-29'
+  2.2.1-preview:
+    release_date: '2026-05-29'

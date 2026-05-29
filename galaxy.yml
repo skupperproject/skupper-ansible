@@ -1,6 +1,6 @@
 namespace: skupper
 name: v2
-version: 2.1.4-preview
+version: 2.2.1-preview
 readme: README.md
 authors:
   - Aryan Puttur (@AryanP123)

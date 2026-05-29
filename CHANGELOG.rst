@@ -4,8 +4,23 @@ Skupper V2 collection Release Notes
 
 .. contents:: Topics
 
-v2.1.4-preview
+v2.2.1-preview
 ==============
+
+v2.2.0
+======
+
+Release Summary
+---------------
+
+Updated components to 2.2.0 and added new redeem option to resource module
+
+Major Changes
+-------------
+
+- Added option to redeem access tokens on the resource module for non-kubernetes platforms
+- Improved error when platform is docker but only podman-docker is available
+- The system and controller modules now use the 2.2.0 images
 
 v2.1.3
 ======

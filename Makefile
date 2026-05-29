@@ -1,4 +1,4 @@
-VERSION := 2.1.4-preview
+VERSION := 2.2.0
 TARBALL := skupper-v2-$(VERSION).tar.gz
 
 IMAGES = default ubuntu2404

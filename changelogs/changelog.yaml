@@ -53,3 +53,5 @@ releases:
       release_summary: Updated components to 2.2.0 and added new redeem option to
         resource module
     release_date: '2026-05-29'
+  2.2.1-preview:
+    release_date: '2026-05-29'

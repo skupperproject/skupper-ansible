@@ -4,6 +4,9 @@ Skupper V2 collection Release Notes
 
 .. contents:: Topics
 
+v2.2.1-preview
+==============
+
 v2.2.0
 ======
 

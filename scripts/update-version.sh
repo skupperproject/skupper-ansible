@@ -38,13 +38,13 @@ update_galaxyyml() {
 }
 
 update_cli() {
-    grep -rl "quay.io/skupper/cli:${old_version}" plugins/modules/ tests/integration/ tests/unit/plugins/modules/ \
-        | xargs -r sed -i "s#quay.io/skupper/cli:${old_version}#quay.io/skupper/cli:${image_version}#g"
+    grep -E -rl "quay.io/skupper/cli:(${old_version}|v2-dev)" plugins/modules/ tests/integration/ tests/unit/plugins/modules/ \
+        | xargs -r sed -E -i "s#quay.io/skupper/cli:(${old_version}|v2-dev)#quay.io/skupper/cli:${image_version}#g"
 }
 
 update_controller() {
-    grep -rl "quay.io/skupper/system-controller:${old_version}" plugins/modules/ tests/integration/ tests/unit/plugins/modules/ \
-        | xargs -r sed -i "s#quay.io/skupper/system-controller:${old_version}#quay.io/skupper/system-controller:${image_version}#g"
+    grep -E -rl "quay.io/skupper/system-controller:(${old_version}|v2-dev)" plugins/modules/ tests/integration/ tests/unit/plugins/modules/ \
+        | xargs -r sed -E -i "s#quay.io/skupper/system-controller:(${old_version}|v2-dev)#quay.io/skupper/system-controller:${image_version}#g"
 }
 
 main() {

@@ -2,14 +2,24 @@
   
 This document outlines the steps for creating a new release of the `skupper.v2` Ansible collection.
 
-## Major/Minor Release Process
+## Release Process
   
-Follow these steps for a new **major.minor** release:
+Follow these steps for a new release:
 
 1.  If a new **major.minor** version (e.g., 2.1) is being released, first create a branch from `main` or check out the existing major.minor branch.
+
+    If it is the first release for a **major.minor** version, use:
+
     ```
     git checkout -b 2.1
     ```
+
+    In case the **major.minor** branch already exists, just check it out:
+
+    ```
+    git checkout 2.1
+    ```
+
 2.  Clean any previous build artifacts.
     ```
     make clean

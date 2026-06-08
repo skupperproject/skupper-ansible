@@ -4,6 +4,20 @@ Skupper V2 collection Release Notes
 
 .. contents:: Topics
 
+v2.2.1
+======
+
+Release Summary
+---------------
+
+Update components to 2.2.1
+
+Major Changes
+-------------
+
+- Updated cli image to 2.2.1
+- Updated skupper-controller image to 2.2.1
+
 v2.2.0
 ======
 

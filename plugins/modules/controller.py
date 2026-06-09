@@ -38,6 +38,12 @@ options:
         type: str
         default: podman
         choices: ["podman", "docker"]
+    reload_type:
+        description:
+            - The type of reload of input custom resources
+        type: str
+        default: manual
+        choices: ["auto", "manual"]
 
 requirements:
     - "python >= 3.9"
@@ -56,6 +62,7 @@ EXAMPLES = r'''
   skupper.v2.controller:
     action: install
     platform: podman
+    reload_type: auto
 
 # Uninstalls the skupper-controller
 - name: Uninstalls the skupper-controller
@@ -98,6 +105,8 @@ def argspec():
                          default="quay.io/skupper/system-controller:2.2.0")
     spec["platform"] = dict(type="str", default="podman",
                             choices=["podman", "docker"])
+    spec["reload_type"] = dict(type="str", default="manual",
+                               choices=["auto", "manual"])
     return spec
 
 
@@ -107,6 +116,7 @@ class ControllerModule:
         self._action = self.params.get("action")
         self._image = self.params.get("image")
         self._platform = self.params.get("platform")
+        self._reload_type = self.params.get("reload_type")
 
     def run(self):
         result = dict(
@@ -159,6 +169,7 @@ class ControllerModule:
         env_dict = env(self._platform, self._platform)
         for var, val in env_dict.items():
             command.extend(["-e", "%s=%s" % (var, val)])
+        command.extend(["-e", "SKUPPER_SYSTEM_RELOAD_TYPE=%s" % (self._reload_type)])
         command.append(self._image)
 
         if not os.path.exists(data_home()):

@@ -251,6 +251,55 @@ class TestControllerModule(TestCase):
     def test_install_docker(self):
         self._test_install("docker")
 
+    def test_install_reload_type_auto(self):
+        self._test_install_reload_type("podman", "auto")
+
+    def test_install_reload_type_manual(self):
+        self._test_install_reload_type("docker", "manual")
+
+    def test_install_reload_type_invalid(self):
+        """Test that invalid reload_type values are rejected"""
+        with self.assertRaises(AnsibleFailJson):
+            with set_module_args({"action": "install", "platform": "podman", "reload_type": "invalid"}):
+                self.module.main()
+
+    def _test_install_reload_type(self, platform: str, reload_type: str):
+        from ansible_collections.skupper.v2.plugins.module_utils.system import (
+            base_mounts,
+            env,
+            runas,
+            userns,
+        )
+
+        run_command_args = [
+            platform, "run", "-d", "--pull", "always", "--name",
+            self.expected_container_name(), "--label=application=skupper-v2",
+            "--network", "host", "--security-opt", "label=disable", "-u",
+            runas(platform), "--userns=%s" % (userns(platform))
+        ]
+        for source, dest in base_mounts(platform, platform).items():
+            run_command_args.extend(["-v", "%s:%s:z" % (source, dest)])
+        env_dict = env(platform, platform)
+        for var, val in env_dict.items():
+            run_command_args.extend(["-e", "%s=%s" % (var, val)])
+
+        run_command_args.extend(["-e", "SKUPPER_SYSTEM_RELOAD_TYPE=%s" % reload_type])
+        run_command_args.append(self._image or "quay.io/skupper/system-controller:v2-dev")
+        
+
+        run_command = CommandArgs(args=run_command_args)
+        self._run_commands[run_command] = CommandResponse()
+        self._run_commands[CommandArgs(args=["podman", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
+        self._run_commands[CommandArgs(args=["docker", "inspect", self.expected_container_name()])] = CommandResponse(code=1)
+
+        with self.assertRaises(AnsibleExitJson) as exit:
+            with set_module_args({"action": "install", "platform": platform, "reload_type": reload_type}):
+                self.module.main()
+
+        self.assertTrue(exit.exception.changed)
+        self.assertTrue(run_command.matched,
+            f"Expected command with SKUPPER_SYSTEM_RELOAD_TYPE={reload_type} was not executed")
+
     def _test_install(self, platform: str):
         # must be imported after data_home is mocked
         from ansible_collections.skupper.v2.plugins.module_utils.system import (

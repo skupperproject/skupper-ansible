@@ -53,3 +53,12 @@ releases:
       release_summary: Updated components to 2.2.0 and added new redeem option to
         resource module
     release_date: '2026-05-29'
+  2.2.1:
+    changes:
+      major_changes:
+      - Added reload_type property to the controller module (#100)
+      - Updated cli image to 2.2.1
+      - Updated skupper-controller image to 2.2.1
+      release_summary: Updated components to 2.2.1 and added reload_type to controller
+        module
+    release_date: '2026-06-10'

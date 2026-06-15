@@ -4,8 +4,23 @@ Skupper V2 collection Release Notes
 
 .. contents:: Topics
 
-v2.2.1-preview
+v2.2.2-preview
 ==============
+
+v2.2.1
+======
+
+Release Summary
+---------------
+
+Updated components to 2.2.1 and added reload_type to controller module
+
+Major Changes
+-------------
+
+- Added reload_type property to the controller module (#100)
+- Updated cli image to 2.2.1
+- Updated skupper-controller image to 2.2.1
 
 v2.2.0
 ======

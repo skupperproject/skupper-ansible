@@ -94,6 +94,9 @@ class TestControllerModule(TestCase):
         return "{}-skupper-controller".format(pwd.getpwuid(os.getuid())[0])
 
     def test_install_systemd_unavailable(self):
+        expected_name = self.expected_container_name()
+        self._run_commands[CommandArgs(args=["podman", "inspect", expected_name])] = CommandResponse(code=1)
+        self._run_commands[CommandArgs(args=["docker", "inspect", expected_name])] = CommandResponse(code=1)
         systemd_cmd = self.systemctl_command()
         systemd_cmd.append("list-units")
         self._run_commands[CommandArgs(args=systemd_cmd)] = CommandResponse(code=1, err="mock")
@@ -102,9 +105,12 @@ class TestControllerModule(TestCase):
                 with set_module_args({"action": "install"}):
                     self.module.main()
         mock_warn.assert_called_once_with("unable to detect systemd: mock")
-        self.assertFalse(exit.exception.changed)
+        self.assertTrue(exit.exception.changed)
     
     def test_install_list_units_fails(self):
+        expected_name = self.expected_container_name()
+        self._run_commands[CommandArgs(args=["podman", "inspect", expected_name])] = CommandResponse(code=1)
+        self._run_commands[CommandArgs(args=["docker", "inspect", expected_name])] = CommandResponse(code=1)
         systemd_cmd = self.systemctl_command()
         systemd_cmd.extend(["list-units", "--all", "--no-pager", "--output=json"])
         self._run_commands[CommandArgs(args=systemd_cmd)] = CommandResponse(code=1, err="mock")
@@ -115,6 +121,9 @@ class TestControllerModule(TestCase):
             "error listing service units: mock"), ex.exception.msg)
     
     def test_install_list_units_bad_data(self):
+        expected_name = self.expected_container_name()
+        self._run_commands[CommandArgs(args=["podman", "inspect", expected_name])] = CommandResponse(code=1)
+        self._run_commands[CommandArgs(args=["docker", "inspect", expected_name])] = CommandResponse(code=1)
         systemd_cmd = self.systemctl_command()
         systemd_cmd.extend(["list-units", "--all", "--no-pager", "--output=json"])
         self._run_commands[CommandArgs(args=systemd_cmd)] = CommandResponse(code=0, out="bad-data")
@@ -123,16 +132,66 @@ class TestControllerModule(TestCase):
                 with set_module_args({"action": "install"}):
                     self.module.main()
         mock_warn.assert_called_once_with(RegexMatcher("invalid json data: *"))
-        self.assertFalse(exit.exception.changed)
+        self.assertTrue(exit.exception.changed)
     
     def test_install_service_exists(self):
+        expected_name = self.expected_container_name()
         systemd_cmd = self.systemctl_command()
         systemd_cmd.extend(["list-units", "--all", "--no-pager", "--output=json"])
         self._run_commands[CommandArgs(args=systemd_cmd)] = CommandResponse(code=0, out='[{"unit": "skupper-controller.service"}]')
+        self._run_commands[CommandArgs(args=["podman", "inspect", expected_name])] = CommandResponse(code=0)
         with self.assertRaises(AnsibleExitJson) as exit:
             with set_module_args({"action": "install"}):
                 self.module.main()
         self.assertFalse(exit.exception.changed)
+
+    def test_install_service_exists_container_missing(self):
+        from ansible_collections.skupper.v2.plugins.module_utils.system import (
+            base_mounts,
+            env,
+            runas,
+            userns,
+        )
+
+        expected_name = self.expected_container_name()
+        platform = "podman"
+        systemd_cmd = self.systemctl_command()
+        systemd_cmd.extend(["list-units", "--all", "--no-pager", "--output=json"])
+        self._run_commands[CommandArgs(args=systemd_cmd)] = CommandResponse(code=0, out='[{"unit": "skupper-controller.service"}]')
+        self._run_commands[CommandArgs(args=["podman", "inspect", expected_name])] = CommandResponse(code=1)
+        self._run_commands[CommandArgs(args=["docker", "inspect", expected_name])] = CommandResponse(code=1)
+
+        run_command_args = [
+            platform, "run", "-d", "--pull", "always", "--name",
+            expected_name, "--label=application=skupper-v2",
+            "--network", "host", "--security-opt", "label=disable", "-u",
+            runas(platform), "--userns=%s" % (userns(platform))
+        ]
+        for source, dest in base_mounts(platform, platform).items():
+            run_command_args.extend(["-v", "%s:%s:z" % (source, dest)])
+        env_dict = env(platform, platform)
+        for var, val in env_dict.items():
+            run_command_args.extend(["-e", "%s=%s" % (var, val)])
+        run_command_args.extend(["-e", "SKUPPER_SYSTEM_RELOAD_TYPE=manual"])
+        run_command_args.append("quay.io/skupper/system-controller:v2-dev")
+        run_command = CommandArgs(args=run_command_args)
+        self._run_commands[run_command] = CommandResponse()
+
+        systemctl = self.systemctl_command()
+        disable_cmd = CommandArgs(args=systemctl + ["disable", "--now", "skupper-controller.service"])
+        reload_cmd = CommandArgs(args=systemctl + ["daemon-reload"])
+        reset_cmd = CommandArgs(args=systemctl + ["reset-failed"])
+        enable_cmd = CommandArgs(args=systemctl + ["enable", "--now", "skupper-controller.service"])
+        for cmd in [disable_cmd, reload_cmd, reset_cmd, enable_cmd]:
+            self._run_commands[cmd] = CommandResponse()
+
+        with self.assertRaises(AnsibleExitJson) as exit:
+            with set_module_args({"action": "install", "platform": platform}):
+                self.module.main()
+        self.assertTrue(exit.exception.changed)
+        self.assertTrue(run_command.matched)
+        self.assertTrue(disable_cmd.matched)
+        self.assertTrue(enable_cmd.matched)
 
     def test_install_container_exists(self):
         expected_name = self.expected_container_name()

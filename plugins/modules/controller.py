@@ -144,15 +144,30 @@ class ControllerModule:
         return self.module.params
 
     def install(self) -> bool:
-        if self.service_exists():
-            self.module.debug("skupper-controller service already exists")
-            return False
-
         exists, platform = self.get_container_info()
         if exists:
             self.module.debug("{} container already exists (platform: {})".format(self.container_name(), platform))
             return False
 
+        if self.service_exists():
+            self.module.debug("skupper-controller service exists but container is missing")
+            systemd_delete(self.module, self.service_name())
+
+        self.create_container()
+        requires_mounts_for = list(base_mounts(self._platform, self._platform).keys())
+        env_dict = env(self._platform, self._platform)
+        try:
+            self.create_startup_scripts(self._platform)
+        except Exception as ex:
+            self.module.fail_json("unable to create startup scripts: {}".format(ex))
+        try:
+            self.create_service(mounts=requires_mounts_for, envs=env_dict)
+        except Exception as ex:
+            self.module.fail_json("unable to create systemd service: {}".format(ex))
+
+        return True
+
+    def create_container(self) -> None:
         if self._platform == "podman":
             enable_podman_socket(self.module)
 
@@ -162,9 +177,7 @@ class ControllerModule:
             "--network", "host", "--security-opt", "label=disable", "-u",
             runas(self._platform), "--userns=%s" % (userns(self._platform))
         ]
-        requires_mounts_for = list()
         for source, dest in base_mounts(self._platform, self._platform).items():
-            requires_mounts_for.append(source)
             command.extend(["-v", "%s:%s:z" % (source, dest)])
         env_dict = env(self._platform, self._platform)
         for var, val in env_dict.items():
@@ -180,17 +193,6 @@ class ControllerModule:
             msg = "error creating container '%s': %s" % (
                 self.container_name(), out or err)
             self.module.fail_json(msg)
-
-        try:
-            self.create_startup_scripts(self._platform)
-        except Exception as ex:
-            self.module.fail_json("unable to create startup scripts: {}".format(ex))
-        try:
-            self.create_service(mounts=requires_mounts_for, envs=env_dict)
-        except Exception as ex:
-            self.module.fail_json("unable to create systemd service: {}".format(ex))
-
-        return True
 
     def uninstall(self) -> bool:
         changed = False

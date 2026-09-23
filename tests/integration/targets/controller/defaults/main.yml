@@ -2,4 +2,6 @@
 controller_image: "{{ system_controller_image | default('quay.io/skupper/system-controller:v2-dev') }}"
 matrix:
   - platform: podman
+    tag: podman
   - platform: docker
+    tag: docker

@@ -15,7 +15,6 @@
     - name: Gathering facts
       ansible.builtin.gather_facts:
     - name: "Run controller module tests for all scenarios"
-      tags: always
       with_items:
         - "{{ matrix }}"
       ansible.builtin.include_tasks: workflow.yml

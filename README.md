@@ -53,18 +53,18 @@ It assumes that:
     path: "{{ item }}"
     namespace: "west"
   with_items:
-    - https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/v2/west/frontend.yaml
-    - https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/v2/west/site.yaml
-    - https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/v2/west/listener.yaml
+    - https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/main/west/frontend.yaml
+    - https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/main/west/site.yaml
+    - https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/main/west/listener.yaml
 
 - name: Creating Skupper resources on east namespace
   skupper.v2.resource:
     path: "{{ item }}"
     namespace: "east"
   with_items:
-    - https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/v2/east/backend.yaml
-    - https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/v2/east/site.yaml
-    - https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/v2/east/connector.yaml
+    - https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/main/east/backend.yaml
+    - https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/main/east/site.yaml
+    - https://raw.githubusercontent.com/skupperproject/skupper-example-yaml/refs/heads/main/east/connector.yaml
 
 - name: Issue a Skupper access token from west namespace
   skupper.v2.token:
